@@ -1,0 +1,58 @@
+.registration{
+    width: 85vw;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 10px;
+
+}
+
+.container-image{
+    position: relative;
+}
+.image{
+    position: absolute;
+
+    left: -50px;
+    bottom: 0px;
+}
+
+.container{
+    margin-top: 40px;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+}
+.form{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.input{
+    margin-bottom: 25px;
+}
+
+.title{
+    margin-bottom: 25px;
+}
+.button{
+ margin-bottom: 18px;   
+}
+p{
+    margin-bottom: 27px;
+}
+@media screen and (max-width: 1000px) {
+    .container-image{
+        display: none;
+    }
+    .container {
+        margin-top: 30px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+}

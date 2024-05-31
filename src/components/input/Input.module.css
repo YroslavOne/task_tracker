@@ -1,0 +1,26 @@
+.input{
+    background-repeat: no-repeat;
+    height: 50px;
+    background-position: center left;
+    border-radius: 8px;
+    border: solid 1px rgba(86, 84, 84, 1);
+    padding-left: 70px;
+    background-position-x: 18px;
+    width: 100%;
+}
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon {
+    position: absolute;
+    left: 10px;
+    pointer-events: none;
+  }
+  
+  .invalid {
+    border-color: red;
+  }
+  
