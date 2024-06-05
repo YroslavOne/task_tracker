@@ -5,7 +5,7 @@ import Registration from "./pages/signup/Registration";
 function App() {
   return (
     <>
-      <Registration />
+      <Outlet />
     </>
   );
 }

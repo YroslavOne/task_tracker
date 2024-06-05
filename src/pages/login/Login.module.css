@@ -21,6 +21,7 @@
 
 .form {
   display: flex;
+  width: 100%;
   flex-direction: column;
 
 }
@@ -58,5 +59,9 @@ p {
     width: 100%;
     display: flex;
     justify-content: center;
+  }
+  .form {
+    width: 90%;
+  
   }
 }
