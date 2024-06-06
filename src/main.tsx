@@ -2,13 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-// import { Provider } from "react-redux";
-import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Login from "./pages/login/Login.tsx";
 import Registration from "./pages/signup/Registration.tsx";
 import { AuthLayout } from "./layout/auth/AuthLayout.tsx";
 import Layout from "./layout/menu/Layout.tsx";
 import { RequireAuth } from "./helpers/RequireAuth.tsx";
+import Dashboard from "./pages/dashboard/Dashboard.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
 			{
 				path: '/',
 				element: (
-						<SideBar />
+						<Dashboard />
 				)
 			},
 		// 	{
