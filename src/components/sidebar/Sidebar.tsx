@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import styles from "./SideBar.module.css";
 import MenuLink from "../buttonLong/MenuLink";
 
@@ -32,7 +31,7 @@ function SideBar() {
         </div>
       </div>
       <div className={styles["logout"]}>
-      <MenuLink link={"/logout"} image={"logout"} className={styles["logout"]}> logout</MenuLink>
+      <MenuLink link={"/logout"} image={"logout"} className={styles["logout-link"]}> logout</MenuLink>
 
       </div>
     </div>
