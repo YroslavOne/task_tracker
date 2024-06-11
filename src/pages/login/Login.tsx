@@ -5,8 +5,10 @@ import User from "../../../public/image/iconFor/User.svg";
 import Lock from "../../../public/image/iconFor/Lock.svg";
 import Button from "../../components/button/Button";
 import Image from "../../../public/image/start/Login.png";
-import { Link } from "react-router-dom";
-import { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FormEvent, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../store/user.slice";
 // import axios from "axios";
 
 export type LoginForm = {
@@ -22,6 +24,14 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  // useEffect(() => {
+  //   if (jwt) {
+  //     navigate('/');
+  //   }
+  // }, [jwt, navigate]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -44,6 +54,9 @@ function Login() {
         const data = await response.json();
         setMessage(data.message); // Отобразить сообщение об успешной аутентификации
         localStorage.setItem("jwt", data.message)
+        navigate('/');
+        
+        dispatch(userActions.addJwt(data.message))
       }
     } catch (error) {
       console.error("Error:", error);

@@ -1,20 +1,31 @@
 import express from "express";
 import bodyParser from "body-parser";
-import cors from 'cors';
+import cors from "cors";
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
 // Пример базы данных в оперативной памяти
-let users = [];
+let users = [
+  {
+    firstName: "hi",
+    lastName: "hi",
+    middleName: "hi",
+    email: "1",
+    password: "1",
+    phone: "hi",
+  },
+];
 let tasks = [];
 
 // Регистрация пользователя
 app.post("/register", (req, res) => {
-    console.log('hi')
+  console.log("hi");
   const { firstName, lastName, middleName, email, password, phone } = req.body;
+
   const user = { firstName, lastName, middleName, email, password, phone };
+
   users.push(user);
   res.status(201).send("User registered successfully");
 });
@@ -22,14 +33,14 @@ app.post("/register", (req, res) => {
 // Аутентификация пользователя
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
+  console.log(users);
   const user = users.find((u) => u.email === email && u.password === password);
   if (!user) {
     res.status(401).send("Invalid email or password");
-    console.log("hilog")
+    console.log("hilog");
   } else {
     res.status(200).json({ message: "Login successful", user });
-    console.log("hilo2g")
-
+    console.log(user.firstName);
   }
 });
 

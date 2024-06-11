@@ -56,10 +56,9 @@ h2 {
   margin-top: 10px;
 }
 .information {
-    margin-top: 29px;
+  margin-top: 29px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 .priority {
   font-family: Inter;
@@ -68,6 +67,9 @@ h2 {
   line-height: 12.1px;
   text-align: left;
 }
+.priority:nth-child(1) {
+    margin-right: 13px;
+  }
 .image-date {
   display: flex;
   flex-direction: column;
@@ -80,7 +82,8 @@ h2 {
   border-radius: 14px;
 }
 .created {
-    margin-top: 14px;
+  width: 115px;
+  margin-top: 14px;
   font-family: Inter;
   font-size: 10px;
   font-weight: 400;

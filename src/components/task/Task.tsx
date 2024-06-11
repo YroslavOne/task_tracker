@@ -1,7 +1,8 @@
 import style from "./Task.module.css";
 import Menu from "../../../public/image/task/MENU.svg";
+import { TaskProps } from "./Task.props";
 
-function Task() {
+function Task({title, description, priority, status, date, image}: TaskProps) {
   return (
     <div className={style["container"]}>
       <div className={style["top-bar"]}>
@@ -13,33 +14,24 @@ function Task() {
       </div>
       <div className={style["content"]}>
         <div className={style["description"]}>
-          <h2>Attend Nischal’s Birthday Party</h2>
-          <p>
-            Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh
-            Elements).....ick up cake from the bakery. (6 PM | Fresh
-            Elements).....ick up cake from the bakery. (6 PM | Fresh
-            Elements).....ick up cake from the bakery. (6 PM | Fresh
-            Elements).....ick up cake from the bakery. (6 PM | Fresh
-            Elements).....ick up cake from the bakery. (6 PM | Fresh
-            Elements).....ick up cake from the bakery. (6 PM | Fresh
-            Elements).....
-          </p>
+          <h2>{title}</h2>
+          <p>{description}</p>
           <div className={style["information"]}>
             <p className={style["priority"]}>
-              Priority: <span style={{ color: "blue" }}>Moderate</span>
+              Priority: <span style={{ color: "blue" }}>{priority}</span>
             </p>
             <p className={style["priority"]}>
-              Status: <span style={{ color: "blue" }}>In Progress</span>
+              Status: <span style={{ color: "blue" }}>{status}</span>
             </p>
           </div>
         </div>
         <div className={style["image-date"]}>
           <img
             className={style["image"]}
-            src="https://img.goodfon.ru/wallpaper/nbig/a/69/kartinka-3d-dikaya-koshka.webp"
+            src={image}
             alt=""
           />
-          <p className={style["created"]}>Created on: 20/06/2023</p>
+          <p className={style["created"]}>Created on: {date}</p>
         </div>
       </div>
     </div>

@@ -9,76 +9,77 @@ import { AuthLayout } from "./layout/auth/AuthLayout.tsx";
 import Layout from "./layout/menu/Layout.tsx";
 import { RequireAuth } from "./helpers/RequireAuth.tsx";
 import Dashboard from "./pages/dashboard/Dashboard.tsx";
+import { Provider } from "react-redux";
+import { store } from "./store/store.ts";
 
 const router = createBrowserRouter([
-	{
-		path: '/',
-		element: (
-				<RequireAuth> <Layout /></RequireAuth>
-		),
-		children: [
-			{
-				path: '/',
-				element: (
-						<Dashboard />
-				)
-			},
-		// 	{
-		// 		path: '/success',
-		// 		element: (
-		// 			<Success/>
-		// 		)
-		// 	},
-			// {
-			// 	path: '/cart',
-			// 	element: <Cart />
-			// },
-			// {
-			// 	path: '/product/:id',
-			// 	element: <Product />,
-			// 	errorElement: <>Ошибка</>,
-			// 	loader: async ({ params }) => {
-			// 		return defer({
-			// 			data: new Promise<void>((resolve, reject) => {
-			// 				setTimeout(() => {
-			// 					axios
-			// 						.get(`${PREFIX}/products/${params.id}`)
-			// 						.then((data) => resolve(data))
-			// 						.catch((e) => reject(e));
-			// 				}, 2000);
-			// 			})
-			// 		});
-			// 	}
-			// }
-		]
-	},
-	{
-		path: '/auth',
-		element: < AuthLayout/>,
-		children: [
-			{
-				path: 'login',
-				element: <Login />
-			},
-			{
-				path: 'register',
-				element: <Registration />
-			}
-		]
-	},
+  {
+    path: "/",
+    element: (
+      <RequireAuth>
+        {" "}
+        <Layout />
+      </RequireAuth>
+    ),
+    children: [
+      {
+        path: "/",
+        element: <Dashboard />,
+      },
+      // 	{
+      // 		path: '/success',
+      // 		element: (
+      // 			<Success/>
+      // 		)
+      // 	},
+      // {
+      // 	path: '/cart',
+      // 	element: <Cart />
+      // },
+      // {
+      // 	path: '/product/:id',
+      // 	element: <Product />,
+      // 	errorElement: <>Ошибка</>,
+      // 	loader: async ({ params }) => {
+      // 		return defer({
+      // 			data: new Promise<void>((resolve, reject) => {
+      // 				setTimeout(() => {
+      // 					axios
+      // 						.get(`${PREFIX}/products/${params.id}`)
+      // 						.then((data) => resolve(data))
+      // 						.catch((e) => reject(e));
+      // 				}, 2000);
+      // 			})
+      // 		});
+      // 	}
+      // }
+    ],
+  },
+  {
+    path: "/auth",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Registration />,
+      },
+    ],
+  },
 
-	// {
-	// 	path: '*',
-	// 	element: <Error />
-	// }
+  // {
+  // 	path: '*',
+  // 	element: <Error />
+  // }
 ]);
-
-
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    {/* <Provider store={store}> */}
-      <RouterProvider router={router}/>
-    {/* </Provider> */}
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );

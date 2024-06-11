@@ -8,7 +8,7 @@ export interface MenuLink {
     | "my-task"
     | "settings"
     | "task-categories"
-    | "vital-task";
+    | "vital-task"
     | "logout";
   link: string;
   isActive: boolean;

@@ -9,7 +9,7 @@ import ConfirmPassword from "../../../public/image/iconFor/ConfirmPassword.svg";
 import Input from "../../components/input/Input";
 import Button from "../../components/button/Button";
 import Title from "../../components/title/Title";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import axios from "axios";
 
@@ -30,6 +30,7 @@ function Registration() {
     const [password, seePasswordValue] = useState('');
     const [phoneValue, setPhoneValue] = useState('8999');
     const [messageValue, setMessageValue] = useState('');
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -46,7 +47,7 @@ function Registration() {
             
             const data = await response.text(); // Прочитать ответ как текст, а не как JSON
             setMessageValue(data); // Отобразить текстовый ответ
-            console.log(messageValue)
+            navigate('/auth/login')
 
         } catch (error) {
             console.error('Error:', error);
