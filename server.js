@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 
 const app = express();
 app.use(bodyParser.json());
@@ -15,17 +16,20 @@ let users = [
     email: "1",
     password: "1",
     phone: "hi",
+    token: "hi",
   },
 ];
 let tasks = [];
 
+const SECRET_KEY = "your_secret_key"; // Используйте более сложный секретный ключ
+
 // Регистрация пользователя
 app.post("/register", (req, res) => {
-  console.log("hi");
   const { firstName, lastName, middleName, email, password, phone } = req.body;
+  const token = jwt.sign({ email: email }, SECRET_KEY, { expiresIn: '1h' });
 
   const user = { firstName, lastName, middleName, email, password, phone };
-
+  user.token = token;
   users.push(user);
   res.status(201).send("User registered successfully");
 });
@@ -33,15 +37,45 @@ app.post("/register", (req, res) => {
 // Аутентификация пользователя
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  console.log(users);
   const user = users.find((u) => u.email === email && u.password === password);
   if (!user) {
-    res.status(401).send("Invalid email or password");
-    console.log("hilog");
+    res.status(401).send({message: "Invalid email or password"});
   } else {
-    res.status(200).json({ message: "Login successful", user });
-    console.log(user.firstName);
+    const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+    user.token = token;
+    res.status(200).json({ message: "Login successful", token });
   }
+});
+
+// Middleware для проверки и декодирования JWT
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.sendStatus(401); // Если токена нет, возвращаем 401
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403); // Если токен недействителен, возвращаем 403
+    req.user = user;
+    next(); // Переходим к следующему обработчику
+  });
+};
+
+// Маршрут для получения профиля пользователя
+app.get("/login/profile", authenticateToken, (req, res) => {
+  const userEmail = req.user.email;
+  const user = users.find(u => u.email === userEmail);
+
+  if (!user) {
+    return res.status(404).send({ message: "User not found" });
+  }
+
+  res.status(200).json({
+    firstName: user.firstName,
+    lastName: user.lastName,
+    middleName: user.middleName,
+    email: user.email,
+    phone: user.phone,
+  });
 });
 
 // Добавление задачи

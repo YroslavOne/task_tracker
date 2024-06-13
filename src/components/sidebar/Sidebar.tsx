@@ -1,5 +1,8 @@
 import styles from "./SideBar.module.css";
 import MenuLink from "../buttonLong/MenuLink";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../store/user.slice";
+import { useNavigate } from "react-router-dom";
 
 function SideBar() {
   const listMenu: {
@@ -14,6 +17,14 @@ function SideBar() {
     { title: "Settings", parameter: "settings", link: "/settings" },
     { title: "Help", parameter: "help", link: "/help" },
   ];
+  
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const logout = () => {
+		dispatch(userActions.logout());
+		navigate('/auth/login');
+	};
+
   return (
     <div className={styles["container"]}>
       <div className={styles["content"]}>
@@ -25,13 +36,13 @@ function SideBar() {
         sundargurung360@gmail.com
         </p>
         <div className={styles["button"]}>
-          {listMenu.map((el) => (
-            <MenuLink link={el.link} image={el.parameter} className={styles["menu-link"]}> {el.title}</MenuLink>
+          {listMenu.map((el, index) => (
+            <MenuLink link={el.link} key={index} image={el.parameter} className={styles["menu-link"]}> {el.title}</MenuLink>
           ))}
         </div>
       </div>
       <div className={styles["logout"]}>
-      <MenuLink link={"/logout"} image={"logout"} className={styles["logout-link"]}> logout</MenuLink>
+      <MenuLink onClick={logout} link={"/auth/login"} image={"logout"} className={styles["logout-link"]}> logout</MenuLink>
 
       </div>
     </div>

@@ -7,12 +7,12 @@ import Button from "../../components/button/Button";
 import Image from "../../../public/image/start/Login.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FormEvent, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { userActions } from "../../store/user.slice";
-// import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { login, userActions } from "../../store/user.slice";
+import { RootState } from "../../store/store";
 
 export type LoginForm = {
-  user: {
+  email: {
     value: string;
   };
   password: {
@@ -21,46 +21,29 @@ export type LoginForm = {
 };
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const { jwt, loginErrorMessage } = useSelector((s: RootState) => s.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (jwt) {
-  //     navigate('/');
-  //   }
-  // }, [jwt, navigate]);
+  useEffect(() => {
+    if (jwt) {
+      navigate("/");
+    }
+  }, [jwt, navigate]);
+
+  useEffect(() => {}, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log(JSON.stringify({ email, password }))
-    try {
-      const response = await fetch("http://localhost:9995/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-        
-        
-      });
-      if (response.status === 401) {
-        const text = await response.text();
-        setMessage(text); // Отобразить текст ошибки
-        console.log(message);
-      } else {
-        const data = await response.json();
-        setMessage(data.message); // Отобразить сообщение об успешной аутентификации
-        localStorage.setItem("jwt", data.message)
-        navigate('/');
-        
-        dispatch(userActions.addJwt(data.message))
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    dispatch(userActions.clearLoginError());
+    const target = e.target as typeof e.target & LoginForm;
+    const { email, password } = target;
+    await sendLogin(email.value, password.value);
+    // navigate("/");
+  };
+
+  const sendLogin = async (email: string, password: string) => {
+    dispatch(login({ email: email, password: password }));
   };
 
   return (
@@ -68,14 +51,16 @@ function Login() {
       <div className={style["container"]}>
         <form className={style["form"]} onSubmit={handleSubmit}>
           <Title className={style["title"]}>Sign In</Title>
+          {loginErrorMessage && <h1>{loginErrorMessage}</h1>}
+
           <Input
-            id="user"
+            id="email"
             name="user"
             icon={User}
-            placeholder="Enter Username"
+            placeholder="Enter Email"
             className={style["input"]}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            // value={email}
+            // onChange={(e) => setEmail(e.target.value)}
           />
           <Input
             id="password"
@@ -84,8 +69,8 @@ function Login() {
             placeholder="Enter Password"
             className={style["input"]}
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            // value={password}
+            // onChange={(e) => setPassword(e.target.value)}
           />
           <Button>Login</Button>
           <p className={style["p"]}>
