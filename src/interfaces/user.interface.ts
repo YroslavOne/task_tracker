@@ -6,4 +6,5 @@ export interface Profile {
   password: string;
   phone: string;
   token: string;
+  image: string;
 }

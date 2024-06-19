@@ -7,31 +7,43 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+const SECRET_KEY = "your_secret_key"; // Используйте более сложный секретный ключ
+
 // Пример базы данных в оперативной памяти
 let users = [
   {
     firstName: "hi",
     lastName: "hi",
-    middleName: "hi",
+    userName: "hi",
     email: "1",
     password: "1",
     phone: "hi",
     token: "hi",
+    image: "https://png.pngtree.com/background/20230611/original/pngtree-picture-of-a-blue-bird-on-a-black-background-picture-image_3124189.jpg",
   },
 ];
-let tasks = [];
-
-const SECRET_KEY = "your_secret_key"; // Используйте более сложный секретный ключ
+let tasks = [
+  {
+    id: 1,
+    title: "Attend Nischal’s Birthday Party",
+    description: "Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)",
+    priority: "Moderate",
+    status: "Not Started",
+    date: "11.06.2024",
+    image: "https://img.goodfon.ru/wallpaper/nbig/a/69/kartinka-3d-dikaya-koshka.webp",
+  }
+];
 
 // Регистрация пользователя
 app.post("/register", (req, res) => {
   const { firstName, lastName, middleName, email, password, phone } = req.body;
   const token = jwt.sign({ email: email }, SECRET_KEY, { expiresIn: '1h' });
 
-  const user = { firstName, lastName, middleName, email, password, phone };
-  user.token = token;
+  const user = { firstName, lastName, middleName, email, password, phone, token };
   users.push(user);
-  res.status(201).send("User registered successfully");
+  // const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+  // user.token = token;
+  res.status(201).send({ message: "Login successful", token });
 });
 
 // Аутентификация пользователя
@@ -75,11 +87,12 @@ app.get("/login/profile", authenticateToken, (req, res) => {
     middleName: user.middleName,
     email: user.email,
     phone: user.phone,
+    image: user.image,
   });
 });
 
 // Добавление задачи
-app.post("/tasks", (req, res) => {
+app.post("/tasks", authenticateToken, (req, res) => {
   const { title, description, date, priority } = req.body;
   const task = { title, description, date, priority };
   tasks.push(task);
@@ -87,7 +100,7 @@ app.post("/tasks", (req, res) => {
 });
 
 // Получение всех задач
-app.get("/tasks", (req, res) => {
+app.get("/tasks", authenticateToken, (req, res) => {
   res.status(200).json(tasks);
 });
 
