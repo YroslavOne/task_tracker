@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { colors } from "@mui/material";
 
 const app = express();
 app.use(bodyParser.json());
@@ -15,8 +16,8 @@ const SECRET_KEY = "your_secret_key"; // Используйте более сл�
 // Set up storage engine for multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = './uploads/';
-    if (!fs.existsSync(dir)){
+    const dir = "./uploads/";
+    if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
     cb(null, dir);
@@ -35,7 +36,7 @@ let users = [
     firstName: "hi",
     lastName: "hi",
     userName: "hi",
-    email: "1",
+    email: "1@mail.ru",
     password: "1",
     phone: "hi",
     token: "hi",
@@ -43,18 +44,36 @@ let users = [
       "https://png.pngtree.com/background/20230611/original/pngtree-picture-of-a-blue-bird-on-a-black-background-picture-image_3124189.jpg",
   },
 ];
+let statuses = [
+  {
+    name: "Not Started",
+    color: "#F21E1E",
+  },
+  {
+    name: "In Progress",
+    color: "#0225FF",
+  },
+  {
+    name: "Completed",
+    color: "#05A301",
+  },
+];
 let tasks = [
   {
     id: 1,
     executor: {
-      userName: "hi",
-      email: "1",
+      userName: users[0].userName,
+      email: users[0].email,
     },
+
     title: "Attend Nischal’s Birthday Party",
     description:
       "Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)",
     priority: "Moderate",
-    status: "Not Started",
+    status: {
+      name: statuses[0].name,
+      color: statuses[0].color,
+    },
     date: "11.06.2024",
     image:
       "https://img.goodfon.ru/wallpaper/nbig/a/69/kartinka-3d-dikaya-koshka.webp",
@@ -63,19 +82,20 @@ let tasks = [
 
 // Регистрация пользователя
 app.post("/register", (req, res) => {
-  const { firstName, lastName, middleName, email, password, phone } = req.body;
+  const { firstName, lastName, userName, email, password, phone } = req.body;
   const token = jwt.sign({ email: email }, SECRET_KEY, { expiresIn: "1h" });
 
   const user = {
     firstName,
     lastName,
-    middleName,
+    userName,
     email,
     password,
     phone,
     token,
   };
   users.push(user);
+  console.log(users)
   // const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' });
   // user.token = token;
   res.status(201).send({ message: "Login successful", token });
@@ -121,7 +141,7 @@ app.get("/login/profile", authenticateToken, (req, res) => {
   res.status(200).json({
     firstName: user.firstName,
     lastName: user.lastName,
-    middleName: user.middleName,
+    userName: user.userName,
     email: user.email,
     phone: user.phone,
     image: user.image,
@@ -129,51 +149,50 @@ app.get("/login/profile", authenticateToken, (req, res) => {
 });
 app.get("/login/profile/all", authenticateToken, (req, res) => {
   const user = [];
-  users.map((u) => {
+  users.map((u, index) => {
     user.push({
       username: u.userName,
       email: u.email,
+      id: index,
     });
   });
   res.status(200).json(user);
 });
 
 // Добавление задачи
-app.post("/tasks", authenticateToken, upload.single('image'), (req, res) => {
+app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
   const { executor, title, description, priority, status, date } = req.body;
   const image = req.file ? req.file.path : null;
-
-  let parsedExecutor;
-  try {
-    parsedExecutor = JSON.parse(executor);
-  } catch (error) {
-    return res.status(400).send({ message: "Invalid executor format" });
-  }
-
   const id = tasks.length + 1;
+  
   const task = {
     id,
-    executor: parsedExecutor,
+    executor: {
+      userName: users[executor].userName,
+      email: users[executor].email,
+    },
     title,
     description,
     priority,
-    status,
+    status: {
+      name: statuses[status].name,
+      color: statuses[status].color,
+    },
     date,
     image,
   };
 
   tasks.push(task);
-  console.log(task);
   res.status(201).send(task);
 });
 
 // Обновление задачи
-app.put("/tasks/:id", authenticateToken, upload.single('image'), (req, res) => {
+app.put("/tasks/:id", authenticateToken, upload.single("image"), (req, res) => {
   const { id } = req.params;
   const { executor, title, description, priority, status, date } = req.body;
   const image = req.file ? req.file.path : null;
 
-  const taskIndex = tasks.findIndex(task => task.id == id);
+  const taskIndex = tasks.findIndex((task) => task.id == id);
   if (taskIndex === -1) {
     return res.status(404).send("Task not found");
   }

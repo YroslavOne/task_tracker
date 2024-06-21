@@ -21,7 +21,7 @@ function Task({title, description, priority, status, date, image}: TaskProps) {
               Priority: <span style={{ color: "blue" }}>{priority}</span>
             </p>
             <p className={style["priority"]}>
-              Status: <span style={{ color: "blue" }}>{status}</span>
+              Status: <span style={{ color: "blue" }}>{status.name}</span>
             </p>
           </div>
         </div>

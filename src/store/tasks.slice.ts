@@ -72,12 +72,12 @@ export const taskSlice = createSlice({
       .addCase(addTask.pending, (state) => {
         state.taskErrorMessage = null;
       })
-      .addCase(addTask.fulfilled, (state, action) => {
-        if (!state.tasks) {
-          state.tasks = [];
-        }
-        state.tasks.push(action.payload);
-      })
+      // .addCase(addTask.fulfilled, (state, action) => {
+      //   if (!state.tasks) {
+      //     state.tasks = [];
+      //   }
+      //   state.tasks.push(action.payload);
+      // })
       .addCase(addTask.rejected, (state, action) => {
         state.taskErrorMessage = action.payload;
       })

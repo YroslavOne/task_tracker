@@ -129,7 +129,7 @@ function Registration() {
             // onChange={(e) => setLastNameValue(e.target.value)}
           />
           <Input
-            name="user"
+            name="username"
             id="username"
             icon={User}
             placeholder="Enter Username"

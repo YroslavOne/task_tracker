@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { addTask } from "../../store/tasks.slice";
 import { Task } from "../../interfaces/task.interface";
+import ExecutorSelect from "../ExecutorSelect/ExecutorSelect";
 
 interface FormTask {
   title: string;
@@ -26,8 +27,10 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
   const dispatch = useDispatch();
   const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
   const [images, setImages] = useState();
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, reset } = useForm();
   const [selectedDate, setSelectedDate] = useState(null);
+const [idTask, setIdTask] = useState(id)
+const [executorSelected, setExecutorSelected] = useState(null)
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -36,19 +39,18 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
 
   const onSubmit = (data: FormTask) => {
     const taskData: Task = {
-      executor: {
-        userName: "hi",
-        email: "1",
-      },
+      executor: executorSelected,
       title: data.title,
       description: data.description,
       priority: data.priority,
-      status: "Not Started",
+      status: 0,
       date: `${data.date.$D}.${data.date.$M + 1}.${data.date.$y}`,
       image: images,
     };
     dispatch(addTask(taskData));
-    console.log(taskData);
+    reset();
+    setSelectedDate(null);
+    setImages([]);
   };
 
   return (
@@ -80,7 +82,7 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
           <textarea {...register("description")} />
         </div>
         <div className={style["responsible"]}>
-          <p>Responsible</p>
+          <ExecutorSelect executorSelected={executorSelected} setExecutorSelected={setExecutorSelected}/>
           <input {...register("responsible")} />
         </div>
         <div className={style["upload-image"]}>
