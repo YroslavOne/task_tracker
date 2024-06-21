@@ -5,6 +5,7 @@ import axios, { AxiosError } from "axios";
 import { LoginResponse } from "../interfaces/auth.interface";
 import { Profile } from "../interfaces/user.interface";
 import { RootState } from "./store";
+import { ProfileAll } from "../interfaces/userForTask.interface";
 
 export const JWT_PERSISTENT_STATE = "userData";
 
@@ -17,6 +18,7 @@ export interface UserState {
   loginErrorMessage?: string;
   registerErrorMessage?: string;
   profile?: Profile;
+  profileAll?: ProfileAll;
 }
 
 const initialState: UserState = {
@@ -80,6 +82,19 @@ export const getProfile = createAsyncThunk<Profile, void, { state: RootState }>(
   }
 );
 
+export const getProfileAll = createAsyncThunk<ProfileAll, void, { state: RootState }>(
+  "user/getprofile/all",
+  async (_, thunkApi) => {
+    const jwt = thunkApi.getState().user.jwt;
+    const { data } = await axios.get<ProfileAll>(`${PREFIX}login/profile/all`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    return data;
+  }
+);
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -103,6 +118,9 @@ export const userSlice = createSlice({
     });
     builder.addCase(getProfile.fulfilled, (state, action) => {
       state.profile = action.payload;
+    });
+    builder.addCase(getProfileAll.fulfilled, (state, action) => {
+      state.profileAll = action.payload;
     });
     builder.addCase(register.fulfilled, (state, action) => {
       if (!action.payload) {

@@ -3,8 +3,26 @@ import Pending from "./../../../public/image/dashboard/Pending.svg";
 import Plus from "./../../../public/image/dashboard/taSK.svg";
 import Task from "../../components/task/Task";
 import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { getTasks } from "../../store/tasks.slice";
+import { useEffect } from "react";
+import AddAndEditTask from "../../components/addAndEditTask/AddAndEditTask";
 
 function Dashboard() {
+  const dispatch = useDispatch()
+  const taskList = useSelector((s: RootState)=> s.tasks.tasks)
+
+  useEffect(() => {
+    dispatch(getTasks());
+  }, [dispatch]);
+  console.log(taskList)
+
+  if(taskList !== null){
+console.log("no")
+  } else{
+    console.log("yes")
+
+  }
 
   const d = new Date();
   const day = d.getDate();
@@ -28,15 +46,15 @@ function Dashboard() {
           </p>
         </div>
         <div className={style["task"]}>
-          {" "}
-          <Task
-            title="Attend Nischal’s Birthday Party"
-            date="11.06.2024"
-            description="Buy gifts on the way and pick up cake from the bakery. (6 PM |Fresh Elements) Fresh Elements) Fresh Elements)"
-            priority="Moderate"
-            status="Not Started"
-            image="https://img.goodfon.ru/wallpaper/nbig/a/69/kartinka-3d-dikaya-koshka.webp"
-          />{" "}
+          {taskList ? (taskList.map((t)=><Task
+            title={t.title}
+            date={t.date}
+            description={t.description}
+            priority={t.priority}
+            status={t.status}
+            image={t.image}
+          />)): <div>тютю задач</div>}
+          <AddAndEditTask title={"hi"} id={0}/>
         </div>
       </div>
     </div>

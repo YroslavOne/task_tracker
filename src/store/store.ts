@@ -1,10 +1,12 @@
 import { saveState } from "./storage";
+import taskSlice from "./tasks.slice";
 import userSlice, { JWT_PERSISTENT_STATE } from "./user.slice";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
   reducer: {
-    user: userSlice
+    user: userSlice,
+    tasks: taskSlice 
 
   },
 });
