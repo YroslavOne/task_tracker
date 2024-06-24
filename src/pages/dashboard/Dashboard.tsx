@@ -7,11 +7,15 @@ import { RootState } from "../../store/store";
 import { getTasks } from "../../store/tasks.slice";
 import { useEffect } from "react";
 import AddAndEditTask from "../../components/addAndEditTask/AddAndEditTask";
+import { toggle } from "../../store/toggle.slice";
 
 function Dashboard() {
   const dispatch = useDispatch()
   const taskList = useSelector((s: RootState)=> s.tasks.tasks)
 
+  const openWindowForm = () => {
+    dispatch(toggle());
+  };
   useEffect(() => {
     dispatch(getTasks());
   }, [dispatch]);
@@ -37,7 +41,7 @@ console.log("no")
           </div>
           <div className={style["button"]}>
             <img className={style["image"]} src={Plus} alt="" />
-            <p> Add task</p>
+            <p onClick={openWindowForm}> Add task</p>
           </div>
         </div>
         <div>
@@ -54,7 +58,6 @@ console.log("no")
             status={t.status}
             image={t.image}
           />)): <div>тютю задач</div>}
-          <AddAndEditTask title={"hi"} id={0}/>
         </div>
       </div>
     </div>

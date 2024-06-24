@@ -1,0 +1,31 @@
+.date {
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+.date > p {
+  margin-bottom: 9px;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 17.07px;
+  text-align: left;
+}
+.date-input {
+  width: 70%;
+}
+.date-input > div {
+  list-style: none;
+  background-color: white;
+  border: 1px solid rgba(161, 163, 171, 1);
+}
+.date-input > div > input {
+    border: none;
+  font-family: Montserrat;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 15.85px;
+  text-align: left;
+  padding: 10px 14px;
+}

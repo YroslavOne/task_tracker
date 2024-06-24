@@ -58,6 +58,20 @@ let statuses = [
     color: "#05A301",
   },
 ];
+let priorities = [
+  {
+    name: "Extreme",
+    color: "#F21E1E",
+  },
+  {
+    name: "Moderate",
+    color: "#3ABEFF",
+  },
+  {
+    name: "Low",
+    color: "#05A301",
+  },
+];
 let tasks = [
   {
     id: 1,
@@ -69,7 +83,10 @@ let tasks = [
     title: "Attend Nischal’s Birthday Party",
     description:
       "Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)",
-    priority: "Moderate",
+    priority: {
+      name: priorities[0].name,
+      color: priorities[0].color,
+    },
     status: {
       name: statuses[0].name,
       color: statuses[0].color,
@@ -95,7 +112,7 @@ app.post("/register", (req, res) => {
     token,
   };
   users.push(user);
-  console.log(users)
+  console.log(users);
   // const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' });
   // user.token = token;
   res.status(201).send({ message: "Login successful", token });
@@ -164,7 +181,7 @@ app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
   const { executor, title, description, priority, status, date } = req.body;
   const image = req.file ? req.file.path : null;
   const id = tasks.length + 1;
-  
+
   const task = {
     id,
     executor: {
@@ -173,7 +190,10 @@ app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
     },
     title,
     description,
-    priority,
+    priority:{
+      name: priorities[priority].name,
+      color: priorities[priority].color,
+    },
     status: {
       name: statuses[status].name,
       color: statuses[status].color,
@@ -217,6 +237,14 @@ app.get("/tasks", authenticateToken, (req, res) => {
   const user = users.find((u) => u.email === userEmail);
   const taskList = tasks.filter((task) => task.executor.email === user.email);
   res.status(200).json(taskList);
+});
+app.get("/priorities", (req, res) => {
+  res.status(200).json(priorities);
+});
+
+// Получение статусов
+app.get("/statuses", (req, res) => {
+  res.status(200).json(statuses);
 });
 
 // Порт, на котором будет работать сервер

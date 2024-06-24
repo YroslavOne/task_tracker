@@ -5,6 +5,7 @@
   padding: 26px;
   height: 761px;
   overflow: hidden;
+  position: relative;
 }
 .list-task {
   padding: 20px;
