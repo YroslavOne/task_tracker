@@ -231,6 +231,22 @@ app.put("/tasks/:id", authenticateToken, upload.single("image"), (req, res) => {
   res.status(200).send("Task updated successfully");
 });
 
+
+
+// Получение задачи по id
+
+app.delete("/tasks/:id", authenticateToken, (req, res) => {
+  const { id } = req.params;
+
+  const taskIndex = tasks.findIndex((task) => task.id == id);
+  if (taskIndex === -1) {
+    return res.status(404).send("Task not found");
+  }
+
+  tasks.splice(taskIndex, 1);
+  res.status(200).send({ message: "Task deleted successfully" });
+});
+
 // Получение задач исполнителю
 app.get("/tasks", authenticateToken, (req, res) => {
   const userEmail = req.user.email;

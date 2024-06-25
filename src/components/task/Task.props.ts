@@ -1,4 +1,6 @@
 export interface TaskProps {
+  key: number;
+  id: number;
   title: string;
   description: string;
   priority: {

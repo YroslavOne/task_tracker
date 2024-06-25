@@ -1,0 +1,22 @@
+.select {
+  font-family: Montserrat;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 15.85px;
+  text-align: left;
+}
+.select > div {
+  padding: 10px 14px;
+}
+.menuItem {
+  background-color: black;
+  color: blue;
+}
+.menu-item {
+  padding: 10px 14px;
+  font-family: Montserrat;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 15.85px;
+  text-align: left;
+}

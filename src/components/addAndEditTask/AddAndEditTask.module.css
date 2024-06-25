@@ -103,7 +103,30 @@ textarea {
   color: #a1a3ab;
 }
 
-.description-image{
-    width: 100%;
-    display: flex;
+.description-image {
+  margin-top: 17px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.submit {
+  margin-top: 40px;
+  align-items: start;
+  background-color: #f24e1e;
+  font-family: Montserrat;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17.07px;
+  text-align: left;
+  border: solid 1px #f24e1e;
+}
+.submit:hover {
+  color: #a1a3ab;
+  border: 1px solid #a1a3ab;
+background-color: white;
+}
+
+.div-submit{
+  display: flex;
 }

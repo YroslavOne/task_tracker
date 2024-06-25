@@ -30,7 +30,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   width: 100%;
-  
+
   /* display: flex; */
   align-items: center;
   justify-content: center;
@@ -62,6 +62,31 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+a:active,
+a:focus {
+  outline: none;
+}
+
+input,
+textarea {
+  outline: none;
+}
+input:active,
+textarea:active {
+  outline: none;
+}
+:focus {
+  outline: none;
+}
+textarea {
+  resize: none;
+}
+textarea {
+  resize: vertical;
+}
+textarea {
+  resize: horizontal;
 }
 
 @media (prefers-color-scheme: light) {

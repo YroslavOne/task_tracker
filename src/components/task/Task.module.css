@@ -68,8 +68,8 @@ h2 {
   text-align: left;
 }
 .priority:nth-child(1) {
-    margin-right: 13px;
-  }
+  margin-right: 13px;
+}
 .image-date {
   display: flex;
   flex-direction: column;
@@ -94,4 +94,29 @@ h2 {
 .status {
   width: 12px;
   height: 12px;
+  cursor: pointer;
+}
+.dote-for-menu {
+  cursor: pointer;
+}
+.menu-actions {
+  position: relative;
+}
+.menu-actions > ul {
+  top: -10px;
+  left: 20px;
+  border-radius: 8px;
+  padding: 8px 5px;
+  background-color: white;
+  position: absolute;
+}
+.menu-actions > ul > li {
+  font-family: Inter;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 12.1px;
+  text-align: left;
+  list-style: none;
+  margin-bottom: 5px;
+  cursor: pointer;
 }

@@ -5,28 +5,19 @@ import Task from "../../components/task/Task";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { getTasks } from "../../store/tasks.slice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AddAndEditTask from "../../components/addAndEditTask/AddAndEditTask";
 import { toggle } from "../../store/toggle.slice";
 
 function Dashboard() {
-  const dispatch = useDispatch()
-  const taskList = useSelector((s: RootState)=> s.tasks.tasks)
-
+  const dispatch = useDispatch();
+  const taskList = useSelector((s: RootState) => s.tasks.tasks);
   const openWindowForm = () => {
     dispatch(toggle());
   };
   useEffect(() => {
     dispatch(getTasks());
   }, [dispatch]);
-  console.log(taskList)
-
-  if(taskList !== null){
-console.log("no")
-  } else{
-    console.log("yes")
-
-  }
 
   const d = new Date();
   const day = d.getDate();
@@ -50,14 +41,22 @@ console.log("no")
           </p>
         </div>
         <div className={style["task"]}>
-          {taskList ? (taskList.map((t)=><Task
-            title={t.title}
-            date={t.date}
-            description={t.description}
-            priority={t.priority}
-            status={t.status}
-            image={t.image}
-          />)): <div>тютю задач</div>}
+          {taskList ? (
+            taskList.map((t) => (
+              <Task
+              key={t.id}
+                id={t.id}
+                title={t.title}
+                date={t.date}
+                description={t.description}
+                priority={t.priority}
+                status={t.status}
+                image={t.image}
+              />
+            ))
+          ) : (
+            <div>тютю задач</div>
+          )}
         </div>
       </div>
     </div>
