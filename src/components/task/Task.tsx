@@ -17,38 +17,39 @@ function Task({
 }: TaskProps) {
   const [openedWindowActioans, setOpenedWindowActioans] = useState(false);
   const dispatch = useDispatch();
-
-
   const openWindowActioans = () => {
     setOpenedWindowActioans(!openedWindowActioans);
   };
-  const deleteTaskNow = (id)=>{
-    
-    dispatch(deleteTask(id))
-
-  }
-
+  const deleteTaskNow = (id) => {
+    dispatch(deleteTask(id));
+  };
+  // const day = String(date.$D).length === 1 ? "0" + date.$D : date.$D;
+  // const mounth = String(date.$M).length === 1 ? "0" + date.$M : date.$M;
+  // const year = date.$Y;
+  console.log(date)
 
   return (
     <div className={style["container"]} key={key}>
       <div className={style["top-bar"]}>
         <div
-          
           className={style["status"]}
           style={{ border: "solid 2px rgba(242, 30, 30, 1)" }}
         ></div>
-          <div className={style["menu-actions"]}>
-
-        <img src={Menu} alt="" className={style["dote-for-menu"]} onClick={openWindowActioans}/>
-        {openedWindowActioans && (
+        <div className={style["menu-actions"]}>
+          <img
+            src={Menu}
+            alt=""
+            className={style["dote-for-menu"]}
+            onClick={openWindowActioans}
+          />
+          {openedWindowActioans && (
             <ul>
               <li>Edit</li>
               <li onClick={() => deleteTaskNow(id)}>Delete</li>
               <li>Finish</li>
             </ul>
-        )}
+          )}
         </div>
-
       </div>
       <div className={style["content"]}>
         <div className={style["description"]}>
@@ -66,7 +67,9 @@ function Task({
         </div>
         <div className={style["image-date"]}>
           <img className={style["image"]} src={image} alt="" />
-          <p className={style["created"]}>Created on: {date}</p>
+          <p className={style["created"]}>
+            Created on: 
+          </p>
         </div>
       </div>
     </div>

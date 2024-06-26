@@ -12,10 +12,6 @@ function Layout() {
   const dispatch = useDispatch();
   const toggleValue = useSelector((state: RootState) => state.toggle.value);
 
-  // const handleToggle = () => {
-  //   dispatch(toggle());
-  // };
-  
   return (
     <div className={styles["container"]}>
       <div>
@@ -26,7 +22,7 @@ function Layout() {
       <div className={styles["content"]}>
         <Outlet />
       </div>
-     {toggleValue && <AddAndEditTask title={"Add New Task"} id={0}/>}
+      {toggleValue && <AddAndEditTask title={"Add New Task"} id={2} />}
       {/* <PrioritiesInput/> */}
     </div>
   );

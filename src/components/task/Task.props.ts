@@ -11,6 +11,10 @@ export interface TaskProps {
     name: string;
     color: string;
   };
-  date: string;
+  date: {
+    $D: number;
+    $M: number;
+    $Y: number;
+  };
   image: string;
 }

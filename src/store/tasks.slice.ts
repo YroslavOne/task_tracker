@@ -20,7 +20,7 @@ export const getTasks = createAsyncThunk<
   TasksState,
   void,
   { state: RootState }
->("user/getTasks", async (_, thunkApi) => {
+>("tasks/getTasks", async (_, thunkApi) => {
   const jwt = thunkApi.getState().user.jwt;
   const { data } = await axios.get<TasksState>(`${PREFIX}tasks`, {
     headers: {
@@ -34,8 +34,41 @@ export const addTask = createAsyncThunk(
   "tasks/addTask",
   async (taskData: Task, { getState, rejectWithValue }) => {
     const jwt = getState().user.jwt;
+    console.log(taskData)
+
     try {
       const formData = new FormData();
+      Object.keys(taskData).forEach((key) => {
+        if (key === "executor") {
+          formData.append(key, JSON.stringify(taskData[key]));
+        } else if (key !== "image") {
+          formData.append(key, taskData[key]);
+        } else {
+          formData.append("image", taskData.image[0].file);
+        }
+      });
+      const { data } = await axios.post(`${PREFIX}tasks`, formData, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const updateTask = createAsyncThunk(
+  "tasks/updateTask",
+  async (
+    { taskId, taskData }: { taskId: number; taskData: Task },
+    { getState, rejectWithValue }
+  ) => {
+    const jwt = getState().user.jwt;
+    try {
+      const formData = new FormData();
+      console.log(taskData)
       Object.keys(taskData).forEach((key) => {
         if (key === "executor") {
           formData.append(key, JSON.stringify(taskData[key])); // Stringify the executor object
@@ -45,8 +78,8 @@ export const addTask = createAsyncThunk(
           formData.append("image", taskData.image[0].file); // Assuming image is an array of image objects from react-images-uploading
         }
       });
-      console.log(taskData);
-      const { data } = await axios.post(`${PREFIX}tasks`, formData, {
+
+      const { data } = await axios.put(`${PREFIX}tasks/${taskId}`, formData, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
@@ -76,38 +109,6 @@ export const deleteTask = createAsyncThunk(
   }
 );
 
-export const updateTask = createAsyncThunk(
-  "tasks/updateTask",
-  async (
-    { taskId, taskData }: { taskId: number; taskData: Task },
-    { getState, rejectWithValue }
-  ) => {
-    const jwt = getState().user.jwt;
-    try {
-      const formData = new FormData();
-      Object.keys(taskData).forEach((key) => {
-        if (key === "executor") {
-          formData.append(key, JSON.stringify(taskData[key])); // Stringify the executor object
-        } else if (key !== "image") {
-          formData.append(key, taskData[key]);
-        } else {
-          formData.append("image", taskData.image[0].file); // Assuming image is an array of image objects from react-images-uploading
-        }
-      });
-
-      const { data } = await axios.put(`${PREFIX}tasks/${taskId}`, formData, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
 export const taskSlice = createSlice({
   name: "task",
   initialState,
@@ -125,19 +126,19 @@ export const taskSlice = createSlice({
         state.tasks = [...(state.tasks || []), action.payload];
       })
       .addCase(addTask.rejected, (state, action) => {
-        state.taskErrorMessage = action.payload;
-      })
-      .addCase(getTasks.fulfilled, (state, action) => {
-        state.tasks = action.payload;
+        state.taskErrorMessage = action.payload as string;
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
         state.tasks = state.tasks?.filter((task) => task.id !== action.payload);
       })
       .addCase(deleteTask.rejected, (state, action) => {
-        state.taskErrorMessage = action.payload;
+        state.taskErrorMessage = action.payload as string;
       })
       .addCase(updateTask.pending, (state) => {
         state.taskErrorMessage = null;
+      })
+      .addCase(getTasks.fulfilled, (state, action) => {
+        state.tasks = action.payload;
       })
       .addCase(updateTask.fulfilled, (state, action) => {
         const updatedTask = action.payload;
@@ -146,7 +147,7 @@ export const taskSlice = createSlice({
         );
       })
       .addCase(updateTask.rejected, (state, action) => {
-        state.taskErrorMessage = action.payload;
+        state.taskErrorMessage = action.payload as string;
       });
   },
 });

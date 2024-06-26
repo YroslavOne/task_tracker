@@ -91,7 +91,11 @@ let tasks = [
       name: statuses[0].name,
       color: statuses[0].color,
     },
-    date: "11.06.2024",
+    date: {
+      $D: 26,
+      $M: 5,
+      $Y: 2024,
+    },
     image:
       "https://img.goodfon.ru/wallpaper/nbig/a/69/kartinka-3d-dikaya-koshka.webp",
   },
@@ -181,6 +185,9 @@ app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
   const { executor, title, description, priority, status, date } = req.body;
   const image = req.file ? req.file.path : null;
   const id = tasks.length + 1;
+  // const parsedDate = JSON.parse(date);
+  // console.log(parsedDate);
+  console.log(date);
 
   const task = {
     id,
@@ -190,7 +197,7 @@ app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
     },
     title,
     description,
-    priority:{
+    priority: {
       name: priorities[priority].name,
       color: priorities[priority].color,
     },
@@ -208,10 +215,17 @@ app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
 
 // Обновление задачи
 app.put("/tasks/:id", authenticateToken, upload.single("image"), (req, res) => {
+  console.log("id");
+
   const { id } = req.params;
+  console.log(id);
+
   const { executor, title, description, priority, status, date } = req.body;
   const image = req.file ? req.file.path : null;
+  console.log(id);
 
+  // const parsedDate = JSON.parse(date);
+  console.log("date");
   const taskIndex = tasks.findIndex((task) => task.id == id);
   if (taskIndex === -1) {
     return res.status(404).send("Task not found");
@@ -231,9 +245,7 @@ app.put("/tasks/:id", authenticateToken, upload.single("image"), (req, res) => {
   res.status(200).send("Task updated successfully");
 });
 
-
-
-// Получение задачи по id
+// Delete задачи по id
 
 app.delete("/tasks/:id", authenticateToken, (req, res) => {
   const { id } = req.params;
@@ -246,6 +258,17 @@ app.delete("/tasks/:id", authenticateToken, (req, res) => {
   tasks.splice(taskIndex, 1);
   res.status(200).send({ message: "Task deleted successfully" });
 });
+// получение задачи по id
+
+app.get("/tasks/:id", authenticateToken, (req, res) => {
+  const { id } = req.params;
+
+  const taskIndex = tasks.findIndex((task) => task.id == id);
+  if (taskIndex === -1) {
+    return res.status(404).send("Task not found");
+  }
+  res.status(200).send({ message: "Task finded", taskIndex });
+});
 
 // Получение задач исполнителю
 app.get("/tasks", authenticateToken, (req, res) => {
@@ -254,6 +277,7 @@ app.get("/tasks", authenticateToken, (req, res) => {
   const taskList = tasks.filter((task) => task.executor.email === user.email);
   res.status(200).json(taskList);
 });
+
 app.get("/priorities", (req, res) => {
   res.status(200).json(priorities);
 });

@@ -1,13 +1,13 @@
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+// import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import style from "./AddAndEditTask.module.css";
 import { AddAndEditTaskProps } from "./AddAndEditTask.props";
 import ImageUpload from "../ImageUpload/ImageUpload";
-import { useState } from "react";
-import { TextField } from "@mui/material";
+import { useEffect, useState } from "react";
+// import { TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { addTask } from "../../store/tasks.slice";
+import { addTask, updateTask } from "../../store/tasks.slice";
 import { Task } from "../../interfaces/task.interface";
 import ExecutorSelect from "../ExecutorSelect/ExecutorSelect";
 import DateInput from "../dateInput/DateInput";
@@ -19,8 +19,17 @@ interface FormTask {
   image: [];
   date: {
     $D: number;
-    $y: number;
+    $H: number;
+    $L: string;
     $M: number;
+    $W: number;
+    $d: string;
+    $isDayjsObject: boolean;
+    $m: number;
+    $ms: number;
+    $s: number;
+    $u: number | undefined;
+    $y: number;
   };
   description: string;
   priority: string;
@@ -28,30 +37,50 @@ interface FormTask {
 
 function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
   const dispatch = useDispatch();
+  const task = useSelector((state: RootState) =>
+    state.tasks.tasks?.find((task) => task.id === id)
+  );
 
   const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
   const [images, setImages] = useState();
   const { register, handleSubmit, setValue, reset } = useForm();
   const [selectedDate, setSelectedDate] = useState(null);
-  const [idTask, setIdTask] = useState(id);
+  const [titleHere, setTitleHere] = useState(null);
+  // const [idTask, setIdTask] = useState(id);
   const [priority, setPriority] = useState(0);
   const [executorSelected, setExecutorSelected] = useState(null);
   const closeOpen = () => {
     dispatch(toggle());
   };
-  console.log(taskErrorMessage)
+  console.log(task);
+  // useEffect(() => {
+  //   if (id) {
+  //     dispatch(getTasks());
+  //   }
+  // }, [dispatch]);
+  // console.log(selectedDate);
 
   const onSubmit = (data: FormTask) => {
+    console.log(data.date);
+
     const taskData: Task = {
       executor: executorSelected,
       title: data.title,
       description: data.description,
       priority: priority,
       status: 0,
-      date: `${data.date.$D}.${data.date.$M + 1}.${data.date.$y}`,
+      date: data.date,
       image: images,
     };
     dispatch(addTask(taskData));
+
+    // if (!id) {
+    //   console.log("awdawdawd");
+    //   dispatch(addTask(taskData));
+    // } else {
+    //   console.log("taskData");
+    //   dispatch(updateTask(id, taskData));
+    // }
 
     reset();
     setSelectedDate(null);
@@ -71,7 +100,11 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
         <div className={style["content"]}>
           <div className={style["title"]}>
             <p>Title</p>
-            <input {...register("title")} />
+            <input
+              value={titleHere}
+              onChange={(e) => setTitleHere(e.target.value)}
+              // {...register("title")}
+            />
           </div>
           <DateInput
             selectedDate={selectedDate}
@@ -102,10 +135,12 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
             </div>
           </div>
         </div>
-        
-        <div className={style["div-submit"]}><button type="submit" className={style["submit"]}>
-          Add Task
-        </button></div>
+
+        <div className={style["div-submit"]}>
+          <button type="submit" className={style["submit"]}>
+            Add Task
+          </button>
+        </div>
         {taskErrorMessage && <p>{taskErrorMessage.message}</p>}
       </form>
     </div>
