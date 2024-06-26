@@ -13,6 +13,8 @@ import ExecutorSelect from "../ExecutorSelect/ExecutorSelect";
 import DateInput from "../dateInput/DateInput";
 import PrioritiesInput from "../prioritiesInput/PrioritiesInput";
 import { toggle } from "../../store/toggle.slice";
+import dayjs from 'dayjs';
+
 
 interface FormTask {
   title: string;
@@ -44,7 +46,7 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
   const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
   const [images, setImages] = useState();
   const { register, handleSubmit, setValue, reset } = useForm();
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dayjs("1-1"));
   const [titleHere, setTitleHere] = useState(null);
   // const [idTask, setIdTask] = useState(id);
   const [priority, setPriority] = useState(0);

@@ -2,6 +2,8 @@ import makeStyles from "@mui/material/styles/makeStyles";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DateInputProps } from "./DateInput.props";
 import style from "./DateInput.module.css";
+import { useState } from "react";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 function DateInput({
   setValue,
@@ -13,10 +15,12 @@ function DateInput({
     setValue("date", date);
   };
 
+
   return (
+
     <div className={style["date"]}>
       <p>Date</p>
-      <LocalizationProvider>
+			 <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
         className={style["date-input"]}
           slotProps={{ textField: { size: "small" } }}
@@ -24,8 +28,9 @@ function DateInput({
           value={selectedDate}
           onChange={handleDateChange}
           renderInput={(params) => <TextField {...params} />}
+					
         />
-      </LocalizationProvider>
+				</LocalizationProvider>
     </div>
   );
 }
