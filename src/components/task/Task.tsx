@@ -26,7 +26,7 @@ function Task({
   // const day = String(date.$D).length === 1 ? "0" + date.$D : date.$D;
   // const mounth = String(date.$M).length === 1 ? "0" + date.$M : date.$M;
   // const year = date.$Y;
-  console.log(date)
+  // console.log(date)
 
   return (
     <div className={style["container"]} key={key}>
@@ -68,7 +68,7 @@ function Task({
         <div className={style["image-date"]}>
           <img className={style["image"]} src={image} alt="" />
           <p className={style["created"]}>
-            Created on: 
+            Created on: {date}
           </p>
         </div>
       </div>

@@ -34,13 +34,17 @@ export const addTask = createAsyncThunk(
   "tasks/addTask",
   async (taskData: Task, { getState, rejectWithValue }) => {
     const jwt = getState().user.jwt;
-    console.log(taskData)
+    console.log(taskData);
 
     try {
       const formData = new FormData();
       Object.keys(taskData).forEach((key) => {
         if (key === "executor") {
           formData.append(key, JSON.stringify(taskData[key]));
+        } else if (key === "priority") {
+          formData.append(key, taskData[key]); // Stringify date
+        } else if (key === "date") {
+          formData.append(key, taskData[key]); // Stringify date
         } else if (key !== "image") {
           formData.append(key, taskData[key]);
         } else {
@@ -68,14 +72,20 @@ export const updateTask = createAsyncThunk(
     const jwt = getState().user.jwt;
     try {
       const formData = new FormData();
-      console.log(taskData)
+      console.log(taskData);
       Object.keys(taskData).forEach((key) => {
         if (key === "executor") {
           formData.append(key, JSON.stringify(taskData[key])); // Stringify the executor object
+        } else if (key === "date") {
+          formData.append(key, JSON.stringify(taskData[key])); // Stringify date
         } else if (key !== "image") {
           formData.append(key, taskData[key]);
-        } else {
-          formData.append("image", taskData.image[0].file); // Assuming image is an array of image objects from react-images-uploading
+        } else if (taskData.image) {
+          if (typeof taskData.image === "string") {
+            formData.append("imageUrl", taskData.image); // Adding image URL
+          } else if (taskData.image[0].file) {
+            formData.append("image", taskData.image[0].file); // Adding image file
+          }
         }
       });
 

@@ -22,7 +22,7 @@ function Layout() {
       <div className={styles["content"]}>
         <Outlet />
       </div>
-      {toggleValue && <AddAndEditTask title={"Add New Task"} id={2} />}
+      {toggleValue && <AddAndEditTask title={"Add New Task"} id={0} />}
       {/* <PrioritiesInput/> */}
     </div>
   );

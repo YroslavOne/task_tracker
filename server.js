@@ -40,6 +40,7 @@ let users = [
     password: "1",
     phone: "hi",
     token: "hi",
+    id: 0,
     image:
       "https://png.pngtree.com/background/20230611/original/pngtree-picture-of-a-blue-bird-on-a-black-background-picture-image_3124189.jpg",
   },
@@ -74,10 +75,11 @@ let priorities = [
 ];
 let tasks = [
   {
-    id: 1,
+    id: 0,
     executor: {
       userName: users[0].userName,
       email: users[0].email,
+      id: users[0].id,
     },
 
     title: "Attend Nischal’s Birthday Party",
@@ -91,11 +93,7 @@ let tasks = [
       name: statuses[0].name,
       color: statuses[0].color,
     },
-    date: {
-      $D: 26,
-      $M: 5,
-      $Y: 2024,
-    },
+    date: "12.05.2024",
     image:
       "https://img.goodfon.ru/wallpaper/nbig/a/69/kartinka-3d-dikaya-koshka.webp",
   },
@@ -103,22 +101,19 @@ let tasks = [
 
 // Регистрация пользователя
 app.post("/register", (req, res) => {
-  const { firstName, lastName, userName, email, password, phone } = req.body;
+  const { firstName, lastName, userName, email, password } = req.body;
   const token = jwt.sign({ email: email }, SECRET_KEY, { expiresIn: "1h" });
-
+  const id = users.length + 1;
   const user = {
     firstName,
     lastName,
     userName,
     email,
     password,
-    phone,
     token,
+    id,
   };
   users.push(user);
-  console.log(users);
-  // const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' });
-  // user.token = token;
   res.status(201).send({ message: "Login successful", token });
 });
 
@@ -166,6 +161,7 @@ app.get("/login/profile", authenticateToken, (req, res) => {
     email: user.email,
     phone: user.phone,
     image: user.image,
+    id: user.id,
   });
 });
 app.get("/login/profile/all", authenticateToken, (req, res) => {
@@ -182,25 +178,17 @@ app.get("/login/profile/all", authenticateToken, (req, res) => {
 
 // Добавление задачи
 app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
-  const { executor, title, description, priority, status, date } = req.body;
-  const image = req.file ? req.file.path : null;
+  const { executor, title, description, priority, status, date, imageUrl } = req.body;
+  const image = req.file ? req.file.path : imageUrl;
+  console.log(image)
   const id = tasks.length + 1;
-  // const parsedDate = JSON.parse(date);
-  // console.log(parsedDate);
-  console.log(date);
-
+const priorityValue = priorities.find((elem)=> elem.name===priority)
   const task = {
     id,
-    executor: {
-      userName: users[executor].userName,
-      email: users[executor].email,
-    },
+    executor: JSON.parse(executor),
     title,
     description,
-    priority: {
-      name: priorities[priority].name,
-      color: priorities[priority].color,
-    },
+    priority: priorityValue,
     status: {
       name: statuses[status].name,
       color: statuses[status].color,
@@ -273,8 +261,7 @@ app.get("/tasks/:id", authenticateToken, (req, res) => {
 // Получение задач исполнителю
 app.get("/tasks", authenticateToken, (req, res) => {
   const userEmail = req.user.email;
-  const user = users.find((u) => u.email === userEmail);
-  const taskList = tasks.filter((task) => task.executor.email === user.email);
+  const taskList = tasks.filter((task) => task.executor.email === userEmail && task.status.name!=="Completed");
   res.status(200).json(taskList);
 });
 

@@ -22,6 +22,7 @@ const initialState: PrioritiesState = {
 // Асинхронное действие для получения приоритетов
 export const fetchPriorities = createAsyncThunk('priorities/fetchPriorities', async () => {
   const response = await axios.get('http://localhost:9995/priorities');
+  console.log(response.data)
   return response.data;
 });
 

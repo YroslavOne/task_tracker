@@ -14,17 +14,18 @@ import { PrioritiesInputProps } from "./prioritiesInput.props";
 
 function PrioritiesInput({ priority, setPriority }: PrioritiesInputProps) {
   const dispatch = useDispatch();
-  const [selectedValue, setSelectedValue] = useState(priority);
   const priorities = useSelector(
     (state: RootState) => state.priorities.priorities
   );
+  const [selectedValue, setSelectedValue] = useState( priority);
+
+  
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedValue(event.target.value);
-    setPriority(event.target.id);
-    console.log(event.target.id);
+    console.log(event.target.value)
+    setPriority(event.target.value);
   };
-
   const controlProps = (item: string) => ({
     checked: selectedValue === item,
     onChange: handleChange,
@@ -39,30 +40,9 @@ function PrioritiesInput({ priority, setPriority }: PrioritiesInputProps) {
 
   return (
     <div className={style["container"]}>
-      {/* <p>Priority</p> */}
-
-      {/* <ul className={style["ul"]}>
-        {priorities?.map((priority, index) => (
-          <li key={index} className={style["li"]}>
-            <Radio
-              {...controlProps(priority.name)}
-              label="Other"
-              id={index}
-              sx={{
-                color: priority.color,
-                "&.Mui-checked": {
-                  color: priority.color,
-                },
-              }}
-            />
-            <p>{priority.name}</p>
-          </li>
-        ))}
-      </ul> */}
       <FormControl
         sx={{
           display: "flex",
-          // alignItems: "center",
         }}
       >
         <FormLabel

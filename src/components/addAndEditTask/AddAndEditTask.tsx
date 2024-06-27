@@ -13,26 +13,18 @@ import ExecutorSelect from "../ExecutorSelect/ExecutorSelect";
 import DateInput from "../dateInput/DateInput";
 import PrioritiesInput from "../prioritiesInput/PrioritiesInput";
 import { toggle } from "../../store/toggle.slice";
-import dayjs from 'dayjs';
-
+import dayjs from "dayjs";
 
 interface FormTask {
   title: string;
   image: [];
-  date: {
-    $D: number;
-    $H: number;
-    $L: string;
-    $M: number;
-    $W: number;
-    $d: string;
-    $isDayjsObject: boolean;
-    $m: number;
-    $ms: number;
-    $s: number;
-    $u: number | undefined;
-    $y: number;
-  };
+  date:
+    | {
+        $D: number;
+        $M: number;
+        $y: number;
+      }
+    | string;
   description: string;
   priority: string;
 }
@@ -43,18 +35,31 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
     state.tasks.tasks?.find((task) => task.id === id)
   );
 
+  console.log(task);
   const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
-  const [images, setImages] = useState();
-  const { register, handleSubmit, setValue, reset } = useForm();
-  const [selectedDate, setSelectedDate] = useState(dayjs("1-1"));
-  const [titleHere, setTitleHere] = useState(null);
-  // const [idTask, setIdTask] = useState(id);
-  const [priority, setPriority] = useState(0);
-  const [executorSelected, setExecutorSelected] = useState(null);
+  const { register, handleSubmit, reset, setValue } = useForm();
+
+  const [images, setImages] = useState(task?.image ? [{ data_url: task?.image }] : null);
+  const [selectedDate, setSelectedDate] = useState(dayjs(task?.date));
+  const [titleHere, setTitleHere] = useState(task?.title ? task?.title : "");
+  const [description, setDescription] = useState(
+    task?.description ? task?.description : ""
+  );
+  const [priority, setPriority] = useState(
+    task?.priority ? task?.priority.name : "Extreme"
+  );
+  const [executorSelected, setExecutorSelected] = useState(task?.executor);
   const closeOpen = () => {
     dispatch(toggle());
   };
-  console.log(task);
+  useEffect(() => {
+    if (task) {
+      setValue("date", dayjs(task.date));
+      setValue("title", task.title);
+      setValue("description", task.description);
+    }
+  }, [task, setValue]);
+
   // useEffect(() => {
   //   if (id) {
   //     dispatch(getTasks());
@@ -63,16 +68,22 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
   // console.log(selectedDate);
 
   const onSubmit = (data: FormTask) => {
-    console.log(data.date);
-
+    console.log(images);
+    const dateForArr =
+      "$D" in data.date
+        ? `${data.date.$M + 1}.${data.date.$D}.${data.date.$y}`
+        : data.date;
+    console.log(images)
+    console.log(images[0].fille)
+    const imgUrlOrNot = images[0].fille ? images : images[0].data_url
     const taskData: Task = {
       executor: executorSelected,
       title: data.title,
       description: data.description,
       priority: priority,
       status: 0,
-      date: data.date,
-      image: images,
+      date: dateForArr,
+      image: imgUrlOrNot,
     };
     dispatch(addTask(taskData));
 
@@ -105,13 +116,12 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
             <input
               value={titleHere}
               onChange={(e) => setTitleHere(e.target.value)}
-              // {...register("title")}
             />
           </div>
           <DateInput
+            setValue={setValue}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
-            setValue={setValue}
           />
 
           <PrioritiesInput priority={priority} setPriority={setPriority} />
@@ -125,9 +135,10 @@ function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
             <div className={style["task-description"]}>
               <p>Task Description</p>
               <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 rows="12"
                 placeholder="Start writing here....."
-                {...register("description")}
               />
             </div>
 
