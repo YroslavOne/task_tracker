@@ -69,10 +69,11 @@ export const updateTask = createAsyncThunk(
     { taskId, taskData }: { taskId: number; taskData: Task },
     { getState, rejectWithValue }
   ) => {
-    const jwt = getState().user.jwt;
+    const state = getState() as RootState;
+    const jwt = state.user.jwt;
     try {
       const formData = new FormData();
-      console.log(taskData);
+      
       Object.keys(taskData).forEach((key) => {
         if (key === "executor") {
           formData.append(key, JSON.stringify(taskData[key])); // Stringify the executor object
@@ -88,7 +89,7 @@ export const updateTask = createAsyncThunk(
           }
         }
       });
-
+console.log(taskId)
       const { data } = await axios.put(`${PREFIX}tasks/${taskId}`, formData, {
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -129,7 +130,7 @@ export const taskSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addTask.pending, (state) => {
+       .addCase(addTask.pending, (state) => {
         state.taskErrorMessage = null;
       })
       .addCase(addTask.fulfilled, (state, action) => {
@@ -148,7 +149,7 @@ export const taskSlice = createSlice({
         state.taskErrorMessage = null;
       })
       .addCase(getTasks.fulfilled, (state, action) => {
-        state.tasks = action.payload;
+        state.tasks = action.payload;  
       })
       .addCase(updateTask.fulfilled, (state, action) => {
         const updatedTask = action.payload;

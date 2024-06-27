@@ -4,10 +4,10 @@ import { TaskProps } from "./Task.props";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteTask } from "../../store/tasks.slice";
+import { setIdAndTitle } from "../../store/toggle.slice";
 
 function Task({
   id,
-  key,
   title,
   description,
   priority,
@@ -23,13 +23,12 @@ function Task({
   const deleteTaskNow = (id) => {
     dispatch(deleteTask(id));
   };
-  // const day = String(date.$D).length === 1 ? "0" + date.$D : date.$D;
-  // const mounth = String(date.$M).length === 1 ? "0" + date.$M : date.$M;
-  // const year = date.$Y;
-  // console.log(date)
+	const editTaskNow = (id) => {
+    dispatch(setIdAndTitle({ id, "Edit Task": title }));
+  };
 
   return (
-    <div className={style["container"]} key={key}>
+    <div className={style["container"]} key={id}>
       <div className={style["top-bar"]}>
         <div
           className={style["status"]}
@@ -44,7 +43,7 @@ function Task({
           />
           {openedWindowActioans && (
             <ul>
-              <li>Edit</li>
+              <li onClick={() => editTaskNow(id)}>Edit</li>
               <li onClick={() => deleteTaskNow(id)}>Delete</li>
               <li>Finish</li>
             </ul>

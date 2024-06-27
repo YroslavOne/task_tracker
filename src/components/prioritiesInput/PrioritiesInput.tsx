@@ -17,15 +17,13 @@ function PrioritiesInput({ priority, setPriority }: PrioritiesInputProps) {
   const priorities = useSelector(
     (state: RootState) => state.priorities.priorities
   );
-  const [selectedValue, setSelectedValue] = useState( priority);
-
-  
+  const [selectedValue, setSelectedValue] = useState(priority);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedValue(event.target.value);
-    console.log(event.target.value)
     setPriority(event.target.value);
   };
+
   const controlProps = (item: string) => ({
     checked: selectedValue === item,
     onChange: handleChange,
@@ -37,6 +35,10 @@ function PrioritiesInput({ priority, setPriority }: PrioritiesInputProps) {
   useEffect(() => {
     dispatch(fetchPriorities());
   }, [dispatch]);
+
+	useEffect(() => {
+    setSelectedValue(priority);
+  }, [priority]);
 
   return (
     <div className={style["container"]}>
@@ -77,17 +79,15 @@ function PrioritiesInput({ priority, setPriority }: PrioritiesInputProps) {
                 textAlign: "left",
                 color: "#A1A3AB",
               }}
-              {...controlProps(priority.name)}
-              value={priority.name}
               control={
                 <Radio
-                  id={index}
                   sx={{
                     color: priority.color,
                     "&.Mui-checked": {
                       color: priority.color,
                     },
                   }}
+                  {...controlProps(priority.name)}
                 />
               }
               label={priority.name}
@@ -98,4 +98,5 @@ function PrioritiesInput({ priority, setPriority }: PrioritiesInputProps) {
     </div>
   );
 }
+
 export default PrioritiesInput;

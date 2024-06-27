@@ -12,7 +12,7 @@ function SideBar() {
     parameter: string;
     link: string;
   }[] = [
-    { title: "Dashboard", parameter: "dashboard", link: "/dashboard" },
+    { title: "Dashboard", parameter: "dashboard", link: "/" },
     { title: "Vital Task", parameter: "vital-task", link: "/vital-task" },
     { title: "My Task", parameter: "my-task", link: "/my-task" },
     {

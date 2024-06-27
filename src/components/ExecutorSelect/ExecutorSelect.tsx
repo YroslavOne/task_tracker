@@ -22,37 +22,45 @@ function ExecutorSelect({
   const executors: ProfileAll | undefined = useSelector(
     (s: RootState) => s.user.profileAll
   );
-  const [executor, setExecutor] = useState(0);
-  
-  useEffect(() => {
-    if (executorSelected && executors) {
-      const numberExecutor = executors.findIndex(
-        (element) => element.email === executorSelected.email
-      );
-      setExecutor(numberExecutor !== -1 ? numberExecutor : 0);
-    }
-  }, [executorSelected, executors]);
-  const handleChange = (event: SelectChangeEvent) => {
-    setExecutorSelected(Number(event.target.value) as number);
-    setExecutor(Number(event.target.value) as number);
-  };
+  const [executor, setExecutor] = useState('');
 
   useEffect(() => {
     dispatch(getProfileAll());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (executorSelected && executors) {
+      const selectedExecutor = executors.find(
+        (element) => element.email === executorSelected.email
+      );
+      setExecutor(selectedExecutor ? String(selectedExecutor.id) : '');
+    }
+  }, [executorSelected, executors]);
+
+  const handleChange = (event: SelectChangeEvent) => {
+    const selectedExecutor = executors?.find(
+      (ex) => ex.id === Number(event.target.value)
+    );
+    if (selectedExecutor) {
+      setExecutorSelected(selectedExecutor);
+      setExecutor(event.target.value);
+    }
+  };
+
   return (
     <Box sx={{ width: "70%" }}>
       <FormControl fullWidth>
+        <InputLabel id="executor-select-label">Executor</InputLabel>
         <Select
           className={style["select"]}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={String(executor)}
+          labelId="executor-select-label"
+          id="executor-select"
+          value={executor}
+          label="Executor"
           onChange={handleChange}
         >
-          {executors?.map((ex) => (
-            <MenuItem className={style["menu-item"]} value={ex.id}>
+          {executors?.map((ex, index) => (
+            <MenuItem className={style["menu-item"]} value={ex.id} key={index}>
               {ex.username}
             </MenuItem>
           ))}
@@ -61,4 +69,5 @@ function ExecutorSelect({
     </Box>
   );
 }
+
 export default ExecutorSelect;

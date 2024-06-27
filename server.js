@@ -36,7 +36,7 @@ let users = [
     firstName: "hi",
     lastName: "hi",
     userName: "hi",
-    email: "1@mail.ru",
+    email: "1",
     password: "1",
     phone: "hi",
     token: "hi",
@@ -178,9 +178,8 @@ app.get("/login/profile/all", authenticateToken, (req, res) => {
 
 // Добавление задачи
 app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
-  const { executor, title, description, priority, status, date, imageUrl } = req.body;
-  const image = req.file ? req.file.path : imageUrl;
-  console.log(image)
+  const { executor, title, description, priority, status, date } = req.body;
+  const image = req.file ? req.file.path : null;
   const id = tasks.length + 1;
 const priorityValue = priorities.find((elem)=> elem.name===priority)
   const task = {
@@ -203,17 +202,10 @@ const priorityValue = priorities.find((elem)=> elem.name===priority)
 
 // Обновление задачи
 app.put("/tasks/:id", authenticateToken, upload.single("image"), (req, res) => {
-  console.log("id");
-
   const { id } = req.params;
-  console.log(id);
-
-  const { executor, title, description, priority, status, date } = req.body;
-  const image = req.file ? req.file.path : null;
-  console.log(id);
-
-  // const parsedDate = JSON.parse(date);
-  console.log("date");
+  const { executor, title, description, priority, status, date, imageUrl } = req.body;
+  const image = req.file ? req.file.path : imageUrl;
+console.log(title)
   const taskIndex = tasks.findIndex((task) => task.id == id);
   if (taskIndex === -1) {
     return res.status(404).send("Task not found");
@@ -227,10 +219,10 @@ app.put("/tasks/:id", authenticateToken, upload.single("image"), (req, res) => {
     priority,
     status,
     date,
-    image: image || tasks[taskIndex].image,
+    image: image,
   };
 
-  res.status(200).send("Task updated successfully");
+  res.status(200).send(tasks);
 });
 
 // Delete задачи по id

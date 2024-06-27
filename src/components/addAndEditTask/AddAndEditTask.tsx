@@ -1,162 +1,152 @@
-// import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import style from "./AddAndEditTask.module.css";
-import { AddAndEditTaskProps } from "./AddAndEditTask.props";
-import ImageUpload from "../ImageUpload/ImageUpload";
-import { useEffect, useState } from "react";
-// import { TextField } from "@mui/material";
-import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { addTask, updateTask } from "../../store/tasks.slice";
-import { Task } from "../../interfaces/task.interface";
-import ExecutorSelect from "../ExecutorSelect/ExecutorSelect";
-import DateInput from "../dateInput/DateInput";
-import PrioritiesInput from "../prioritiesInput/PrioritiesInput";
-import { toggle } from "../../store/toggle.slice";
-import dayjs from "dayjs";
+	// import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+	import style from "./AddAndEditTask.module.css";
+	import { AddAndEditTaskProps } from "./AddAndEditTask.props";
+	import ImageUpload from "../ImageUpload/ImageUpload";
+	import { useEffect, useState } from "react";
+	// import { TextField } from "@mui/material";
+	import { useForm } from "react-hook-form";
+	import { useDispatch, useSelector } from "react-redux";
+	import { RootState } from "../../store/store";
+	import { addTask, updateTask } from "../../store/tasks.slice";
+	import { Task } from "../../interfaces/task.interface";
+	import ExecutorSelect from "../ExecutorSelect/ExecutorSelect";
+	import DateInput from "../dateInput/DateInput";
+	import PrioritiesInput from "../prioritiesInput/PrioritiesInput";
+	import { toggle } from "../../store/toggle.slice";
+	import dayjs from "dayjs";
 
-interface FormTask {
-  title: string;
-  image: [];
-  date:
-    | {
-        $D: number;
-        $M: number;
-        $y: number;
-      }
-    | string;
-  description: string;
-  priority: string;
-}
+	interface FormTask {
+		title: string;
+		image: [];
+		date:
+			| {
+					$D: number;
+					$M: number;
+					$y: number;
+				}
+			| string;
+		description: string;
+		priority: string;
+	}
 
-function AddAndEditTask({ title, id }: AddAndEditTaskProps) {
-  const dispatch = useDispatch();
-  const task = useSelector((state: RootState) =>
-    state.tasks.tasks?.find((task) => task.id === id)
-  );
+	function AddAndEditTask() {
+		const dispatch = useDispatch();
+		const { title, id } = useSelector((state: RootState) => state.toggle);
 
-  console.log(task);
-  const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
-  const { register, handleSubmit, reset, setValue } = useForm();
+		const task = useSelector((state: RootState) =>
+			state.tasks.tasks?.find((task) => task.id === id)
+		);
+		const  taskParms = task
+		const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
+		const { register, handleSubmit, reset, setValue } = useForm();
+		const [images, setImages] = useState(task?.image ? [{ data_url: task?.image }] : null);
+		const [selectedDate, setSelectedDate] = useState(dayjs(task?.date));
+		const [titleHere, setTitleHere] = useState(task?.title ? task?.title : "");
+		const [description, setDescription] = useState(
+			task?.description ? task?.description : ""
+		);
+		console.log(titleHere)
+		const [priority, setPriority] = useState(
+			task?.priority ? task?.priority.name : "Extreme"
+		);
+		console.log(priority)
+		const [executorSelected, setExecutorSelected] = useState(task?.executor);
+		const closeOpen = () => {
+			dispatch(toggle());
+		};
 
-  const [images, setImages] = useState(task?.image ? [{ data_url: task?.image }] : null);
-  const [selectedDate, setSelectedDate] = useState(dayjs(task?.date));
-  const [titleHere, setTitleHere] = useState(task?.title ? task?.title : "");
-  const [description, setDescription] = useState(
-    task?.description ? task?.description : ""
-  );
-  const [priority, setPriority] = useState(
-    task?.priority ? task?.priority.name : "Extreme"
-  );
-  const [executorSelected, setExecutorSelected] = useState(task?.executor);
-  const closeOpen = () => {
-    dispatch(toggle());
-  };
-  useEffect(() => {
-    if (task) {
-      setValue("date", dayjs(task.date));
-      setValue("title", task.title);
-      setValue("description", task.description);
-    }
-  }, [task, setValue]);
+				setValue("date", dayjs(selectedDate));
+				setValue("title", titleHere);
+				setValue("description", description);
+				
 
-  // useEffect(() => {
-  //   if (id) {
-  //     dispatch(getTasks());
-  //   }
-  // }, [dispatch]);
-  // console.log(selectedDate);
+		const onSubmit = (data: FormTask) => {
+			console.log(images);
+			const dateForArr =
+				"$D" in data.date
+					? `${data.date.$M + 1}.${data.date.$D}.${data.date.$y}`
+					: data.date;
+			console.log(images)
+			console.log(images[0].fille)
+			const imgUrlOrNot = images[0].file ? images : images[0].data_url
+			const taskData: Task = {
+				executor: executorSelected,
+				title: data.title,
+				description: data.description,
+				priority: priority,
+				status: 0,
+				date: dateForArr,
+				image: imgUrlOrNot,
+			};
+	console.log(taskData)
+			if (id === "") {
+				dispatch(addTask(taskData));
+			} else {
+				dispatch(updateTask({ taskId: id, taskData }))
+			}
 
-  const onSubmit = (data: FormTask) => {
-    console.log(images);
-    const dateForArr =
-      "$D" in data.date
-        ? `${data.date.$M + 1}.${data.date.$D}.${data.date.$y}`
-        : data.date;
-    console.log(images)
-    console.log(images[0].fille)
-    const imgUrlOrNot = images[0].fille ? images : images[0].data_url
-    const taskData: Task = {
-      executor: executorSelected,
-      title: data.title,
-      description: data.description,
-      priority: priority,
-      status: 0,
-      date: dateForArr,
-      image: imgUrlOrNot,
-    };
-    dispatch(addTask(taskData));
+			reset();
+			setSelectedDate(null);
+			setImages([]);
+			dispatch(toggle());
+		};
 
-    // if (!id) {
-    //   console.log("awdawdawd");
-    //   dispatch(addTask(taskData));
-    // } else {
-    //   console.log("taskData");
-    //   dispatch(updateTask(id, taskData));
-    // }
+		return (
+			<div className={style["back-ground"]}>
+				<form className={style["container"]} onSubmit={handleSubmit(onSubmit)}>
+					<div className={style["head"]}>
+						<h3 className={style["h3"]}>{title}</h3>
+						<button onClick={closeOpen} className={style["button"]}>
+							Go Back
+						</button>
+					</div>
+					<div className={style["content"]}>
+						<div className={style["title"]}>
+							<p>Title</p>
+							<input
+								value={titleHere}
+								onChange={(e) => setTitleHere(e.target.value)}
+							/>
+						</div>
+						<DateInput
+							setValue={setValue}
+							selectedDate={selectedDate}
+							setSelectedDate={setSelectedDate}
+						/>
 
-    reset();
-    setSelectedDate(null);
-    setImages([]);
-    dispatch(toggle());
-  };
+						<PrioritiesInput priority={priority} setPriority={setPriority} />
+						<div className={style["responsible"]}>
+							<ExecutorSelect
+								executorSelected={executorSelected}
+								setExecutorSelected={setExecutorSelected}
+							/>
+						</div>
+						<div className={style["description-image"]}>
+							<div className={style["task-description"]}>
+								<p>Task Description</p>
+								<textarea
+									value={description}
+									onChange={(e) => setDescription(e.target.value)}
+									rows="12"
+									placeholder="Start writing here....."
+								/>
+							</div>
 
-  return (
-    <div className={style["back-ground"]}>
-      <form className={style["container"]} onSubmit={handleSubmit(onSubmit)}>
-        <div className={style["head"]}>
-          <h3 className={style["h3"]}>{title}</h3>
-          <button onClick={closeOpen} className={style["button"]}>
-            Go Back
-          </button>
-        </div>
-        <div className={style["content"]}>
-          <div className={style["title"]}>
-            <p>Title</p>
-            <input
-              value={titleHere}
-              onChange={(e) => setTitleHere(e.target.value)}
-            />
-          </div>
-          <DateInput
-            setValue={setValue}
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          />
+							<div className={style["upload-image"]}>
+								<p>Upload Image</p>
+								<ImageUpload images={images} setImages={setImages} />
+							</div>
+						</div>
+					</div>
 
-          <PrioritiesInput priority={priority} setPriority={setPriority} />
-          <div className={style["responsible"]}>
-            <ExecutorSelect
-              executorSelected={executorSelected}
-              setExecutorSelected={setExecutorSelected}
-            />
-          </div>
-          <div className={style["description-image"]}>
-            <div className={style["task-description"]}>
-              <p>Task Description</p>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows="12"
-                placeholder="Start writing here....."
-              />
-            </div>
-
-            <div className={style["upload-image"]}>
-              <p>Upload Image</p>
-              <ImageUpload images={images} setImages={setImages} />
-            </div>
-          </div>
-        </div>
-
-        <div className={style["div-submit"]}>
-          <button type="submit" className={style["submit"]}>
-            Add Task
-          </button>
-        </div>
-        {taskErrorMessage && <p>{taskErrorMessage.message}</p>}
-      </form>
-    </div>
-  );
-}
-export default AddAndEditTask;
+					<div className={style["div-submit"]}>
+						<button type="submit" className={style["submit"]}>
+							Add Task
+						</button>
+					</div>
+					{taskErrorMessage && <p>{taskErrorMessage.message}</p>}
+				</form>
+			</div>
+		);
+	}
+	export default AddAndEditTask;

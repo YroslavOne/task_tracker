@@ -18,7 +18,6 @@ function Dashboard() {
   useEffect(() => {
     dispatch(getTasks());
   }, [dispatch]);
-  console.log(taskList);
   const d = new Date();
   const day = d.getDate();
   const mount = d.toLocaleDateString("en-US", { month: "long" });
@@ -43,8 +42,8 @@ function Dashboard() {
         <div className={style["task"]}>
           {taskList ? (
             taskList.map((t) => (
-              <Task
-                key={t.id}
+              <Task 
+							key={t.id}
                 id={t.id}
                 title={t.title}
                 date={t.date}
