@@ -1,24 +1,25 @@
-import style from "./Dashboard.module.css";
+import style from "./MyTask.module.css";
 import Pending from "./../../../public/image/dashboard/Pending.svg";
 import Plus from "./../../../public/image/dashboard/taSK.svg";
 import Task from "../../components/task/Task";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { getTasks } from "../../store/tasks.slice";
+import { getTasks, getVitalTasks } from "../../store/tasks.slice";
 import { useEffect, useState } from "react";
-import AddAndEditTask from "../../components/addAndEditTask/AddAndEditTask";
 import { toggle } from "../../store/toggle.slice";
 
-function Dashboard() {
+function MyTask() {
   const dispatch = useDispatch();
   const taskList = useSelector((s: RootState) => s.tasks.tasks);
   const openWindowForm = () => {
     dispatch(toggle());
   };
   useEffect(() => {
-    dispatch(getTasks("AllTasks"));
+    dispatch(getTasks("My"));
   }, [dispatch]);
+  console.log(taskList)
 
+  const arrayForRending = taskList?.filter((elem) =>elem)
   const d = new Date();
   const day = d.getDate();
   const mount = d.toLocaleDateString("en-US", { month: "long" });
@@ -41,8 +42,8 @@ function Dashboard() {
           </p>
         </div>
         <div className={style["task"]}>
-          {taskList ? (
-            taskList.map((t) => (
+          {arrayForRending ? (
+            arrayForRending.map((t) => (
               <Task 
 							key={t.id}
                 id={t.id}
@@ -62,4 +63,4 @@ function Dashboard() {
     </div>
   );
 }
-export default Dashboard;
+export default MyTask;

@@ -3,7 +3,7 @@ import Menu from "../../../public/image/task/MENU.svg";
 import { TaskProps } from "./Task.props";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { deleteTask } from "../../store/tasks.slice";
+import { completTask, deleteTask } from "../../store/tasks.slice";
 import { setIdAndTitle } from "../../store/toggle.slice";
 
 function Task({
@@ -23,8 +23,11 @@ function Task({
   const deleteTaskNow = (id) => {
     dispatch(deleteTask(id));
   };
-	const editTaskNow = (id) => {
+  const editTaskNow = (id) => {
     dispatch(setIdAndTitle({ id, "Edit Task": title }));
+  };
+  const completTaskNow = (id) => {
+    dispatch(completTask(id));
   };
 
   return (
@@ -45,7 +48,7 @@ function Task({
             <ul>
               <li onClick={() => editTaskNow(id)}>Edit</li>
               <li onClick={() => deleteTaskNow(id)}>Delete</li>
-              <li>Finish</li>
+              <li onClick={() => completTaskNow(id)}>Finish</li>
             </ul>
           )}
         </div>
@@ -66,9 +69,7 @@ function Task({
         </div>
         <div className={style["image-date"]}>
           <img className={style["image"]} src={image} alt="" />
-          <p className={style["created"]}>
-            Created on: {date}
-          </p>
+          <p className={style["created"]}>Created on: {date}</p>
         </div>
       </div>
     </div>

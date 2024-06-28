@@ -45,11 +45,12 @@
 		const [description, setDescription] = useState(
 			task?.description ? task?.description : ""
 		);
-		console.log(titleHere)
 		const [priority, setPriority] = useState(
 			task?.priority ? task?.priority.name : "Extreme"
 		);
-		console.log(priority)
+		const [status, setStatus] = useState(
+			task?.status ? task?.status.name : "Not Started"
+		);
 		const [executorSelected, setExecutorSelected] = useState(task?.executor);
 		const closeOpen = () => {
 			dispatch(toggle());
@@ -74,7 +75,7 @@
 				title: data.title,
 				description: data.description,
 				priority: priority,
-				status: 0,
+				status: status,
 				date: dateForArr,
 				image: imgUrlOrNot,
 			};

@@ -13,6 +13,11 @@ import { Provider } from "react-redux";
 import { store } from "./store/store.ts";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import VitalTask from "./pages/vitalTask/VitalTask.tsx";
+import MyTask from "./pages/myTask/MyTask.tsx";
+import Help from "./pages/help/Help.tsx";
+import Settings from "./pages/settings/Settings.tsx";
+import ErrorPage from "./pages/error/ErrorPage.tsx";
 
 
 const router = createBrowserRouter([
@@ -29,33 +34,24 @@ const router = createBrowserRouter([
         path: "/",
         element: <Dashboard />,
       },
-      // 	{
-      // 		path: '/success',
-      // 		element: (
-      // 			<Success/>
-      // 		)
-      // 	},
-      // {
-      // 	path: '/cart',
-      // 	element: <Cart />
-      // },
-      // {
-      // 	path: '/product/:id',
-      // 	element: <Product />,
-      // 	errorElement: <>Ошибка</>,
-      // 	loader: async ({ params }) => {
-      // 		return defer({
-      // 			data: new Promise<void>((resolve, reject) => {
-      // 				setTimeout(() => {
-      // 					axios
-      // 						.get(`${PREFIX}/products/${params.id}`)
-      // 						.then((data) => resolve(data))
-      // 						.catch((e) => reject(e));
-      // 				}, 2000);
-      // 			})
-      // 		});
-      // 	}
-      // }
+      {
+        path: "/vital-task",
+        element: <VitalTask />,
+      },
+      {
+        path: "/my-task",
+        element: <MyTask />,
+      },
+      
+      {
+        path: "/settings",
+        element: <Settings />,
+      },
+      
+      {
+        path: "/help",
+        element: <Help />,
+      },
     ],
   },
   {
@@ -73,10 +69,10 @@ const router = createBrowserRouter([
     ],
   },
 
-  // {
-  // 	path: '*',
-  // 	element: <Error />
-  // }
+  {
+  	path: '*',
+  	element: <ErrorPage/>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

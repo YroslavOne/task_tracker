@@ -23,6 +23,7 @@ function PrioritiesInput({ priority, setPriority }: PrioritiesInputProps) {
     setSelectedValue(event.target.value);
     setPriority(event.target.value);
   };
+  console.log(priority)
 
   const controlProps = (item: string) => ({
     checked: selectedValue === item,

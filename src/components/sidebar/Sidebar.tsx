@@ -15,11 +15,6 @@ function SideBar() {
     { title: "Dashboard", parameter: "dashboard", link: "/" },
     { title: "Vital Task", parameter: "vital-task", link: "/vital-task" },
     { title: "My Task", parameter: "my-task", link: "/my-task" },
-    {
-      title: "Task Categories",
-      parameter: "task-categories",
-      link: "/task-categories",
-    },
     { title: "Settings", parameter: "settings", link: "/settings" },
     { title: "Help", parameter: "help", link: "/help" },
   ];

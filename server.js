@@ -181,17 +181,15 @@ app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
   const { executor, title, description, priority, status, date } = req.body;
   const image = req.file ? req.file.path : null;
   const id = tasks.length + 1;
-const priorityValue = priorities.find((elem)=> elem.name===priority)
+  const priorityValue = priorities.find((elem) => elem.name === priority);
+  const statusValue = statuses.find((elem) => elem.name === status);
   const task = {
     id,
     executor: JSON.parse(executor),
     title,
     description,
     priority: priorityValue,
-    status: {
-      name: statuses[status].name,
-      color: statuses[status].color,
-    },
+    status: statusValue,
     date,
     image,
   };
@@ -203,9 +201,14 @@ const priorityValue = priorities.find((elem)=> elem.name===priority)
 // Обновление задачи
 app.put("/tasks/:id", authenticateToken, upload.single("image"), (req, res) => {
   const { id } = req.params;
-  const { executor, title, description, priority, status, date, imageUrl } = req.body;
+ 
+
+  const { executor, title, description, priority, status, date, imageUrl } =
+    req.body;
+    const priorityValue = priorities.find((elem) => elem.name === priority);
+    const statusValue = statuses.find((elem) => elem.name === status);
   const image = req.file ? req.file.path : imageUrl;
-console.log(title)
+  console.log(title);
   const taskIndex = tasks.findIndex((task) => task.id == id);
   if (taskIndex === -1) {
     return res.status(404).send("Task not found");
@@ -216,8 +219,8 @@ console.log(title)
     executor: JSON.parse(executor), // Parse string to JSON if executor is sent as a string
     title,
     description,
-    priority,
-    status,
+    priority: priorityValue,
+    status: statusValue,
     date,
     image: image,
   };
@@ -229,7 +232,6 @@ console.log(title)
 
 app.delete("/tasks/:id", authenticateToken, (req, res) => {
   const { id } = req.params;
-
   const taskIndex = tasks.findIndex((task) => task.id == id);
   if (taskIndex === -1) {
     return res.status(404).send("Task not found");
@@ -238,6 +240,29 @@ app.delete("/tasks/:id", authenticateToken, (req, res) => {
   tasks.splice(taskIndex, 1);
   res.status(200).send({ message: "Task deleted successfully" });
 });
+
+// завершение задачи
+app.put(
+  "/tasks/complet/:id",
+  authenticateToken,
+  upload.single("image"),
+  (req, res) => {
+    const status = req.body;
+    const { id } = req.params;
+    const taskIndex = tasks.findIndex((task) => task.id == id);
+    if (taskIndex === -1) {
+      return res.status(404).send("Task not found");
+    }
+
+    tasks[taskIndex] = {
+      ...tasks[taskIndex],
+      status: status,
+    };
+
+    res.status(200).send(tasks);
+  }
+);
+
 // получение задачи по id
 
 app.get("/tasks/:id", authenticateToken, (req, res) => {
@@ -252,8 +277,23 @@ app.get("/tasks/:id", authenticateToken, (req, res) => {
 
 // Получение задач исполнителю
 app.get("/tasks", authenticateToken, (req, res) => {
+  const HowTaskNeed  = req.query.howtaskneed;
   const userEmail = req.user.email;
-  const taskList = tasks.filter((task) => task.executor.email === userEmail && task.status.name!=="Completed");
+  let taskList
+  if (HowTaskNeed==="AllTasks"){
+    taskList = tasks;
+  }  else if (HowTaskNeed==="Vital"){
+    taskList = tasks.filter(
+      (task) =>
+        task.executor.email === userEmail && task.status.name!=="Completed"
+    );
+  } else {
+    taskList = tasks.filter(
+      (task) =>
+        task.executor.email === userEmail
+    );
+  }
+  
   res.status(200).json(taskList);
 });
 

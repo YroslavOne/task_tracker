@@ -20,9 +20,12 @@ export const getTasks = createAsyncThunk<
   TasksState,
   void,
   { state: RootState }
->("tasks/getTasks", async (_, thunkApi) => {
+>("tasks/getTasks", async (params, thunkApi) => {
   const jwt = thunkApi.getState().user.jwt;
   const { data } = await axios.get<TasksState>(`${PREFIX}tasks`, {
+    params:{
+      howtaskneed: params,
+    },
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
@@ -42,9 +45,9 @@ export const addTask = createAsyncThunk(
         if (key === "executor") {
           formData.append(key, JSON.stringify(taskData[key]));
         } else if (key === "priority") {
-          formData.append(key, taskData[key]); // Stringify date
+          formData.append(key, taskData[key]);
         } else if (key === "date") {
-          formData.append(key, taskData[key]); // Stringify date
+          formData.append(key, taskData[key]);
         } else if (key !== "image") {
           formData.append(key, taskData[key]);
         } else {
@@ -73,10 +76,12 @@ export const updateTask = createAsyncThunk(
     const jwt = state.user.jwt;
     try {
       const formData = new FormData();
-      
+
       Object.keys(taskData).forEach((key) => {
         if (key === "executor") {
           formData.append(key, JSON.stringify(taskData[key])); // Stringify the executor object
+        } else if (key === "priority") {
+          formData.append(key, taskData[key]);
         } else if (key === "date") {
           formData.append(key, JSON.stringify(taskData[key])); // Stringify date
         } else if (key !== "image") {
@@ -89,13 +94,38 @@ export const updateTask = createAsyncThunk(
           }
         }
       });
-console.log(taskId)
       const { data } = await axios.put(`${PREFIX}tasks/${taskId}`, formData, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       });
 
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const completTask = createAsyncThunk(
+  "tasks/complet",
+  async (taskId: number, { getState, rejectWithValue }) => {
+    const state = getState() as RootState;
+    const jwt = state.user.jwt;
+    try {
+      const status = {
+        name: "Completed",
+        color: "#05A301",
+      };
+      const { data } = await axios.put(
+        `${PREFIX}tasks/complet/${taskId}`,
+        status,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
       return data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -130,7 +160,7 @@ export const taskSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-       .addCase(addTask.pending, (state) => {
+      .addCase(addTask.pending, (state) => {
         state.taskErrorMessage = null;
       })
       .addCase(addTask.fulfilled, (state, action) => {
@@ -145,19 +175,26 @@ export const taskSlice = createSlice({
       .addCase(deleteTask.rejected, (state, action) => {
         state.taskErrorMessage = action.payload as string;
       })
+      .addCase(getTasks.fulfilled, (state, action) => {
+        state.tasks = action.payload;
+      })
       .addCase(updateTask.pending, (state) => {
         state.taskErrorMessage = null;
       })
-      .addCase(getTasks.fulfilled, (state, action) => {
-        state.tasks = action.payload;  
-      })
       .addCase(updateTask.fulfilled, (state, action) => {
-        const updatedTask = action.payload;
-        state.tasks = state.tasks?.map((task) =>
-          task.id === updatedTask.id ? updatedTask : task
-        );
+        console.log(state.tasks);
+        state.tasks = action.payload;
       })
       .addCase(updateTask.rejected, (state, action) => {
+        state.taskErrorMessage = action.payload as string;
+      })
+      .addCase(completTask.pending, (state) => {
+        state.taskErrorMessage = null;
+      })
+      .addCase(completTask.fulfilled, (state, action) => {
+        state.tasks = action.payload;
+      })
+      .addCase(completTask.rejected, (state, action) => {
         state.taskErrorMessage = action.payload as string;
       });
   },
