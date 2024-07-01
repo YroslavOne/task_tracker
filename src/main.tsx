@@ -18,6 +18,8 @@ import MyTask from "./pages/myTask/MyTask.tsx";
 import Help from "./pages/help/Help.tsx";
 import Settings from "./pages/settings/Settings.tsx";
 import ErrorPage from "./pages/error/ErrorPage.tsx";
+import SettingsMain from "./pages/settings/outletSettings/Settings/SettingsMain.tsx";
+import ChangePassword from "./pages/settings/outletSettings/changePassword/ChangePassword.tsx";
 
 
 const router = createBrowserRouter([
@@ -46,6 +48,16 @@ const router = createBrowserRouter([
       {
         path: "/settings",
         element: <Settings />,
+        children: [
+          {
+            path: "/settings",
+            element: <SettingsMain />,
+          },
+          {
+            path: "change-password",
+            element: < ChangePassword/>,
+          },
+        ]
       },
       
       {

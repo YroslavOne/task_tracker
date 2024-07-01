@@ -14,6 +14,7 @@
 	import PrioritiesInput from "../prioritiesInput/PrioritiesInput";
 	import { toggle } from "../../store/toggle.slice";
 	import dayjs from "dayjs";
+import ButtonStandard from "../buttonStandard/ButtonStandard";
 
 	interface FormTask {
 		title: string;
@@ -62,7 +63,6 @@
 				
 
 		const onSubmit = (data: FormTask) => {
-			console.log(images);
 			const dateForArr =
 				"$D" in data.date
 					? `${data.date.$M + 1}.${data.date.$D}.${data.date.$y}`
@@ -79,7 +79,6 @@
 				date: dateForArr,
 				image: imgUrlOrNot,
 			};
-	console.log(taskData)
 			if (id === "") {
 				dispatch(addTask(taskData));
 			} else {
@@ -141,9 +140,9 @@
 					</div>
 
 					<div className={style["div-submit"]}>
-						<button type="submit" className={style["submit"]}>
+						<ButtonStandard type="submit" >
 							Add Task
-						</button>
+						</ButtonStandard>
 					</div>
 					{taskErrorMessage && <p>{taskErrorMessage.message}</p>}
 				</form>

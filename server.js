@@ -11,9 +11,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const SECRET_KEY = "your_secret_key"; // Используйте более сложный секретный ключ
+const SECRET_KEY = "your_secret_key"; 
 
-// Set up storage engine for multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const dir = "./uploads/";
@@ -102,8 +101,10 @@ let tasks = [
 // Регистрация пользователя
 app.post("/register", (req, res) => {
   const { firstName, lastName, userName, email, password } = req.body;
-  const token = jwt.sign({ email: email }, SECRET_KEY, { expiresIn: "1h" });
   const id = users.length + 1;
+  const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
+    expiresIn: "1h",
+  });
   const user = {
     firstName,
     lastName,
@@ -121,12 +122,14 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const user = users.find((u) => u.email === email && u.password === password);
+
   if (!user) {
     res.status(401).send({ message: "Invalid email or password" });
   } else {
-    const token = jwt.sign({ email: user.email }, SECRET_KEY, {
+    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
       expiresIn: "1h",
     });
+
     user.token = token;
     res.status(200).json({ message: "Login successful", token });
   }
@@ -147,8 +150,8 @@ const authenticateToken = (req, res, next) => {
 
 // Маршрут для получения профиля пользователя
 app.get("/login/profile", authenticateToken, (req, res) => {
-  const userEmail = req.user.email;
-  const user = users.find((u) => u.email === userEmail);
+  const userId = req.user.id;
+  const user = users.find((u) => u.id === userId);
 
   if (!user) {
     return res.status(404).send({ message: "User not found" });
@@ -164,6 +167,7 @@ app.get("/login/profile", authenticateToken, (req, res) => {
     id: user.id,
   });
 });
+
 app.get("/login/profile/all", authenticateToken, (req, res) => {
   const user = [];
   users.map((u, index) => {
@@ -174,6 +178,33 @@ app.get("/login/profile/all", authenticateToken, (req, res) => {
     });
   });
   res.status(200).json(user);
+});
+
+//Обновление профиля
+
+app.put("/login/profile/edit", authenticateToken, upload.single("image"), (req, res) => {
+  const userId = req.user.id;
+  const { firstName, lastName, userName, email, phone, imageUrl } = req.body;
+
+  const userIndex = users.findIndex((u) => u.id === userId);
+
+  const image = req.file ? req.file.path : imageUrl;
+
+  if (userIndex === -1) {
+    return res.status(404).send("Task not found");
+  }
+
+  users[userIndex] = {
+    ...users[userIndex],
+    firstName,
+    lastName,
+    userName,
+    email,
+    phone,
+    image: image,
+  };
+
+  res.status(200).send(users[userIndex]);
 });
 
 // Добавление задачи
@@ -278,19 +309,21 @@ app.get("/tasks/:id", authenticateToken, (req, res) => {
 // Получение задач исполнителю
 app.get("/tasks", authenticateToken, (req, res) => {
   const HowTaskNeed  = req.query.howtaskneed;
-  const userEmail = req.user.email;
+  const userId = req.user.id;
+  console.log(req.user)
+  console.log(authenticateToken)
   let taskList
   if (HowTaskNeed==="AllTasks"){
     taskList = tasks;
   }  else if (HowTaskNeed==="Vital"){
     taskList = tasks.filter(
       (task) =>
-        task.executor.email === userEmail && task.status.name!=="Completed"
+        task.executor.id === userId && task.status.name!=="Completed"
     );
   } else {
     taskList = tasks.filter(
       (task) =>
-        task.executor.email === userEmail
+        task.executor.id === userId
     );
   }
   

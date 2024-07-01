@@ -25,14 +25,9 @@ export type RegisterForm = {
 };
 
 function Registration() {
-  // const [firstNameValue, setFirstNameValue] = useState("");
-  // const [lastNameValue, setLastNameValue] = useState("");
-  // const [middleNameValue, setMiddleNameValue] = useState("");
-  // const [email, setEmailValue] = useState("");
   const { jwt, registerErrorMessage } = useSelector((s: RootState) => s.user);
   const [password, setPasswordValue] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const [messageValue, setMessageValue] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -42,7 +37,6 @@ function Registration() {
     }
   }, [jwt, navigate]);
 
-  // useEffect(() => {}, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -80,7 +74,7 @@ function Registration() {
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
 
-  //   console.log(JSON.stringify({ firstNameValue, lastNameValue, middleNameValue, email, password, phoneValue }))
+  //   console.log(JSON.stringify({ firstNameValue, lastNameValue, Value, email, password, phoneValue }))
   //     try {
   //         const response = await fetch('http://localhost:9995/register', {
   //             method: 'POST',

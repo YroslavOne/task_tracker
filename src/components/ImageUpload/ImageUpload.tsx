@@ -4,7 +4,7 @@ import UploadImage from "../../../public/image/form/Upload-image.svg";
 import { useState } from "react";
 import style from "./ImageUpload.module.css";
 
-function ImageUpload({ images, setImages }: ImageUploadProps) {
+function ImageUpload({ images, setImages, round = false, buttonOf=true }: ImageUploadProps) {
   const [displayButton, setDisplayButton] = useState(!images?.length);
 
   const onChange = (imageList: ImageListType) => {
@@ -46,14 +46,37 @@ function ImageUpload({ images, setImages }: ImageUploadProps) {
             &nbsp;
             {imageList.map((image, index) => (
               <div key={index} className="image-item">
-                <img src={image["data_url"]} alt="" width="100" />
+                <img
+                  src={image["data_url"]}
+                  alt=""
+                  width="100"
+                  style={
+                    round
+                      ? {
+                          width: "86px",
+                          height: "86px",
+                          objectFit: "cover",
+                          borderRadius: "50%",
+                          border: "solid 1px #ffffff",
+                        }
+                      : undefined
+                  }
+                />
                 <div className="image-item__btn-wrapper">
-                  <button type="button" className={style["button"]} onClick={() => onImageUpdate(index)}>
-                    Update
+                  <button
+                    type="button"
+                    className={style["button"]}
+                    onClick={() => onImageUpdate(index)}
+                  >
+                    Update image
                   </button>
-                  <button type="button" className={style["button"]} onClick={() => onImageRemove(index)}>
+                  {buttonOf && <button
+                    type="button"
+                    className={style["button"]}
+                    onClick={() => onImageRemove(index)}
+                  >
                     Remove
-                  </button>
+                  </button>}
                 </div>
               </div>
             ))}

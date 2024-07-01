@@ -1,10 +1,11 @@
 export interface Profile {
-  firstName: number;
-  lastName: string;
-  middleName: string;
+  id: number;
+  firstName: string | undefined;
+  lastName: string | undefined;
+  userName: string;
   email: string;
   password: string;
-  phone: string;
+  phone: string | undefined;
   token: string;
-  image: string;
+  image: string | undefined;
 }

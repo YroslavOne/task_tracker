@@ -17,6 +17,7 @@ export interface UserState {
   jwt: string | null;
   loginErrorMessage?: string;
   registerErrorMessage?: string;
+  editProfileErrorMessage?: string;
   profile?: Profile;
   profileAll?: ProfileAll;
 }
@@ -58,7 +59,6 @@ export const register = createAsyncThunk(
         userName: params.userName,
         email: params.email,
         password: params.password,
-        
       });
       return data;
     } catch (e) {
@@ -82,16 +82,49 @@ export const getProfile = createAsyncThunk<Profile, void, { state: RootState }>(
   }
 );
 
-export const getProfileAll = createAsyncThunk<ProfileAll, void, { state: RootState }>(
-  "user/getprofile/all",
-  async (_, thunkApi) => {
-    const jwt = thunkApi.getState().user.jwt;
-    const { data } = await axios.get<ProfileAll>(`${PREFIX}login/profile/all`, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
-    return data;
+export const getProfileAll = createAsyncThunk<
+  ProfileAll,
+  void,
+  { state: RootState }
+>("user/getprofile/all", async (_, thunkApi) => {
+  const jwt = thunkApi.getState().user.jwt;
+  const { data } = await axios.get<ProfileAll>(`${PREFIX}login/profile/all`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+  return data;
+});
+
+export const updateProfile = createAsyncThunk(
+  "user/profile/edit",
+  async (userData: Profile, { getState, rejectWithValue }) => {
+    const state = getState() as RootState;
+    const jwt = state.user.jwt;
+    try {
+      const formData = new FormData();
+
+      Object.keys(userData).forEach((key) => {
+        if (key !== "image") {
+          formData.append(key, userData[key]);
+        } else if (userData.image) {
+          if (typeof userData.image === "string") {
+            formData.append("imageUrl", userData.image); // Adding image URL
+          } else if (userData.image[0].file) {
+            formData.append("image", userData.image[0].file); // Adding image file
+          }
+        }
+      });
+      const { data } = await axios.put(`${PREFIX}login/profile/edit`, formData, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
@@ -107,6 +140,9 @@ export const userSlice = createSlice({
     },
     clearRegisterError: (state) => {
       state.registerErrorMessage = undefined;
+    },
+    clearEditProfileErrorMessage: (state) => {
+      state.editProfileErrorMessage = undefined;
     },
   },
   extraReducers: (builder) => {
@@ -130,6 +166,12 @@ export const userSlice = createSlice({
     });
     builder.addCase(register.rejected, (state, action) => {
       state.registerErrorMessage = action.error.message;
+    });
+    builder.addCase(updateProfile.fulfilled, (state, action) => {
+      state.profile = action.payload;
+    });
+    builder.addCase(updateProfile.rejected, (state, action) => {
+      state.editProfileErrorMessage = action.error.message;
     });
   },
 });
