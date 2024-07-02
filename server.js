@@ -32,12 +32,12 @@ const upload = multer({ storage: storage });
 // Пример базы данных в оперативной памяти
 let users = [
   {
-    firstName: "hi",
-    lastName: "hi",
-    userName: "hi",
+    firstName: "Ярослав",
+    lastName: "Берилло",
+    userName: "yaroslav",
     email: "1",
     password: "1",
-    phone: "hi",
+    phone: "88005553535",
     token: "hi",
     id: 0,
     image:

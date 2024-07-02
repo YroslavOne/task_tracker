@@ -1,30 +1,42 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { PREFIX } from "../helpers/API";
 import { loadState } from "./storage";
 import { JWT_PERSISTENT_STATE, UserPersistentState } from "./user.slice";
 import { RootState } from "./store";
 import { Task } from "../interfaces/task.interface";
+import statusesSlice from "./statuses.slice";
 
 export interface TasksState {
   jwt: string | null;
   tasks?: Task[];
   taskErrorMessage?: string;
+	filterDate?: string | null;
+  filterTitle?: string | null;
 }
 
 const initialState: TasksState = {
   jwt: loadState<UserPersistentState>(JWT_PERSISTENT_STATE)?.jwt ?? null,
+	filterDate: null,
+  filterTitle: null,
 };
+
+
 
 export const getTasks = createAsyncThunk<
   TasksState,
   void,
   { state: RootState }
 >("tasks/getTasks", async (params, thunkApi) => {
-  const jwt = thunkApi.getState().user.jwt;
+  const state = thunkApi.getState();
+  const jwt = state.user.jwt;
+	const filterTitle = state.tasks.filterTitle;
+  const filterDate = state.tasks.filterDate;
   const { data } = await axios.get<TasksState>(`${PREFIX}tasks`, {
     params:{
       howtaskneed: params,
+			filterTitle: filterTitle,
+			filterDate: filterDate
     },
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -150,12 +162,37 @@ export const deleteTask = createAsyncThunk(
   }
 );
 
+export const search = createAsyncThunk(
+  "tasks/deleteTask",
+  async (taskId: string, { getState, rejectWithValue }) => {
+    const jwt = getState().user.jwt;
+    try {
+      await axios.delete(`${PREFIX}tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      return taskId;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const taskSlice = createSlice({
   name: "task",
   initialState,
   reducers: {
     clearTaskError: (state) => {
       state.taskErrorMessage = undefined;
+    },
+		filterSearch: (state, action: PayloadAction<{ search: string}>) => {
+      state.filterTitle = action.payload.search;
+
+    },
+		filterDate: (state, action: PayloadAction<{ date: string }>) => {
+      state.filterDate = action.payload.date;
+
     },
   },
   extraReducers: (builder) => {
@@ -177,6 +214,7 @@ export const taskSlice = createSlice({
       })
       .addCase(getTasks.fulfilled, (state, action) => {
         state.tasks = action.payload;
+				console.log("hi23e3ew3edw3e")
       })
       .addCase(updateTask.pending, (state) => {
         state.taskErrorMessage = null;
@@ -197,6 +235,7 @@ export const taskSlice = createSlice({
       .addCase(completTask.rejected, (state, action) => {
         state.taskErrorMessage = action.payload as string;
       });
+			
   },
 });
 
