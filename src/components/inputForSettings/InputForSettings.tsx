@@ -8,13 +8,13 @@ const InputForSettings = forwardRef<HTMLInputElement, InputForSettingsProps>(fun
   ref
 ) {
   return (
-    <div className={cn(style.inputWrapper, className)}>
+    <div className={cn(style.inputWrapper)}>
         <p>{title}</p>
       <input
         ref={ref}
         className={cn(style.input, {
           [style.invalid]: !isValid,
-        })}
+        }, className)}
         {...props}
       />
     </div>

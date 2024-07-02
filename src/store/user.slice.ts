@@ -20,6 +20,7 @@ export interface UserState {
   editProfileErrorMessage?: string;
   profile?: Profile;
   profileAll?: ProfileAll;
+  isUpdated?: boolean,
 }
 
 const initialState: UserState = {
@@ -30,7 +31,7 @@ export const login = createAsyncThunk(
   "user/login",
   async (params: { email: string; password: string }) => {
     try {
-      const { data } = await axios.post<LoginResponse>(`${PREFIX}login`, {
+      const { data } = await axios.post<LoginResponse> (`${PREFIX}login`, {
         email: params.email,
         password: params.password,
       });
@@ -42,14 +43,13 @@ export const login = createAsyncThunk(
     }
   }
 );
-export const register = createAsyncThunk(
+export const registerUser = createAsyncThunk(
   "user/register",
   async (params: {
     lastName: string;
     firstName: string;
     userName: string;
     email: string;
-    phone: string;
     password: string;
   }) => {
     try {
@@ -128,6 +128,33 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
+export const updatePassword = createAsyncThunk(
+  "user/profile/edit-password",
+  async (passwords: {
+    password: string;
+    newPassword: string;
+  }, { getState, rejectWithValue }) => {
+    const state = getState() as RootState;
+    const jwt = state.user.jwt;
+    try {
+      const { data } = await axios.put(`${PREFIX}login/profile/edit-password`, {
+        password: passwords.password,
+        newPassword: passwords.newPassword,
+      }, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      return data;
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        throw new Error(e.response?.data.message);
+      }
+    }
+  }
+);
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -144,6 +171,9 @@ export const userSlice = createSlice({
     clearEditProfileErrorMessage: (state) => {
       state.editProfileErrorMessage = undefined;
     },
+    clearUpdateSuccess: (state) => {
+      state.isPasswordUpdated = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
@@ -158,19 +188,27 @@ export const userSlice = createSlice({
     builder.addCase(getProfileAll.fulfilled, (state, action) => {
       state.profileAll = action.payload;
     });
-    builder.addCase(register.fulfilled, (state, action) => {
+    builder.addCase(registerUser.fulfilled, (state, action) => {
       if (!action.payload) {
         return;
       }
       state.jwt = action.payload.token;
     });
-    builder.addCase(register.rejected, (state, action) => {
+    builder.addCase(registerUser.rejected, (state, action) => {
       state.registerErrorMessage = action.error.message;
     });
     builder.addCase(updateProfile.fulfilled, (state, action) => {
       state.profile = action.payload;
+      state.isUpdated = true;
     });
     builder.addCase(updateProfile.rejected, (state, action) => {
+      state.editProfileErrorMessage = action.error.message;
+    });
+    builder.addCase(updatePassword.fulfilled, (state, action) => {
+      state.profile = action.payload;
+      state.isUpdated = true;
+    });
+    builder.addCase(updatePassword.rejected, (state, action) => {
       state.editProfileErrorMessage = action.error.message;
     });
   },

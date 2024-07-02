@@ -5,7 +5,6 @@
   justify-content: center;
   margin-top: 9px;
   margin-bottom: 14px;
-
 }
 button {
 }
@@ -15,7 +14,6 @@ button {
 
 .button-upload {
   padding: 23px 39px;
-
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -46,7 +44,7 @@ button {
   color: #a1a3ab;
 }
 .button:hover {
-  border: 1px solid #F24E1E;
-  color:white;
-  background-color: #F24E1E;
+  border: 1px solid #f24e1e;
+  color: white;
+  background-color: #f24e1e;
 }

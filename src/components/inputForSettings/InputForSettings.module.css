@@ -13,7 +13,7 @@
   text-align: left;
   margin-bottom: 9px;
 }
-.inputWrapper > input {
+.input {
   border-radius: 6px;
   font-family: Inter;
   font-size: 15px;

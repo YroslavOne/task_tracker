@@ -1,20 +1,25 @@
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import style from "./SettingsMain.module.css";
-import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import style from "./SettingsMain.module.css";
 import ImageUpload from "../../../../components/ImageUpload/ImageUpload";
 import { RootState } from "../../../../store/store";
 import { getProfile, updateProfile } from "../../../../store/user.slice";
 import InputForSettings from "../../../../components/inputForSettings/InputForSettings";
 import ButtonStandard from "../../../../components/buttonStandard/ButtonStandard";
-import { useForm } from "react-hook-form";
 import { Profile } from "../../../../interfaces/user.interface";
 
 function SettingsMain() {
   const { handleSubmit } = useForm();
-
   const dispatch = useDispatch();
-  const {profile, editProfileErrorMessage} = useSelector((s: RootState) => s.user);
+  const { profile, editProfileErrorMessage } = useSelector(
+    (s: RootState) => s.user
+  );
+
   useEffect(() => {
     dispatch(getProfile());
   }, [dispatch]);
@@ -22,27 +27,42 @@ function SettingsMain() {
   const [images, setImages] = useState(
     profile?.image ? [{ data_url: profile?.image }] : null
   );
-  const [firstName, setFirstName] = useState<string | undefined>(profile?.firstName);
-  const [lastName, setlastName] = useState<string | undefined>(profile?.lastName);
+  const [firstName, setFirstName] = useState<string | undefined>(
+    profile?.firstName
+  );
+  const [lastName, setLastName] = useState<string | undefined>(
+    profile?.lastName
+  );
   const [email, setEmail] = useState<string | undefined>(profile?.email);
-  const [contactNumber, setContactNumber] = useState<string | undefined>(profile?.phone);
+  const [contactNumber, setContactNumber] = useState<string | undefined>(
+    profile?.phone
+  );
   const [user, setUser] = useState<string | undefined>(profile?.userName);
 
   const onSubmit = () => {
-    const imgUrlOrNot = images[0].file ? images : images[0].data_url
-    const profileDate: Profile = {
+    const imgUrlOrNot = images[0].file ? images : images[0].data_url;
+    const profileData: Profile = {
       firstName: firstName,
       lastName: lastName,
       userName: user,
       email: email,
       phone: contactNumber,
       image: imgUrlOrNot,
-    }
-    dispatch(updateProfile(profileDate))
+    };
+
+    dispatch(updateProfile(profileData))
+      .unwrap()
+      .then(() => {
+        toast.success("Profile updated successfully!");
+      })
+      .catch((error) => {
+        toast.error(`Failed to update profile: ${error.message}`);
+      });
   };
 
   return (
     <div>
+      <ToastContainer />
       <div className={style["back-ground"]}>
         <form className={style["container"]} onSubmit={handleSubmit(onSubmit)}>
           <div className={style["head"]}>
@@ -76,7 +96,7 @@ function SettingsMain() {
               title="Last Name"
               isValid={false}
               value={lastName}
-              onChange={(e) => setlastName(e.target.value)}
+              onChange={(e) => setLastName(e.target.value)}
             />
             <InputForSettings
               title="Email Address"
@@ -107,10 +127,10 @@ function SettingsMain() {
               </ButtonStandard>
             </NavLink>
           </div>
-          {editProfileErrorMessage && <p>{editProfileErrorMessage.message}</p>}
         </form>
       </div>
     </div>
   );
 }
+
 export default SettingsMain;

@@ -11,7 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const SECRET_KEY = "your_secret_key"; 
+const SECRET_KEY = "your_secret_key";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -102,9 +102,14 @@ let tasks = [
 app.post("/register", (req, res) => {
   const { firstName, lastName, userName, email, password } = req.body;
   const id = users.length + 1;
-  const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
+  const token = jwt.sign({ id: id, email: email }, SECRET_KEY, {
     expiresIn: "1h",
   });
+  const emailFind = users.find(u=> u.email===email)
+
+  if (emailFind){
+    res.status(401).send({ message: "User with this email already exists!" });
+  }
   const user = {
     firstName,
     lastName,
@@ -182,31 +187,64 @@ app.get("/login/profile/all", authenticateToken, (req, res) => {
 
 //Обновление профиля
 
-app.put("/login/profile/edit", authenticateToken, upload.single("image"), (req, res) => {
-  const userId = req.user.id;
-  const { firstName, lastName, userName, email, phone, imageUrl } = req.body;
+app.put(
+  "/login/profile/edit",
+  authenticateToken,
+  upload.single("image"),
+  (req, res) => {
+    const userId = req.user.id;
+    const { firstName, lastName, userName, email, phone, imageUrl } = req.body;
 
-  const userIndex = users.findIndex((u) => u.id === userId);
+    const userIndex = users.findIndex((u) => u.id === userId);
 
-  const image = req.file ? req.file.path : imageUrl;
+    const image = req.file ? req.file.path : imageUrl;
 
-  if (userIndex === -1) {
-    return res.status(404).send("Task not found");
+    if (userIndex === -1) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    users[userIndex] = {
+      ...users[userIndex],
+      firstName,
+      lastName,
+      userName,
+      email,
+      phone,
+      image: image,
+    };
+
+    res.status(200).send(users[userIndex]);
   }
+);
 
-  users[userIndex] = {
-    ...users[userIndex],
-    firstName,
-    lastName,
-    userName,
-    email,
-    phone,
-    image: image,
-  };
+// Обновление пароля
 
-  res.status(200).send(users[userIndex]);
-});
+app.put(
+  "/login/profile/edit-password",
+  authenticateToken,
+  upload.single("image"),
+  (req, res) => {
+    const userId = req.user.id;
+    const { password, newPassword } = req.body;
 
+    const userIndex = users.findIndex((u) => u.id === userId);
+    const userSearch = users.filter((u)=>u.id === userId)
+
+    if (userIndex === -1) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    if (userSearch[0].password !== password) {
+      return res.status(401).send({ message: "Incorrect password" });
+    }
+
+    users[userIndex] = {
+      ...users[userIndex],
+      password: newPassword,
+    };
+
+    res.status(200).send(users[userIndex]);
+  }
+);
 // Добавление задачи
 app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
   const { executor, title, description, priority, status, date } = req.body;
@@ -232,12 +270,11 @@ app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
 // Обновление задачи
 app.put("/tasks/:id", authenticateToken, upload.single("image"), (req, res) => {
   const { id } = req.params;
- 
 
   const { executor, title, description, priority, status, date, imageUrl } =
     req.body;
-    const priorityValue = priorities.find((elem) => elem.name === priority);
-    const statusValue = statuses.find((elem) => elem.name === status);
+  const priorityValue = priorities.find((elem) => elem.name === priority);
+  const statusValue = statuses.find((elem) => elem.name === status);
   const image = req.file ? req.file.path : imageUrl;
   console.log(title);
   const taskIndex = tasks.findIndex((task) => task.id == id);
@@ -308,25 +345,21 @@ app.get("/tasks/:id", authenticateToken, (req, res) => {
 
 // Получение задач исполнителю
 app.get("/tasks", authenticateToken, (req, res) => {
-  const HowTaskNeed  = req.query.howtaskneed;
+  const HowTaskNeed = req.query.howtaskneed;
   const userId = req.user.id;
-  console.log(req.user)
-  console.log(authenticateToken)
-  let taskList
-  if (HowTaskNeed==="AllTasks"){
+  console.log(req.user);
+  console.log(authenticateToken);
+  let taskList;
+  if (HowTaskNeed === "AllTasks") {
     taskList = tasks;
-  }  else if (HowTaskNeed==="Vital"){
+  } else if (HowTaskNeed === "Vital") {
     taskList = tasks.filter(
-      (task) =>
-        task.executor.id === userId && task.status.name!=="Completed"
+      (task) => task.executor.id === userId && task.status.name !== "Completed"
     );
   } else {
-    taskList = tasks.filter(
-      (task) =>
-        task.executor.id === userId
-    );
+    taskList = tasks.filter((task) => task.executor.id === userId);
   }
-  
+
   res.status(200).json(taskList);
 });
 

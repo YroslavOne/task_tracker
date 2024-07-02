@@ -69,7 +69,7 @@ function Task({
         </div>
         <div className={style["image-date"]}>
           <img className={style["image"]} src={image} alt="" />
-          <p className={style["created"]}>Created on: {date}</p>
+          <p className={style["created"]}>Сomplete: {date}</p>
         </div>
       </div>
     </div>

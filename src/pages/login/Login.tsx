@@ -6,21 +6,24 @@ import Lock from "../../../public/image/iconFor/Lock.svg";
 import Button from "../../components/button/Button";
 import Image from "../../../public/image/start/Login.png";
 import { Link, useNavigate } from "react-router-dom";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, userActions } from "../../store/user.slice";
 import { RootState } from "../../store/store";
+import { useForm } from "react-hook-form";
+import cn from "classnames";
 
-export type LoginForm = {
-  email: {
-    value: string;
-  };
-  password: {
-    value: string;
-  };
-};
+interface ChangeForm {
+  email: string;
+  password: string;
+}
 
 function Login() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ChangeForm>();
   const { jwt, loginErrorMessage } = useSelector((s: RootState) => s.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -31,47 +34,38 @@ function Login() {
     }
   }, [jwt, navigate]);
 
-  // useEffect(() => {}, []);
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: ChangeForm) => {
     dispatch(userActions.clearLoginError());
-    const target = e.target as typeof e.target & LoginForm;
-    const { email, password } = target;
-    await sendLogin(email.value, password.value);
-  };
-
-  const sendLogin = async (email: string, password: string) => {
-    dispatch(login({ email: email, password: password }));
+    dispatch(login({ email: data.email, password: data.password }));
   };
 
   return (
     <div className={style["login"]}>
       <div className={style["container"]}>
-        <form className={style["form"]} onSubmit={handleSubmit}>
+        <form className={style["form"]} onSubmit={handleSubmit(onSubmit)}>
           <Title className={style["title"]}>Sign In</Title>
-          {loginErrorMessage && <h1>{loginErrorMessage}</h1>}
+          {loginErrorMessage && <h1 className={style["error"]}>{loginErrorMessage}</h1>}
 
           <Input
             id="email"
-            name="user"
             icon={User}
             placeholder="Enter Email"
+            isValid={!errors.email}
+            {...register("email", { required: "Email is required" })}
             className={style["input"]}
-            // value={email}
-            // onChange={(e) => setEmail(e.target.value)}
           />
+
           <Input
             id="password"
-            name="password"
             icon={Lock}
             placeholder="Enter Password"
-            className={style["input"]}
             type="password"
-            // value={password}
-            // onChange={(e) => setPassword(e.target.value)}
+            isValid={!errors.password}
+            {...register("password", { required: "Password is required" })}
+            className={style["input"]}
           />
-          <Button>Login</Button>
+
+          <Button type="submit">Login</Button>
           <p className={style["p"]}>
             Don’t have an account? <Link to="/auth/register">Create One</Link>
           </p>
