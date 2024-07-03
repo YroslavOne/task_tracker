@@ -11,13 +11,15 @@ import { toggle } from "../../store/toggle.slice";
 
 function Dashboard() {
   const dispatch = useDispatch();
-  const taskList = useSelector((s: RootState) => s.tasks.tasks);
+  const { tasks, filterDate, filterTitle } = useSelector(
+    (s: RootState) => s.tasks
+  );
   const openWindowForm = () => {
     dispatch(toggle());
   };
   useEffect(() => {
     dispatch(getTasks("AllTasks"));
-  }, [dispatch]);
+  }, [filterDate, filterTitle, dispatch]);
 
   const d = new Date();
   const day = d.getDate();
@@ -41,10 +43,10 @@ function Dashboard() {
           </p>
         </div>
         <div className={style["task"]}>
-          {taskList ? (
-            taskList.map((t) => (
-              <Task 
-							key={t.id}
+          {tasks ? (
+            tasks.map((t) => (
+              <Task
+                key={t.id}
                 id={t.id}
                 title={t.title}
                 date={t.date}

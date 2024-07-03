@@ -13,6 +13,7 @@ export interface TasksState {
   taskErrorMessage?: string;
 	filterDate?: string | null;
   filterTitle?: string | null;
+  task: Task;
 }
 
 const initialState: TasksState = {
@@ -22,6 +23,21 @@ const initialState: TasksState = {
 };
 
 
+
+export const getTask = createAsyncThunk<
+  TasksState,
+  void,
+  { state: RootState }
+>("tasks/getTask/id", async (id, thunkApi) => {
+  const state = thunkApi.getState();
+  const jwt = state.user.jwt;
+  const { data } = await axios.get<TasksState>(`${PREFIX}tasks/${id}`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+  return data;
+});
 
 export const getTasks = createAsyncThunk<
   TasksState,
@@ -63,7 +79,13 @@ export const addTask = createAsyncThunk(
         } else if (key !== "image") {
           formData.append(key, taskData[key]);
         } else {
-          formData.append("image", taskData.image[0].file);
+          if(taskData.image){
+            console.log('true')
+          } else {
+            console.log('false')
+
+          }
+          formData.append("image", (taskData.image ? taskData.image[0].file: null));
         }
       });
       const { data } = await axios.post(`${PREFIX}tasks`, formData, {
@@ -214,7 +236,9 @@ export const taskSlice = createSlice({
       })
       .addCase(getTasks.fulfilled, (state, action) => {
         state.tasks = action.payload;
-				console.log("hi23e3ew3edw3e")
+      })
+      .addCase(getTask.fulfilled, (state, action) => {
+        state.task = action.payload;
       })
       .addCase(updateTask.pending, (state) => {
         state.taskErrorMessage = null;

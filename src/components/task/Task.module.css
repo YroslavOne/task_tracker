@@ -4,7 +4,7 @@
   padding: 9px 14px;
   position: relative;
   margin: 10px 0;
-  height: auto;
+  height: max-content;
 }
 .top-bar {
   /* width: calc(100%-28px); */
@@ -80,6 +80,7 @@ h2 {
   height: 88px;
   object-fit: cover;
   border-radius: 14px;
+  margin-top: 7px;
 }
 .created {
   width: 115px;

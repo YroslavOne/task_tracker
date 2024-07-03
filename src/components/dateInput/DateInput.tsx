@@ -16,12 +16,13 @@ function DateInput({ setValue, selectedDate, setSelectedDate }: DateInputProps) 
 
   return (
     <div className={style["date"]}>
-      <p>Date</p>
+      <p>Сomplete</p>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           className={style["date-input"]}
           value={selectedDate}
           onChange={handleDateChange}
+          disablePast
           slotProps={{
             textField: { size: 'small' },
           }}

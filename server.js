@@ -6,6 +6,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { colors } from "@mui/material";
+import dayjs from "dayjs";
 
 const app = express();
 app.use(bodyParser.json());
@@ -105,9 +106,9 @@ app.post("/register", (req, res) => {
   const token = jwt.sign({ id: id, email: email }, SECRET_KEY, {
     expiresIn: "1h",
   });
-  const emailFind = users.find(u=> u.email===email)
+  const emailFind = users.find((u) => u.email === email);
 
-  if (emailFind){
+  if (emailFind) {
     res.status(401).send({ message: "User with this email already exists!" });
   }
   const user = {
@@ -228,7 +229,7 @@ app.put(
     const { password, newPassword } = req.body;
 
     const userIndex = users.findIndex((u) => u.id === userId);
-    const userSearch = users.filter((u)=>u.id === userId)
+    const userSearch = users.filter((u) => u.id === userId);
 
     if (userIndex === -1) {
       return res.status(404).send({ message: "User not found" });
@@ -340,24 +341,50 @@ app.get("/tasks/:id", authenticateToken, (req, res) => {
   if (taskIndex === -1) {
     return res.status(404).send("Task not found");
   }
-  res.status(200).send({ message: "Task finded", taskIndex });
+  res.status(200).send(tasks[taskIndex]);
 });
 
-// Получение задач исполнителю
+// Получение задач
 app.get("/tasks", authenticateToken, (req, res) => {
-  const HowTaskNeed = req.query.howtaskneed;
+  const { howtaskneed, filterTitle, filterDate } = req.query;
   const userId = req.user.id;
-  console.log(req.user);
-  console.log(authenticateToken);
+  function filterByParameters(taskList) {
+    let filteredTask;
+    function filterByDate(taskList) {
+      if (filterDate) {
+        const filteredDate = taskList.filter(
+          (t) =>
+            dayjs(filterDate[0]) <= dayjs(t.date) &&
+            dayjs(t.date) <= dayjs(filterDate[1])
+        );
+
+        return filteredDate;
+      } else {
+        return taskList;
+      }
+    }
+
+    if (filterTitle) {
+      filteredTask = filterByDate(taskList).filter((t) =>
+        t.title.includes(filterTitle)
+      );
+    } else {
+      filteredTask = filterByDate(taskList);
+    }
+    return filteredTask;
+  }
+
   let taskList;
-  if (HowTaskNeed === "AllTasks") {
-    taskList = tasks;
-  } else if (HowTaskNeed === "Vital") {
-    taskList = tasks.filter(
+  if (howtaskneed === "AllTasks") {
+    taskList = filterByParameters(tasks);
+  } else if (howtaskneed === "Vital") {
+    taskList = filterByParameters(tasks).filter(
       (task) => task.executor.id === userId && task.status.name !== "Completed"
     );
   } else {
-    taskList = tasks.filter((task) => task.executor.id === userId);
+    taskList = filterByParameters(tasks).filter(
+      (task) => task.executor.id === userId
+    );
   }
 
   res.status(200).json(taskList);

@@ -1,7 +1,8 @@
+import style from './Help.module.css'
 function Help(){
 
     return(
-        <div>pray=))</div>
+        <div className={style["title"]}>pray=))</div>
     )
 }
 export default Help

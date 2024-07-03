@@ -10,16 +10,15 @@ import { toggle } from "../../store/toggle.slice";
 
 function VitalTask() {
   const dispatch = useDispatch();
-  const taskList = useSelector((s: RootState) => s.tasks.tasks);
+  const { tasks, filterDate, filterTitle } = useSelector((s: RootState) => s.tasks);
   const openWindowForm = () => {
     dispatch(toggle());
   };
   useEffect(() => {
     dispatch(getTasks("Vital"));
-  }, [dispatch]);
-  console.log(taskList)
+  }, [dispatch, filterDate, filterTitle]);
 
-  const arrayForRending = taskList?.filter((elem) =>elem)
+  const arrayForRending = tasks?.filter((elem) =>elem)
   const d = new Date();
   const day = d.getDate();
   const mount = d.toLocaleDateString("en-US", { month: "long" });
