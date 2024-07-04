@@ -54,6 +54,7 @@ function Dashboard() {
                 priority={t.priority}
                 status={t.status}
                 image={t.image}
+                activeLink={false}
               />
             ))
           ) : (

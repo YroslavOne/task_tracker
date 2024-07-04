@@ -5,6 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import prioritiesReducer from "./priorities.slice";
 import statusesReducer from "./statuses.slice";
 import toggleReducer from './toggle.slice'
+import openTaskReducer from './openTask.slice'
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     priorities: prioritiesReducer,
     statuses: statusesReducer,
     toggle: toggleReducer,
+    openTask: openTaskReducer,
   },
 });
 

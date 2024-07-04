@@ -40,7 +40,7 @@ let users = [
     password: "1",
     phone: "88005553535",
     token: "hi",
-    id: 0,
+    id: 1,
     image:
       "https://png.pngtree.com/background/20230611/original/pngtree-picture-of-a-blue-bird-on-a-black-background-picture-image_3124189.jpg",
   },
@@ -75,7 +75,7 @@ let priorities = [
 ];
 let tasks = [
   {
-    id: 0,
+    id: 1,
     executor: {
       userName: users[0].userName,
       email: users[0].email,
@@ -310,15 +310,16 @@ app.delete("/tasks/:id", authenticateToken, (req, res) => {
   res.status(200).send({ message: "Task deleted successfully" });
 });
 
-// завершение задачи
+// смена статуса задачи
 app.put(
-  "/tasks/complet/:id",
+  "/tasks/status-edit/:id",
   authenticateToken,
   upload.single("image"),
   (req, res) => {
     const status = req.body;
     const { id } = req.params;
     const taskIndex = tasks.findIndex((task) => task.id == id);
+    console.log(taskIndex);
     if (taskIndex === -1) {
       return res.status(404).send("Task not found");
     }

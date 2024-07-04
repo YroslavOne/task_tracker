@@ -2,9 +2,11 @@ import style from "./Task.module.css";
 import Menu from "../../../public/image/task/MENU.svg";
 import { TaskProps } from "./Task.props";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { completTask, deleteTask } from "../../store/tasks.slice";
 import { setIdAndTitle } from "../../store/toggle.slice";
+import { RootState } from "../../store/store";
+import { getTaskById } from "../../store/openTask.slice";
 
 function Task({
   id,
@@ -14,20 +16,30 @@ function Task({
   status,
   date,
   image,
+  activeLink,
 }: TaskProps) {
   const [openedWindowActioans, setOpenedWindowActioans] = useState(false);
   const dispatch = useDispatch();
   const openWindowActioans = () => {
     setOpenedWindowActioans(!openedWindowActioans);
   };
-  const deleteTaskNow = (id) => {
+  const openTask = (id: number) => {
+    if (activeLink) {
+      dispatch(getTaskById({ id: id }));
+      if (status.name === "Not Started") {
+        dispatch(completTask({id, statusForTask: "In Progress" }));
+      }
+    }
+  };
+
+  const deleteTaskNow = (id: number) => {
     dispatch(deleteTask(id));
   };
   const editTaskNow = (id) => {
     dispatch(setIdAndTitle({ id, "Edit Task": title }));
   };
   const completTaskNow = (id) => {
-    dispatch(completTask(id));
+    dispatch(completTask({id, statusForTask: "Completed"}));
   };
 
   return (
@@ -53,7 +65,7 @@ function Task({
           )}
         </div>
       </div>
-      <div className={style["content"]}>
+      <div onClick={() => openTask(id)} className={style["content"]}>
         <div className={style["description"]}>
           <h2>{title}</h2>
           <p>{description}</p>

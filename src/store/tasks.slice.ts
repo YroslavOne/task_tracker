@@ -43,14 +43,14 @@ export const getTasks = createAsyncThunk<
   TasksState,
   void,
   { state: RootState }
->("tasks/getTasks", async (params, thunkApi) => {
+>("tasks/getTasks", async (howtaskneeded, thunkApi) => {
   const state = thunkApi.getState();
   const jwt = state.user.jwt;
 	const filterTitle = state.tasks.filterTitle;
   const filterDate = state.tasks.filterDate;
   const { data } = await axios.get<TasksState>(`${PREFIX}tasks`, {
     params:{
-      howtaskneed: params,
+      howtaskneed: howtaskneeded,
 			filterTitle: filterTitle,
 			filterDate: filterDate
     },
@@ -143,16 +143,24 @@ export const updateTask = createAsyncThunk(
 
 export const completTask = createAsyncThunk(
   "tasks/complet",
-  async (taskId: number, { getState, rejectWithValue }) => {
+  async ({ id, statusForTask }: { id: number; statusForTask: string }, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const jwt = state.user.jwt;
-    try {
-      const status = {
+    let status
+    if(statusForTask==="Completed") {
+      status = {
         name: "Completed",
         color: "#05A301",
+      }
+    } else if(statusForTask==="In Progress"){
+      status = {
+        name: "In Progress",
+        color: "#0225FF",
       };
+    }
+    try {
       const { data } = await axios.put(
-        `${PREFIX}tasks/complet/${taskId}`,
+        `${PREFIX}tasks/status-edit/${id}`,
         status,
         {
           headers: {

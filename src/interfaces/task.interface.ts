@@ -7,7 +7,10 @@ export interface Task {
   };
   title: string;
   description: string;
-  priority: number;
+  priority: {
+    name: string;
+    color: string;
+  };
   status: {
     name: string;
     color: string;

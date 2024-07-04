@@ -1,8 +1,8 @@
 // import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import style from "./AddAndEditTask.module.css";
-import { AddAndEditTaskProps } from "./AddAndEditTask.props";
+// import { AddAndEditTaskProps } from "./AddAndEditTask.props";
 import ImageUpload from "../ImageUpload/ImageUpload";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 // import { TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,9 +37,8 @@ function AddAndEditTask() {
   const task = useSelector((state: RootState) =>
     state.tasks.tasks?.find((task) => task.id === id)
   );
-  const taskParms = task;
   const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const {  handleSubmit, reset, setValue } = useForm();
   const [images, setImages] = useState(
     task?.image ? [{ data_url: task?.image }] : null
   );
@@ -50,9 +49,6 @@ function AddAndEditTask() {
   );
   const [priority, setPriority] = useState(
     task?.priority ? task?.priority.name : "Extreme"
-  );
-  const [status, setStatus] = useState(
-    task?.status ? task?.status.name : "Not Started"
   );
   const [executorSelected, setExecutorSelected] = useState(task?.executor);
   const closeOpen = () => {
@@ -82,7 +78,7 @@ function AddAndEditTask() {
       title: data.title,
       description: data.description,
       priority: priority,
-      status: status,
+      status: "Not Started",
       date: dateForArr,
       image: imgUrlOrNot,
     };

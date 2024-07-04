@@ -4,24 +4,24 @@ import Plus from "./../../../public/image/dashboard/taSK.svg";
 import Task from "../../components/task/Task";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { getTasks, getVitalTasks } from "../../store/tasks.slice";
-import { useEffect, useState } from "react";
+import { getTasks } from "../../store/tasks.slice";
+import { useEffect } from "react";
 import { toggle } from "../../store/toggle.slice";
 import TaskСard from "../../components/taskCard/TaskCard";
-import cn from "classnames";
 
 function MyTask() {
   const dispatch = useDispatch();
   const { tasks, filterDate, filterTitle } = useSelector(
     (s: RootState) => s.tasks
   );
+  const { open, id }= useSelector((s: RootState)=> s.openTask)
   const openWindowForm = () => {
     dispatch(toggle());
   };
-  const [windowCard, setWindowCard] = useState(false);
   useEffect(() => {
     dispatch(getTasks("My"));
   }, [dispatch, filterDate, filterTitle]);
+
 
   const arrayForRending = tasks?.filter((elem) => elem);
   const d = new Date();
@@ -48,7 +48,7 @@ function MyTask() {
         <div className={style["tasks-and-task"]}>
           <div
             className={
-              !windowCard ? style["task"] : style["task-and-openwindow"]
+              !open ? style["task"] : style["task-and-openwindow"]
             }
           >
             {arrayForRending ? (
@@ -62,13 +62,14 @@ function MyTask() {
                   priority={t.priority}
                   status={t.status}
                   image={t.image}
+                  activeLink={true}
                 />
               ))
             ) : (
               <div>тютю задач</div>
             )}
           </div>
-          {windowCard && <TaskСard id={0} />}
+          {open && <TaskСard id={id} />}
         </div>
       </div>
     </div>

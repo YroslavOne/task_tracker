@@ -7,28 +7,32 @@ import wastebasket from "../../../public/image/cardItem/waste-basket.svg";
 import edit from "../../../public/image/cardItem/edit.svg";
 import { RootState } from "../../store/store";
 import { useEffect } from "react";
+import { closeTask } from "../../store/openTask.slice";
 
 function TaskСard({
   id
 }: TaskСardProps) {
   const dispatch = useDispatch();
-
   useEffect(()=>{
     dispatch(getTask(id))
-  },[dispatch])
+  },[dispatch, id])
+  
 
-  const {task} = useSelector((state: RootState)=> state.tasks)
+  const { task } = useSelector((state: RootState)=> state.tasks)
   const deleteTaskNow = () => {
     dispatch(deleteTask(id));
   };
-  console.log(task)
 
   const editTaskNow = () => {
     dispatch(setIdAndTitle({ id, "Edit Task": task?.title }));
   };
+  const close = () => {
+    dispatch(closeTask());
+  };
 
   return (
     <div className={style["container"]} key={task?.id}>
+       <div className={style["head"]}> <button onClick={close}>Close</button></div>
       <div className={style["img-and-options"]}>
         <img className={style["image"]} src={task?.image} />
         <div className={style["options"]}>
@@ -47,12 +51,14 @@ function TaskСard({
         <p>{task?.description}</p>
       </div>
       <div className={style["buttons"]}>
-        <button className={style["buttons"]}>
+        <div className={style["buttons-flex"]}>
+        <button className={style["button"]}>
           <img onClick={deleteTaskNow} src={wastebasket} />
         </button>
-        <button className={style["buttons"]}>
+        <button className={style["button"]}>
           <img onClick={editTaskNow} src={edit} />
         </button>
+        </div>
       </div>
     </div>
   );

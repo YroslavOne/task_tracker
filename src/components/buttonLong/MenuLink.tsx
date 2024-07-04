@@ -13,8 +13,6 @@ function ButtonLong({ children, image, link, className, ...props }: MenuLink) {
           ? cn(styles["button"], styles["active"], styles[`${image}-on`], className)
           : cn(styles["button"], styles[image], className)
       }
-      // className={cn(styles["button"], )}
-
       {...props}
     >
       {children}

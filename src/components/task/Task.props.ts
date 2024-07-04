@@ -17,4 +17,5 @@ export interface TaskProps {
     $Y: number;
   };
   image: string;
+  activeLink: boolean;
 }

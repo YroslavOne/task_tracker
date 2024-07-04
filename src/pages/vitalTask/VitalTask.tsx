@@ -4,13 +4,17 @@ import Plus from "./../../../public/image/dashboard/taSK.svg";
 import Task from "../../components/task/Task";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { getTasks, getVitalTasks } from "../../store/tasks.slice";
-import { useEffect, useState } from "react";
+import { getTasks } from "../../store/tasks.slice";
+import { useEffect } from "react";
 import { toggle } from "../../store/toggle.slice";
+import TaskСard from "../../components/taskCard/TaskCard";
 
 function VitalTask() {
   const dispatch = useDispatch();
-  const { tasks, filterDate, filterTitle } = useSelector((s: RootState) => s.tasks);
+  const { tasks, filterDate, filterTitle } = useSelector(
+    (s: RootState) => s.tasks
+  );
+  const { open, id }= useSelector((s: RootState)=> s.openTask)
   const openWindowForm = () => {
     dispatch(toggle());
   };
@@ -18,7 +22,8 @@ function VitalTask() {
     dispatch(getTasks("Vital"));
   }, [dispatch, filterDate, filterTitle]);
 
-  const arrayForRending = tasks?.filter((elem) =>elem)
+
+  const arrayForRending = tasks?.filter((elem) => elem);
   const d = new Date();
   const day = d.getDate();
   const mount = d.toLocaleDateString("en-US", { month: "long" });
@@ -40,23 +45,31 @@ function VitalTask() {
             {day} {mount} <span> &bull; Today</span>
           </p>
         </div>
-        <div className={style["task"]}>
-          {arrayForRending ? (
-            arrayForRending.map((t) => (
-              <Task 
-							key={t.id}
-                id={t.id}
-                title={t.title}
-                date={t.date}
-                description={t.description}
-                priority={t.priority}
-                status={t.status}
-                image={t.image}
-              />
-            ))
-          ) : (
-            <div>тютю задач</div>
-          )}
+        <div className={style["tasks-and-task"]}>
+          <div
+            className={
+              !open ? style["task"] : style["task-and-openwindow"]
+            }
+          >
+            {arrayForRending ? (
+              arrayForRending.map((t) => (
+                <Task
+                  key={t.id}
+                  id={t.id}
+                  title={t.title}
+                  date={t.date}
+                  description={t.description}
+                  priority={t.priority}
+                  status={t.status}
+                  image={t.image}
+                  activeLink={true}
+                />
+              ))
+            ) : (
+              <div>тютю задач</div>
+            )}
+          </div>
+          {open && <TaskСard id={id} />}
         </div>
       </div>
     </div>
