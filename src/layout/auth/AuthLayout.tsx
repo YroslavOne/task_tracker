@@ -5,13 +5,10 @@ import { useEffect } from 'react';
 export function AuthLayout() {
   const navigate = useNavigate()
   useEffect(() => {
-    navigate("auth/login");
+    navigate("login");
   }, [ navigate]);
   return (
     <div className={styles['layout']}>
-      <div className={styles['logo']}>
-        <img src="/logo.png" alt="" />
-      </div>
 
       <div className={styles['content']}>
         <Outlet />

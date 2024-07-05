@@ -5,54 +5,50 @@ import { loadState } from "./storage";
 import { JWT_PERSISTENT_STATE, UserPersistentState } from "./user.slice";
 import { RootState } from "./store";
 import { Task } from "../interfaces/task.interface";
-import statusesSlice from "./statuses.slice";
 
 export interface TasksState {
   jwt: string | null;
   tasks?: Task[];
   taskErrorMessage?: string;
-	filterDate?: string | null;
+  filterDate?: [string | null, string | null] | null;
   filterTitle?: string | null;
-  task: Task;
+  task?: Task;
 }
 
 const initialState: TasksState = {
   jwt: loadState<UserPersistentState>(JWT_PERSISTENT_STATE)?.jwt ?? null,
-	filterDate: null,
+  filterDate: null,
   filterTitle: null,
 };
 
-
-
-export const getTask = createAsyncThunk<
-  TasksState,
-  void,
-  { state: RootState }
->("tasks/getTask/id", async (id, thunkApi) => {
-  const state = thunkApi.getState();
-  const jwt = state.user.jwt;
-  const { data } = await axios.get<TasksState>(`${PREFIX}tasks/${id}`, {
-    headers: {
-      Authorization: `Bearer ${jwt}`,
-    },
-  });
-  return data;
-});
+export const getTask = createAsyncThunk<TasksState, void, { state: RootState }>(
+  "tasks/getTask/id",
+  async (id, thunkApi) => {
+    const state = thunkApi.getState();
+    const jwt = state.user.jwt;
+    const { data } = await axios.get<TasksState>(`${PREFIX}tasks/${id}`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    return data;
+  }
+);
 
 export const getTasks = createAsyncThunk<
   TasksState,
-  void,
+  string,
   { state: RootState }
 >("tasks/getTasks", async (howtaskneeded, thunkApi) => {
   const state = thunkApi.getState();
   const jwt = state.user.jwt;
-	const filterTitle = state.tasks.filterTitle;
+  const filterTitle = state.tasks.filterTitle;
   const filterDate = state.tasks.filterDate;
   const { data } = await axios.get<TasksState>(`${PREFIX}tasks`, {
-    params:{
+    params: {
       howtaskneed: howtaskneeded,
-			filterTitle: filterTitle,
-			filterDate: filterDate
+      filterTitle: filterTitle,
+      filterDate: filterDate,
     },
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -65,7 +61,6 @@ export const addTask = createAsyncThunk(
   "tasks/addTask",
   async (taskData: Task, { getState, rejectWithValue }) => {
     const jwt = getState().user.jwt;
-    console.log(taskData);
 
     try {
       const formData = new FormData();
@@ -79,13 +74,10 @@ export const addTask = createAsyncThunk(
         } else if (key !== "image") {
           formData.append(key, taskData[key]);
         } else {
-          if(taskData.image){
-            console.log('true')
-          } else {
-            console.log('false')
-
-          }
-          formData.append("image", (taskData.image ? taskData.image[0].file: null));
+          formData.append(
+            "image",
+            taskData.image ? taskData.image[0].file : null
+          );
         }
       });
       const { data } = await axios.post(`${PREFIX}tasks`, formData, {
@@ -143,16 +135,19 @@ export const updateTask = createAsyncThunk(
 
 export const completTask = createAsyncThunk(
   "tasks/complet",
-  async ({ id, statusForTask }: { id: number; statusForTask: string }, { getState, rejectWithValue }) => {
+  async (
+    { id, statusForTask }: { id: number; statusForTask: string },
+    { getState, rejectWithValue }
+  ) => {
     const state = getState() as RootState;
     const jwt = state.user.jwt;
-    let status
-    if(statusForTask==="Completed") {
+    let status;
+    if (statusForTask === "Completed") {
       status = {
         name: "Completed",
         color: "#05A301",
-      }
-    } else if(statusForTask==="In Progress"){
+      };
+    } else if (statusForTask === "In Progress") {
       status = {
         name: "In Progress",
         color: "#0225FF",
@@ -216,13 +211,17 @@ export const taskSlice = createSlice({
     clearTaskError: (state) => {
       state.taskErrorMessage = undefined;
     },
-		filterSearch: (state, action: PayloadAction<{ search: string}>) => {
+    filterSearch: (
+      state,
+      action: PayloadAction<{ search: string | null | undefined }>
+    ) => {
       state.filterTitle = action.payload.search;
-
     },
-		filterDate: (state, action: PayloadAction<{ date: string }>) => {
+    filterDate: (
+      state,
+      action: PayloadAction<{ date: [string | null, string | null] | null }>
+    ) => {
       state.filterDate = action.payload.date;
-
     },
   },
   extraReducers: (builder) => {
@@ -252,7 +251,6 @@ export const taskSlice = createSlice({
         state.taskErrorMessage = null;
       })
       .addCase(updateTask.fulfilled, (state, action) => {
-        console.log(state.tasks);
         state.tasks = action.payload;
       })
       .addCase(updateTask.rejected, (state, action) => {
@@ -267,7 +265,6 @@ export const taskSlice = createSlice({
       .addCase(completTask.rejected, (state, action) => {
         state.taskErrorMessage = action.payload as string;
       });
-			
   },
 });
 

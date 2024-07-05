@@ -10,10 +10,10 @@ import Input from "../../components/input/Input";
 import Button from "../../components/button/Button";
 import Title from "../../components/title/Title";
 import { Link, useNavigate } from "react-router-dom";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, userActions } from "../../store/user.slice";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { useForm } from "react-hook-form";
 
 export interface RegisterForm {
@@ -34,7 +34,7 @@ function Registration() {
   } = useForm<RegisterForm>();
   const { jwt, registerErrorMessage } = useSelector((s: RootState) => s.user);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (jwt) {
@@ -55,7 +55,9 @@ function Registration() {
         </div>
         <form className={style["form"]} onSubmit={handleSubmit(onSubmit)}>
           <Title className={style["title"]}>Sign Up</Title>
-          {registerErrorMessage && <h1 className={style["error"]}>{registerErrorMessage}</h1>}
+          {registerErrorMessage && (
+            <h1 className={style["error"]}>{registerErrorMessage}</h1>
+          )}
 
           <Input
             id="firstname"

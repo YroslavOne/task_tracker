@@ -20,7 +20,7 @@ export interface UserState {
   editProfileErrorMessage?: string;
   profile?: Profile;
   profileAll?: ProfileAll;
-  isUpdated?: boolean,
+  isUpdated?: boolean;
 }
 
 const initialState: UserState = {
@@ -31,7 +31,7 @@ export const login = createAsyncThunk(
   "user/login",
   async (params: { email: string; password: string }) => {
     try {
-      const { data } = await axios.post<LoginResponse> (`${PREFIX}login`, {
+      const { data } = await axios.post<LoginResponse>(`${PREFIX}login`, {
         email: params.email,
         password: params.password,
       });
@@ -86,7 +86,7 @@ export const getProfileAll = createAsyncThunk<
   ProfileAll,
   void,
   { state: RootState }
->("user/getprofile/all", async (_, thunkApi) => {
+>("user/getProfileAll", async (_, thunkApi) => {
   const jwt = thunkApi.getState().user.jwt;
   const { data } = await axios.get<ProfileAll>(`${PREFIX}login/profile/all`, {
     headers: {
@@ -115,11 +115,15 @@ export const updateProfile = createAsyncThunk(
           }
         }
       });
-      const { data } = await axios.put(`${PREFIX}login/profile/edit`, formData, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
+      const { data } = await axios.put(
+        `${PREFIX}login/profile/edit`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
 
       return data;
     } catch (error) {
@@ -130,21 +134,28 @@ export const updateProfile = createAsyncThunk(
 
 export const updatePassword = createAsyncThunk(
   "user/profile/edit-password",
-  async (passwords: {
-    password: string;
-    newPassword: string;
-  }, { getState, rejectWithValue }) => {
+  async (
+    passwords: {
+      password: string;
+      newPassword: string;
+    },
+    { getState, rejectWithValue }
+  ) => {
     const state = getState() as RootState;
     const jwt = state.user.jwt;
     try {
-      const { data } = await axios.put(`${PREFIX}login/profile/edit-password`, {
-        password: passwords.password,
-        newPassword: passwords.newPassword,
-      }, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
+      const { data } = await axios.put(
+        `${PREFIX}login/profile/edit-password`,
+        {
+          password: passwords.password,
+          newPassword: passwords.newPassword,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
 
       return data;
     } catch (e) {

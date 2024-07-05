@@ -64,4 +64,6 @@ button {
 }
 .today {
   margin-bottom: 8px;
+  display: flex;
+  align-items: start;
 }

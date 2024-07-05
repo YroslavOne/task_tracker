@@ -15,7 +15,7 @@ export interface TaskProps {
     $D: number;
     $M: number;
     $Y: number;
-  };
+  } | string;
   image: string;
   activeLink: boolean;
 }

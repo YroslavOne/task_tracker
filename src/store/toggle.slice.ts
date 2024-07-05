@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ToggleState {
   value: boolean;
@@ -9,23 +9,25 @@ interface ToggleState {
 const initialState: ToggleState = {
   value: false,
   id: null,
-  title: 'Add New Task',
+  title: "Add New Task",
 };
 
 const toggleSlice = createSlice({
-  name: 'toggle',
+  name: "toggle",
   initialState,
   reducers: {
     toggle: (state) => {
       state.value = !state.value;
-      state.id= null;
-      state.title = 'Add New Task';
+      state.id = null;
+      state.title = "Add New Task";
     },
-    setIdAndTitle: (state, action: PayloadAction<{ id: number, title: string }>) => {
+    setIdAndTitle: (
+      state,
+      action: PayloadAction<{ id: number; title: string }>
+    ) => {
       state.id = action.payload.id;
       state.title = action.payload.title;
       state.value = !state.value;
-
     },
   },
 });

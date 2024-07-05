@@ -7,16 +7,17 @@ import "react-toastify/dist/ReactToastify.css";
 
 import style from "./SettingsMain.module.css";
 import ImageUpload from "../../../../components/ImageUpload/ImageUpload";
-import { RootState } from "../../../../store/store";
+import { AppDispatch, RootState } from "../../../../store/store";
 import { getProfile, updateProfile } from "../../../../store/user.slice";
 import InputForSettings from "../../../../components/inputForSettings/InputForSettings";
 import ButtonStandard from "../../../../components/buttonStandard/ButtonStandard";
 import { Profile } from "../../../../interfaces/user.interface";
+import { ImageListType } from "react-images-uploading";
 
 function SettingsMain() {
   const { handleSubmit } = useForm();
-  const dispatch = useDispatch();
-  const { profile, editProfileErrorMessage } = useSelector(
+  const dispatch = useDispatch<AppDispatch>();
+  const { profile } = useSelector(
     (s: RootState) => s.user
   );
 
@@ -24,7 +25,7 @@ function SettingsMain() {
     dispatch(getProfile());
   }, [dispatch]);
 
-  const [images, setImages] = useState(
+  const [images, setImages] = useState<ImageListType | null>(
     profile?.image ? [{ data_url: profile?.image }] : null
   );
   const [firstName, setFirstName] = useState<string | undefined>(

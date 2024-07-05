@@ -1,6 +1,6 @@
 function ErrorPage(){
 return (<div>
-    ЕГОР
+    ЕГГОР
 </div>)
 }
 export default ErrorPage;

@@ -8,32 +8,37 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { RootState, AppDispatch } from "../../store/store";
 import { getProfileAll } from "../../store/user.slice";
 import { ProfileAll } from "../../interfaces/userForTask.interface";
 import { ExecutorSelectedProps } from "./ExecutorSelect.props";
 import style from "./ExecutorSelect.module.css";
 
+interface selectedExecutorState {
+  username: string;
+  email: string;
+  id: number;
+}
+
 function ExecutorSelect({
   executorSelected,
   setExecutorSelected,
 }: ExecutorSelectedProps) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const executors: ProfileAll | undefined = useSelector(
     (s: RootState) => s.user.profileAll
   );
-  const [executor, setExecutor] = useState('');
-
+  const [executor, setExecutor] = useState("");
   useEffect(() => {
     dispatch(getProfileAll());
   }, [dispatch]);
 
   useEffect(() => {
     if (executorSelected && executors) {
-      const selectedExecutor = executors.find(
-        (element) => element.email === executorSelected.email
+      const selectedExecutor: selectedExecutorState | null = executors.find(
+        (element: ProfileAll) => element.email === executorSelected.email
       );
-      setExecutor(selectedExecutor ? String(selectedExecutor.id) : '');
+      setExecutor(selectedExecutor ? String(selectedExecutor.id) : "");
     }
   }, [executorSelected, executors]);
 

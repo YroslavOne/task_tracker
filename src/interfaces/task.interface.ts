@@ -1,3 +1,5 @@
+import { ImageListType } from "react-images-uploading";
+
 export interface Task {
   id: number;
   executor: {
@@ -16,5 +18,5 @@ export interface Task {
     color: string;
   };
   date: string;
-  image: string;
+  image: ImageListType;
 }

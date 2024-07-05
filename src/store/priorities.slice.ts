@@ -1,6 +1,5 @@
-// src/store/prioritiesSlice.ts
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 interface Priority {
   name: string;
@@ -19,15 +18,16 @@ const initialState: PrioritiesState = {
   error: null,
 };
 
-// Асинхронное действие для получения приоритетов
-export const fetchPriorities = createAsyncThunk('priorities/fetchPriorities', async () => {
-  const response = await axios.get('http://localhost:9995/priorities');
-  console.log(response.data)
-  return response.data;
-});
+export const fetchPriorities = createAsyncThunk(
+  "priorities/fetchPriorities",
+  async () => {
+    const response = await axios.get("http://localhost:9995/priorities");
+    return response.data;
+  }
+);
 
 const prioritiesSlice = createSlice({
-  name: 'priorities',
+  name: "priorities",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -42,7 +42,7 @@ const prioritiesSlice = createSlice({
       })
       .addCase(fetchPriorities.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch priorities';
+        state.error = action.error.message || "Failed to fetch priorities";
       });
   },
 });

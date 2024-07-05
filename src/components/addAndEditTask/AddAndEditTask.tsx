@@ -1,48 +1,41 @@
-// import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import style from "./AddAndEditTask.module.css";
-// import { AddAndEditTaskProps } from "./AddAndEditTask.props";
 import ImageUpload from "../ImageUpload/ImageUpload";
-import { useState } from "react";
-// import { TextField } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { useState, Dispatch, SetStateAction } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { RootState, AppDispatch } from "../../store/store";
 import { addTask, updateTask } from "../../store/tasks.slice";
 import { Task } from "../../interfaces/task.interface";
 import ExecutorSelect from "../ExecutorSelect/ExecutorSelect";
 import DateInput from "../dateInput/DateInput";
 import PrioritiesInput from "../prioritiesInput/PrioritiesInput";
 import { toggle } from "../../store/toggle.slice";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import ButtonStandard from "../buttonStandard/ButtonStandard";
+import { UserProfile } from "../../interfaces/userForTask.interface";
+import { ImageListType } from "react-images-uploading";
 
 interface FormTask {
   title: string;
-  image: [];
-  date:
-    | {
-        $D: number;
-        $M: number;
-        $y: number;
-      }
-    | string;
+  image: File[] | string[];
+  date: Dayjs | string;
   description: string;
   priority: string;
 }
 
-function AddAndEditTask() {
-  const dispatch = useDispatch();
+const AddAndEditTask: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { title, id } = useSelector((state: RootState) => state.toggle);
 
   const task = useSelector((state: RootState) =>
     state.tasks.tasks?.find((task) => task.id === id)
   );
   const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
-  const {  handleSubmit, reset, setValue } = useForm();
-  const [images, setImages] = useState(
+  const { handleSubmit, reset, setValue } = useForm<FormTask>();
+  const [images, setImages] = useState<ImageListType | null>(
     task?.image ? [{ data_url: task?.image }] : null
   );
-  const [selectedDate, setSelectedDate] = useState(dayjs(task?.date));
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs(task?.date));
   const [titleHere, setTitleHere] = useState(task?.title ? task?.title : "");
   const [description, setDescription] = useState(
     task?.description ? task?.description : ""
@@ -50,7 +43,8 @@ function AddAndEditTask() {
   const [priority, setPriority] = useState(
     task?.priority ? task?.priority.name : "Extreme"
   );
-  const [executorSelected, setExecutorSelected] = useState(task?.executor);
+  const [executorSelected, setExecutorSelected] = useState<UserProfile | undefined>(task?.executor);
+
   const closeOpen = () => {
     dispatch(toggle());
   };
@@ -59,19 +53,14 @@ function AddAndEditTask() {
   setValue("title", titleHere);
   setValue("description", description);
 
-  const onSubmit = (data: FormTask) => {
+  const onSubmit: SubmitHandler<FormTask> = (data) => {
     const dateForArr =
-      "$D" in data.date
-        ? `${
-            String(data.date.$M).length
-              ? "0" + (data.date.$M + 1)
-              : data.date.$M + 1
-          }.${
-            String(data.date.$D).length === 1
-              ? "0" + data.date.$D
-              : data.date.$D
-          }.${data.date.$y}`
+      dayjs.isDayjs(data.date)
+        ? `${data.date.month() + 1 < 10 ? "0" : ""}${data.date.month() + 1}.${
+            data.date.date() < 10 ? "0" : ""
+          }${data.date.date()}.${data.date.year()}`
         : data.date;
+    
     const imgUrlOrNot = images ? images[0].file ? images : images[0].data_url: null;
     const taskData: Task = {
       executor: executorSelected,
@@ -82,7 +71,8 @@ function AddAndEditTask() {
       date: dateForArr,
       image: imgUrlOrNot,
     };
-    if (id === "") {
+
+    if (id === null) {
       dispatch(addTask(taskData));
     } else {
       dispatch(updateTask({ taskId: id, taskData }));
@@ -116,7 +106,6 @@ function AddAndEditTask() {
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
           />
-
           <PrioritiesInput priority={priority} setPriority={setPriority} />
           <div className={style["responsible"]}>
             <ExecutorSelect
@@ -130,7 +119,7 @@ function AddAndEditTask() {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                rows="12"
+                rows={12}
                 placeholder="Start writing here....."
               />
             </div>
@@ -149,5 +138,6 @@ function AddAndEditTask() {
       </form>
     </div>
   );
-}
+};
+
 export default AddAndEditTask;

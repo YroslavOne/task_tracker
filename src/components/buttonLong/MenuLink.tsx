@@ -1,10 +1,9 @@
 import styles from "./MenuLink.module.css";
 import { MenuLink } from "./MenuLink.props.ts";
 import cn from "classnames";
-import dashboard from "../../../public/image/menu/sidebar/Dashboard.svg";
 import { NavLink } from "react-router-dom";
 
-function ButtonLong({ children, image, link, className, ...props }: MenuLink) {
+function ButtonLong({ children, image, link, className,  ...props }: MenuLink) {
   return (
     <NavLink
       to={link}

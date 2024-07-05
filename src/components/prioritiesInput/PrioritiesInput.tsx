@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import style from "./PrioritiesInput.module.css";
 import { useEffect, useState } from "react";
 import { fetchPriorities } from "../../store/priorities.slice";
@@ -10,10 +10,10 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import { PrioritiesInputProps } from "./prioritiesInput.props";
+import { PrioritiesInputProps } from "./PrioritiesInput.props";
 
 function PrioritiesInput({ priority, setPriority }: PrioritiesInputProps) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const priorities = useSelector(
     (state: RootState) => state.priorities.priorities
   );
@@ -23,7 +23,6 @@ function PrioritiesInput({ priority, setPriority }: PrioritiesInputProps) {
     setSelectedValue(event.target.value);
     setPriority(event.target.value);
   };
-  console.log(priority)
 
   const controlProps = (item: string) => ({
     checked: selectedValue === item,

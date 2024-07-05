@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../store/store";
+import { AppDispatch, RootState } from "../../../../store/store";
 import {
   getProfile,
   updatePassword,
@@ -26,10 +26,8 @@ function ChangePassword() {
     formState: { errors },
     getValues,
   } = useForm<ChangePasswordForm>();
-  const dispatch = useDispatch();
-  const { profile, editProfileErrorMessage, isUpdated } = useSelector(
-    (s: RootState) => s.user
-  );
+  const dispatch = useDispatch<AppDispatch>();
+  const { profile } = useSelector((s: RootState) => s.user);
 
   useEffect(() => {
     dispatch(getProfile());

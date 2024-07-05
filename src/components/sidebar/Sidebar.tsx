@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProfile, userActions } from "../../store/user.slice";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 
 function SideBar() {
   const listMenu: {
@@ -19,7 +19,7 @@ function SideBar() {
     { title: "Help", parameter: "help", link: "/help" },
   ];
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 const profile = useSelector((s:RootState)=>s.user.profile)
   useEffect(() => {
     dispatch(getProfile());
@@ -64,7 +64,6 @@ const profile = useSelector((s:RootState)=>s.user.profile)
           image={"logout"}
           className={styles["logout-link"]}
         >
-          {" "}
           logout
         </MenuLink>
       </div>

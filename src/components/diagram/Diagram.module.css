@@ -1,0 +1,13 @@
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .todo {
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 18.15px;
+    text-align: left;
+    color: rgba(255, 103, 103, 1);
+  }

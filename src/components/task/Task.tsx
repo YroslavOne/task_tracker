@@ -2,11 +2,11 @@ import style from "./Task.module.css";
 import Menu from "../../../public/image/task/MENU.svg";
 import { TaskProps } from "./Task.props";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { completTask, deleteTask } from "../../store/tasks.slice";
 import { setIdAndTitle } from "../../store/toggle.slice";
-import { RootState } from "../../store/store";
 import { getTaskById } from "../../store/openTask.slice";
+import { AppDispatch } from "../../store/store";
 
 function Task({
   id,
@@ -19,7 +19,7 @@ function Task({
   activeLink,
 }: TaskProps) {
   const [openedWindowActioans, setOpenedWindowActioans] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const openWindowActioans = () => {
     setOpenedWindowActioans(!openedWindowActioans);
   };
@@ -35,10 +35,10 @@ function Task({
   const deleteTaskNow = (id: number) => {
     dispatch(deleteTask(id));
   };
-  const editTaskNow = (id) => {
-    dispatch(setIdAndTitle({ id, "Edit Task": title }));
+  const editTaskNow = (id: number) => {
+    dispatch(setIdAndTitle({ id, title: "Edit Task" }));
   };
-  const completTaskNow = (id) => {
+  const completTaskNow = (id: number) => {
     dispatch(completTask({id, statusForTask: "Completed"}));
   };
 

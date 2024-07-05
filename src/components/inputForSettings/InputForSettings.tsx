@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import style from "./InputForSettings.module.css";
 import cn from "classnames";
 import { InputForSettingsProps } from "./InputForSettings.props";

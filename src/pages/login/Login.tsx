@@ -9,9 +9,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, userActions } from "../../store/user.slice";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { useForm } from "react-hook-form";
-import cn from "classnames";
 
 interface ChangeForm {
   email: string;
@@ -26,7 +25,7 @@ function Login() {
   } = useForm<ChangeForm>();
   const { jwt, loginErrorMessage } = useSelector((s: RootState) => s.user);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (jwt) {

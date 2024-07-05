@@ -176,11 +176,11 @@ app.get("/login/profile", authenticateToken, (req, res) => {
 
 app.get("/login/profile/all", authenticateToken, (req, res) => {
   const user = [];
-  users.map((u, index) => {
+  users.map((u) => {
     user.push({
       username: u.userName,
       email: u.email,
-      id: index,
+      id: u.id,
     });
   });
   res.status(200).json(user);
@@ -277,7 +277,6 @@ app.put("/tasks/:id", authenticateToken, upload.single("image"), (req, res) => {
   const priorityValue = priorities.find((elem) => elem.name === priority);
   const statusValue = statuses.find((elem) => elem.name === status);
   const image = req.file ? req.file.path : imageUrl;
-  console.log(title);
   const taskIndex = tasks.findIndex((task) => task.id == id);
   if (taskIndex === -1) {
     return res.status(404).send("Task not found");
@@ -319,7 +318,6 @@ app.put(
     const status = req.body;
     const { id } = req.params;
     const taskIndex = tasks.findIndex((task) => task.id == id);
-    console.log(taskIndex);
     if (taskIndex === -1) {
       return res.status(404).send("Task not found");
     }

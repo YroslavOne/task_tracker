@@ -1,11 +1,11 @@
 export interface Profile {
-  id: number;
+  id?: number;
   firstName: string | undefined;
   lastName: string | undefined;
-  userName: string;
-  email: string;
-  password: string;
+  userName: string | undefined;
+  email: string | undefined;
+  password?: string;
   phone: string | undefined;
-  token: string;
+  token?: string;
   image: string | undefined;
 }

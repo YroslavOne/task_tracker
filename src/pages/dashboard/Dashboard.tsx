@@ -3,14 +3,14 @@ import Pending from "./../../../public/image/dashboard/Pending.svg";
 import Plus from "./../../../public/image/dashboard/taSK.svg";
 import Task from "../../components/task/Task";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { getTasks } from "../../store/tasks.slice";
-import { useEffect, useState } from "react";
-import AddAndEditTask from "../../components/addAndEditTask/AddAndEditTask";
+import { useEffect } from "react";
 import { toggle } from "../../store/toggle.slice";
+import Diagram from "../../components/diagram/Diagram";
 
 function Dashboard() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { tasks, filterDate, filterTitle } = useSelector(
     (s: RootState) => s.tasks
   );
@@ -32,9 +32,9 @@ function Dashboard() {
             <img src={Pending} alt="" />
             <p className={style["todo"]}>To-Do</p>
           </div>
-          <div className={style["button"]}>
+          <div onClick={openWindowForm} className={style["button"]}>
             <img className={style["image"]} src={Plus} alt="" />
-            <p onClick={openWindowForm}> Add task</p>
+            <p > Add task</p>
           </div>
         </div>
         <div>
@@ -61,6 +61,7 @@ function Dashboard() {
             <div>тютю задач</div>
           )}
         </div>
+        <Diagram tasks={tasks}/>
       </div>
     </div>
   );

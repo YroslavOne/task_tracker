@@ -4,8 +4,8 @@ import userSlice, { JWT_PERSISTENT_STATE } from "./user.slice";
 import { configureStore } from "@reduxjs/toolkit";
 import prioritiesReducer from "./priorities.slice";
 import statusesReducer from "./statuses.slice";
-import toggleReducer from './toggle.slice'
-import openTaskReducer from './openTask.slice'
+import toggleReducer from "./toggle.slice";
+import openTaskReducer from "./openTask.slice";
 
 export const store = configureStore({
   reducer: {
@@ -23,4 +23,4 @@ store.subscribe(() => {
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispath = typeof store.dispatch;
+export type AppDispatch = typeof store.dispatch;

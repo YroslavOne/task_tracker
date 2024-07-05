@@ -1,4 +1,4 @@
 export interface PrioritiesInputProps{
-    priority: number ;
-    setPriority: (number: number) => void;
+    priority: string ;
+    setPriority: (value: string) => void;
   }

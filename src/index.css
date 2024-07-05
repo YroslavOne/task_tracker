@@ -20,6 +20,13 @@ a {
 a:hover {
   color: #535bf2;
 }
+p{
+  font-family: Montserrat;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 19.5px;
+  text-align: left;
+}
 
 body {
   background-image: url(../public/image/istockphoto-1483863447-2048x2048\ 2.png);

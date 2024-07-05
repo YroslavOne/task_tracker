@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ButtonSquare from "../buttonSquare/ButtonSquare";
 import style from "./Menu.module.css";
-import Bell from "./../../../public/image/menu/top/bell.svg";
 import Loop from "../../../public/image/menu/top/Search.svg";
 import Calendar from "../../../public/image/menu/top/calendar.svg";
 import Today from "./component/Today";
@@ -19,8 +18,8 @@ function Menu() {
   const [searchValue, setSearchValue] = useState<string | null | undefined>(
     filterTitle
   );
-  const [searchDate, setsearchDate] = useState<[string, string] | null>(
-    filterDate ? (filterDate as [string, string]) : null
+  const [searchDate, setsearchDate] = useState<[string | null, string | null] | null>(
+    filterDate ? filterDate : null
   );
   const [open, setOpen] = useState<boolean>(false);
 
@@ -60,7 +59,6 @@ function Menu() {
         />
       </div>
       <div className={style["two-button"]}>
-        {/* <ButtonSquare image={Bell} className={style["button-square"]} /> */}
         <ButtonSquare
           onClick={handleCalendarOpen}
           image={Calendar}
