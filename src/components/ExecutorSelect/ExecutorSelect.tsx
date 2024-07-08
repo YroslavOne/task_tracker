@@ -23,6 +23,7 @@ interface selectedExecutorState {
 function ExecutorSelect({
   executorSelected,
   setExecutorSelected,
+  error,
 }: ExecutorSelectedProps) {
   const dispatch = useDispatch<AppDispatch>();
   const executors: ProfileAll | undefined = useSelector(
@@ -56,6 +57,7 @@ function ExecutorSelect({
     <Box sx={{ width: "70%" }}>
       <FormControl fullWidth>
         <InputLabel id="executor-select-label">Executor</InputLabel>
+        {error&& <div>{error}</div>}
         <Select
           className={style["select"]}
           labelId="executor-select-label"

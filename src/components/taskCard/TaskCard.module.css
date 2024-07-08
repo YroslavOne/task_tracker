@@ -5,6 +5,7 @@
   position: relative;
   margin: 10px 0;
   height: 600px;
+  margin-left: 20px;
 }
 .head {
   display: flex;

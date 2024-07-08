@@ -64,7 +64,7 @@
   }
   .task-and-openwindow {
     display: grid;
-    grid-template-columns: 90%;
+    grid-template-columns: 95%;
     row-gap: 0%;
     column-gap: 5%;
     max-height: 650px;

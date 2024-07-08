@@ -2,8 +2,10 @@ import style from "./Diagram.module.css";
 import Image from "../../../public/image/dashboard/diagram.svg";
 import PieChart from "../pieChart/PieChart";
 import { DaigramProps } from "./Diagram.props";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
+import { fetchCountedStatuses } from "../../store/statuses.slice";
 
 type StateType = { name: string; color: string; value: number };
 
@@ -15,25 +17,9 @@ interface StatusState {
 }
 
 function Diagram({ tasks }: DaigramProps) {
-  const statusDefault = [
-    {
-      name: "Not Started",
-      color: "#F21E1E",
-      value: 0,
-    },
-    {
-      name: "In Progress",
-      color: "#0225FF",
-      value: 0,
-    },
-    {
-      name: "Completed",
-      color: "#05A301",
-      value: 0,
-    },
-  ];
-  const [status, SetStatus] = useState<StatusState>(statusDefault);
- 
+  const dispatch = useDispatch<AppDispatch>();
+  const statuses = useSelector((s: RootState) => s.statuses.statuses);
+  console.log(statuses)
 
   return (
     <div>
@@ -41,8 +27,15 @@ function Diagram({ tasks }: DaigramProps) {
         <img src={Image} alt="" />
         <p className={style["todo"]}>Task Status</p>
       </div>
-      <div>
-        <PieChart />
+      <div className={style["container-pie"]}>
+        {statuses.map((status, index) => (
+          <PieChart
+            id={index}
+            name={status.name}
+            color={status.color}
+            count={(status.valueCounted / tasks?.length) * 100}
+          />
+        ))}
       </div>
     </div>
   );

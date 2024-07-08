@@ -4,6 +4,7 @@ import axios from "axios";
 interface Status {
   name: string;
   color: string;
+  valueCounted: number;
 }
 
 interface StatusesState {
@@ -22,6 +23,14 @@ export const fetchStatuses = createAsyncThunk(
   "statuses/fetchStatuses",
   async () => {
     const response = await axios.get("http://localhost:9995/statuses");
+    return response.data;
+  }
+);
+
+export const fetchCountedStatuses = createAsyncThunk(
+  "statuses/fetchCountedStatuses",
+  async () => {
+    const response = await axios.get("http://localhost:9995/statuses/count");
     return response.data;
   }
 );
@@ -46,6 +55,21 @@ const statusesSlice = createSlice({
       .addCase(fetchStatuses.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch statuses";
+      })
+      .addCase(fetchCountedStatuses.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchCountedStatuses.fulfilled,
+        (state, action: PayloadAction<Status[]>) => {
+          state.loading = false;
+          state.statuses = action.payload;
+        }
+      )
+      .addCase(fetchCountedStatuses.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch counted statuses";
       });
   },
 });

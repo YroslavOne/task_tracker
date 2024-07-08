@@ -1,3 +1,4 @@
+import MenuPortal from "../menuPortal/MenuPortal";
 import style from "./Task.module.css";
 import Menu from "../../../public/image/task/MENU.svg";
 import { TaskProps } from "./Task.props";
@@ -19,10 +20,18 @@ function Task({
   activeLink,
 }: TaskProps) {
   const [openedWindowActioans, setOpenedWindowActioans] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const dispatch = useDispatch<AppDispatch>();
-  const openWindowActioans = () => {
+
+  const openWindowActioans = (e) => {
+    const rect = e.target.getBoundingClientRect();
+    setMenuPosition({
+      top: rect.top + window.scrollY + rect.height,
+      left: rect.left + window.scrollX,
+    });
     setOpenedWindowActioans(!openedWindowActioans);
   };
+
   const openTask = (id: number) => {
     if (activeLink) {
       dispatch(getTaskById({ id: id }));
@@ -34,12 +43,16 @@ function Task({
 
   const deleteTaskNow = (id: number) => {
     dispatch(deleteTask(id));
+    dispatch(fetchCountedStatuses());
   };
+
   const editTaskNow = (id: number) => {
     dispatch(setIdAndTitle({ id, title: "Edit Task" }));
   };
+
   const completTaskNow = (id: number) => {
     dispatch(completTask({id, statusForTask: "Completed"}));
+    dispatch(fetchCountedStatuses());
   };
 
   return (
@@ -57,11 +70,19 @@ function Task({
             onClick={openWindowActioans}
           />
           {openedWindowActioans && (
-            <ul>
-              <li onClick={() => editTaskNow(id)}>Edit</li>
-              <li onClick={() => deleteTaskNow(id)}>Delete</li>
-              <li onClick={() => completTaskNow(id)}>Finish</li>
-            </ul>
+            <MenuPortal>
+              <ul
+                className={style["menu-portal"]}
+                style={{
+                  top: `${menuPosition.top}px`,
+                  left: `${menuPosition.left}px`,
+                }}
+              >
+                <li onClick={() => editTaskNow(id)}>Edit</li>
+                <li onClick={() => deleteTaskNow(id)}>Delete</li>
+                <li onClick={() => completTaskNow(id)}>Finish</li>
+              </ul>
+            </MenuPortal>
           )}
         </div>
       </div>
@@ -87,4 +108,5 @@ function Task({
     </div>
   );
 }
+
 export default Task;

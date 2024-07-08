@@ -1,6 +1,6 @@
 import style from "./AddAndEditTask.module.css";
 import ImageUpload from "../ImageUpload/ImageUpload";
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
@@ -14,6 +14,7 @@ import dayjs, { Dayjs } from "dayjs";
 import ButtonStandard from "../buttonStandard/ButtonStandard";
 import { UserProfile } from "../../interfaces/userForTask.interface";
 import { ImageListType } from "react-images-uploading";
+import { fetchCountedStatuses } from "../../store/statuses.slice";
 
 interface FormTask {
   title: string;
@@ -31,7 +32,7 @@ const AddAndEditTask: React.FC = () => {
     state.tasks.tasks?.find((task) => task.id === id)
   );
   const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
-  const { handleSubmit, reset, setValue } = useForm<FormTask>();
+  const { handleSubmit, reset, setValue, register, formState: { errors } } = useForm<FormTask>();
   const [images, setImages] = useState<ImageListType | null>(
     task?.image ? [{ data_url: task?.image }] : null
   );
@@ -49,9 +50,16 @@ const AddAndEditTask: React.FC = () => {
     dispatch(toggle());
   };
 
-  setValue("date", dayjs(selectedDate));
-  setValue("title", titleHere);
-  setValue("description", description);
+  // setValue("date", dayjs(selectedDate));
+  // setValue("title", titleHere);
+  // setValue("description", description);
+
+  useEffect(() => {
+    setValue("date", dayjs(selectedDate));
+    setValue("title", titleHere);
+    setValue("description", description);
+    setValue("executor", executorSelected);
+  }, [selectedDate, titleHere, description, executorSelected, setValue]);
 
   const onSubmit: SubmitHandler<FormTask> = (data) => {
     const dateForArr =
@@ -82,6 +90,7 @@ const AddAndEditTask: React.FC = () => {
     setSelectedDate(null);
     setImages([]);
     dispatch(toggle());
+    dispatch(fetchCountedStatuses())
   };
 
   return (
@@ -111,6 +120,8 @@ const AddAndEditTask: React.FC = () => {
             <ExecutorSelect
               executorSelected={executorSelected}
               setExecutorSelected={setExecutorSelected}
+              {...register("executor", { required: "Executor is required" })}
+              error={errors.executor?.message}
             />
           </div>
           <div className={style["description-image"]}>
@@ -141,3 +152,4 @@ const AddAndEditTask: React.FC = () => {
 };
 
 export default AddAndEditTask;
+

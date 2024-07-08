@@ -8,6 +8,8 @@ import { getTasks } from "../../store/tasks.slice";
 import { useEffect } from "react";
 import { toggle } from "../../store/toggle.slice";
 import Diagram from "../../components/diagram/Diagram";
+import { fetchCountedStatuses } from "../../store/statuses.slice";
+import cn from 'classnames'
 
 function Dashboard() {
   const dispatch = useDispatch<AppDispatch>();
@@ -20,6 +22,9 @@ function Dashboard() {
   useEffect(() => {
     dispatch(getTasks("AllTasks"));
   }, [filterDate, filterTitle, dispatch]);
+  useEffect(() => {
+    dispatch(fetchCountedStatuses());
+  }, [dispatch]);
 
   const d = new Date();
   const day = d.getDate();
@@ -34,7 +39,7 @@ function Dashboard() {
           </div>
           <div onClick={openWindowForm} className={style["button"]}>
             <img className={style["image"]} src={Plus} alt="" />
-            <p > Add task</p>
+            <p> Add task</p>
           </div>
         </div>
         <div>
@@ -61,7 +66,9 @@ function Dashboard() {
             <div>тютю задач</div>
           )}
         </div>
-        <Diagram tasks={tasks}/>
+      </div>
+      <div className={cn(style["list-task"],style["height-diagram"])}>
+        <Diagram tasks={tasks} />
       </div>
     </div>
   );

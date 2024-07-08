@@ -7,6 +7,7 @@ import path from "path";
 import fs from "fs";
 import { colors } from "@mui/material";
 import dayjs from "dayjs";
+// import { stat } from "fs-extra";
 
 const app = express();
 app.use(bodyParser.json());
@@ -49,14 +50,17 @@ let statuses = [
   {
     name: "Not Started",
     color: "#F21E1E",
+    valueCounted: 0,
   },
   {
     name: "In Progress",
     color: "#0225FF",
+    valueCounted: 0,
   },
   {
     name: "Completed",
     color: "#05A301",
+    valueCounted: 0,
   },
 ];
 let priorities = [
@@ -393,7 +397,23 @@ app.get("/priorities", (req, res) => {
   res.status(200).json(priorities);
 });
 
+// подсчет статусов
+app.get("/statuses/count", (req, res) => {
+  statuses.forEach((status) => {
+    status.valueCounted = 0;
+  });
+  statuses.forEach((status) => {
+    tasks.forEach((task) => {
+      if (task.status.name === status.name) {
+        status.valueCounted++;
+      }
+    });
+  });
+
+  res.status(200).json(statuses);
+});
 // Получение статусов
+
 app.get("/statuses", (req, res) => {
   res.status(200).json(statuses);
 });
