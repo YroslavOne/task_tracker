@@ -19,7 +19,6 @@ interface StatusState {
 function Diagram({ tasks }: DaigramProps) {
   const dispatch = useDispatch<AppDispatch>();
   const statuses = useSelector((s: RootState) => s.statuses.statuses);
-  console.log(statuses)
 
   return (
     <div>
@@ -30,6 +29,7 @@ function Diagram({ tasks }: DaigramProps) {
       <div className={style["container-pie"]}>
         {statuses.map((status, index) => (
           <PieChart
+          key={index}
             id={index}
             name={status.name}
             color={status.color}

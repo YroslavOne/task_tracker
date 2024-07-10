@@ -7,11 +7,14 @@ import path from "path";
 import fs from "fs";
 import { colors } from "@mui/material";
 import dayjs from "dayjs";
-// import { stat } from "fs-extra";
+import { WebSocketServer } from "ws";
+import  WebSocket from 'ws';
+
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
 
 const SECRET_KEY = "your_secret_key";
 
@@ -46,6 +49,7 @@ let users = [
       "https://png.pngtree.com/background/20230611/original/pngtree-picture-of-a-blue-bird-on-a-black-background-picture-image_3124189.jpg",
   },
 ];
+let notifications = [];
 let statuses = [
   {
     name: "Not Started",
@@ -270,6 +274,20 @@ app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
 
   tasks.push(task);
   res.status(201).send(task);
+
+  const notification = {
+    type: "new_task",
+    userId: task.executor.id,
+    task,
+    id: notifications.length + 1,
+  };
+  notifications.push(notification);
+
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN && client.userId === task.executor.id) {
+      client.send(JSON.stringify(notification));
+    }
+  });
 });
 
 // Обновление задачи
@@ -392,6 +410,15 @@ app.get("/tasks", authenticateToken, (req, res) => {
 
   res.status(200).json(taskList);
 });
+// Получение массива уведомлений по пользователю
+app.get("/notifications", authenticateToken, (req, res) => {
+  const userId = req.user.id;
+  const notificationList = notifications.filter(
+      (notification) => notification.userId === userId
+    );
+
+  res.status(200).json(notificationList);
+});
 
 app.get("/priorities", (req, res) => {
   res.status(200).json(priorities);
@@ -422,6 +449,31 @@ app.get("/statuses", (req, res) => {
 const PORT = 9995;
 
 // Запуск сервера
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+const wss = new WebSocketServer({ server });
+
+wss.on("connection", (ws, req) => {
+  const token = req.url.split("?token=")[1];
+  if (!token) {
+    ws.close();
+    return;
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) {
+      ws.close();
+      return;
+    }
+
+    ws.userId = user.id;
+
+    ws.on("message", (message) => {
+      console.log(`Received message => ${message}`);
+    });
+
+    ws.send(JSON.stringify({ message: "Connected to WebSocket server" }));
+  });
 });

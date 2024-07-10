@@ -2,7 +2,6 @@ import style from "./PieChart.module.css";
 import { PieChartProps } from "./PieChart.props";
 
 function PieChart({id, name, color, count}: PieChartProps) {
-  console.log(color)
   return (
     <div className={style["container"]} key={id}>
         <div className={style["chart-container"]}>

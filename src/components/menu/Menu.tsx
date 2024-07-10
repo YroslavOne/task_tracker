@@ -1,32 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ButtonSquare from "../buttonSquare/ButtonSquare";
 import style from "./Menu.module.css";
 import Loop from "../../../public/image/menu/top/Search.svg";
 import Calendar from "../../../public/image/menu/top/calendar.svg";
+import Bell from "../../../public/image/menu/top/bell.svg";
 import Today from "./component/Today";
 import { taskActions } from "../../store/tasks.slice";
 import DatePeriod from "../datePeriod/DatePeriod";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
+import MenuPortal from "../menuPortal/MenuPortal";
+import { getNotifications, notificationSlice } from "../../store/notifications.slice";
 
 function Menu() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  
 
   const { filterDate, filterTitle } = useSelector(
     (state: RootState) => state.tasks
   );
+  const notifications = useSelector(
+    (state: RootState) => state.notifications.notifications
+  );
+  console.log(notifications?.length)
   const [searchValue, setSearchValue] = useState<string | null | undefined>(
     filterTitle
   );
-  const [searchDate, setsearchDate] = useState<[string | null, string | null] | null>(
-    filterDate ? filterDate : null
-  );
+  const [searchDate, setsearchDate] = useState<
+    [string | null, string | null] | null
+  >(filterDate ? filterDate : null);
   const [open, setOpen] = useState<boolean>(false);
 
   const fetchValueSearch = () => {
     dispatch(taskActions.filterSearch({ search: searchValue }));
   };
 
+useEffect(()=>{
+  dispatch(getNotifications())
+},[dispatch])
   const fetchDateSearch = () => {
     dispatch(taskActions.filterDate({ date: searchDate }));
     setOpen(false);
@@ -62,6 +73,11 @@ function Menu() {
         <ButtonSquare
           onClick={handleCalendarOpen}
           image={Calendar}
+          className={style["button-square"]}
+        />
+        <ButtonSquare
+          value={notifications?.length===0 ? null : notifications?.length }
+          image={Bell}
           className={style["button-square"]}
         />
       </div>

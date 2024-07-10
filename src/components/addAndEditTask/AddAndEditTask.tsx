@@ -1,6 +1,6 @@
 import style from "./AddAndEditTask.module.css";
 import ImageUpload from "../ImageUpload/ImageUpload";
-import { useState, Dispatch, SetStateAction, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
@@ -12,7 +12,7 @@ import PrioritiesInput from "../prioritiesInput/PrioritiesInput";
 import { toggle } from "../../store/toggle.slice";
 import dayjs, { Dayjs } from "dayjs";
 import ButtonStandard from "../buttonStandard/ButtonStandard";
-import { UserProfile } from "../../interfaces/userForTask.interface";
+import { ProfileAll } from "../../interfaces/userForTask.interface";
 import { ImageListType } from "react-images-uploading";
 import { fetchCountedStatuses } from "../../store/statuses.slice";
 
@@ -32,11 +32,19 @@ const AddAndEditTask: React.FC = () => {
     state.tasks.tasks?.find((task) => task.id === id)
   );
   const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
-  const { handleSubmit, reset, setValue, register, formState: { errors } } = useForm<FormTask>();
+  const {
+    handleSubmit,
+    reset,
+    setValue,
+    register,
+    formState: { errors },
+  } = useForm<FormTask>();
   const [images, setImages] = useState<ImageListType | null>(
     task?.image ? [{ data_url: task?.image }] : null
   );
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs(task?.date));
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(
+    dayjs(task?.date)
+  );
   const [titleHere, setTitleHere] = useState(task?.title ? task?.title : "");
   const [description, setDescription] = useState(
     task?.description ? task?.description : ""
@@ -44,15 +52,13 @@ const AddAndEditTask: React.FC = () => {
   const [priority, setPriority] = useState(
     task?.priority ? task?.priority.name : "Extreme"
   );
-  const [executorSelected, setExecutorSelected] = useState<UserProfile | undefined>(task?.executor);
+  const [executorSelected, setExecutorSelected] = useState<
+    ProfileAll | undefined
+  >(task?.executor);
 
   const closeOpen = () => {
     dispatch(toggle());
   };
-
-  // setValue("date", dayjs(selectedDate));
-  // setValue("title", titleHere);
-  // setValue("description", description);
 
   useEffect(() => {
     setValue("date", dayjs(selectedDate));
@@ -62,14 +68,17 @@ const AddAndEditTask: React.FC = () => {
   }, [selectedDate, titleHere, description, executorSelected, setValue]);
 
   const onSubmit: SubmitHandler<FormTask> = (data) => {
-    const dateForArr =
-      dayjs.isDayjs(data.date)
-        ? `${data.date.month() + 1 < 10 ? "0" : ""}${data.date.month() + 1}.${
-            data.date.date() < 10 ? "0" : ""
-          }${data.date.date()}.${data.date.year()}`
-        : data.date;
-    
-    const imgUrlOrNot = images ? images[0].file ? images : images[0].data_url: null;
+    const dateForArr = dayjs.isDayjs(data.date)
+      ? `${data.date.month() + 1 < 10 ? "0" : ""}${data.date.month() + 1}.${
+          data.date.date() < 10 ? "0" : ""
+        }${data.date.date()}.${data.date.year()}`
+      : data.date;
+
+    const imgUrlOrNot = images
+      ? images[0].file
+        ? images
+        : images[0].data_url
+      : null;
     const taskData: Task = {
       executor: executorSelected,
       title: data.title,
@@ -90,7 +99,7 @@ const AddAndEditTask: React.FC = () => {
     setSelectedDate(null);
     setImages([]);
     dispatch(toggle());
-    dispatch(fetchCountedStatuses())
+    dispatch(fetchCountedStatuses());
   };
 
   return (
@@ -108,6 +117,7 @@ const AddAndEditTask: React.FC = () => {
             <input
               value={titleHere}
               onChange={(e) => setTitleHere(e.target.value)}
+              
             />
           </div>
           <DateInput
@@ -152,4 +162,3 @@ const AddAndEditTask: React.FC = () => {
 };
 
 export default AddAndEditTask;
-

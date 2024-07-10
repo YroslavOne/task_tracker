@@ -9,8 +9,8 @@ import { AuthLayout } from "./layout/auth/AuthLayout.tsx";
 import Layout from "./layout/menu/Layout.tsx";
 import { RequireAuth } from "./helpers/RequireAuth.tsx";
 import Dashboard from "./pages/dashboard/Dashboard.tsx";
-import { Provider } from "react-redux";
-import { store } from "./store/store.ts";
+import { Provider, useDispatch } from "react-redux";
+import { AppDispatch, store } from "./store/store.ts";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import VitalTask from "./pages/vitalTask/VitalTask.tsx";
@@ -20,6 +20,8 @@ import Settings from "./pages/settings/Settings.tsx";
 import ErrorPage from "./pages/error/ErrorPage.tsx";
 import SettingsMain from "./pages/settings/outletSettings/Settings/SettingsMain.tsx";
 import ChangePassword from "./pages/settings/outletSettings/changePassword/ChangePassword.tsx";
+
+
 
 
 const router = createBrowserRouter([

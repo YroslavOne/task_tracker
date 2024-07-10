@@ -13,6 +13,7 @@ import { getProfileAll } from "../../store/user.slice";
 import { ProfileAll } from "../../interfaces/userForTask.interface";
 import { ExecutorSelectedProps } from "./ExecutorSelect.props";
 import style from "./ExecutorSelect.module.css";
+import cn from "classnames";
 
 interface selectedExecutorState {
   username: string;
@@ -57,9 +58,8 @@ function ExecutorSelect({
     <Box sx={{ width: "70%" }}>
       <FormControl fullWidth>
         <InputLabel id="executor-select-label">Executor</InputLabel>
-        {error&& <div>{error}</div>}
         <Select
-          className={style["select"]}
+          className={cn(style["select"], { [style["error"]]: error })}
           labelId="executor-select-label"
           id="executor-select"
           value={executor}

@@ -9,13 +9,14 @@ import { useEffect } from "react";
 import { toggle } from "../../store/toggle.slice";
 import Diagram from "../../components/diagram/Diagram";
 import { fetchCountedStatuses } from "../../store/statuses.slice";
-import cn from 'classnames'
+import cn from "classnames";
 
 function Dashboard() {
   const dispatch = useDispatch<AppDispatch>();
   const { tasks, filterDate, filterTitle } = useSelector(
     (s: RootState) => s.tasks
   );
+
   const openWindowForm = () => {
     dispatch(toggle());
   };
@@ -67,7 +68,7 @@ function Dashboard() {
           )}
         </div>
       </div>
-      <div className={cn(style["list-task"],style["height-diagram"])}>
+      <div className={cn(style["list-task"], style["height-diagram"])}>
         <Diagram tasks={tasks} />
       </div>
     </div>

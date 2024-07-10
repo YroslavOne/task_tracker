@@ -2,19 +2,21 @@ import { saveState } from "./storage";
 import taskSlice from "./tasks.slice";
 import userSlice, { JWT_PERSISTENT_STATE } from "./user.slice";
 import { configureStore } from "@reduxjs/toolkit";
-import prioritiesReducer from "./priorities.slice";
-import statusesReducer from "./statuses.slice";
-import toggleReducer from "./toggle.slice";
-import openTaskReducer from "./openTask.slice";
+import prioritiesSlice from "./priorities.slice";
+import statusesSlice from "./statuses.slice";
+import toggleSlice from "./toggle.slice";
+import openTaskSlice from "./openTask.slice";
+import notificationSlice from "./notifications.slice";
 
 export const store = configureStore({
   reducer: {
     user: userSlice,
     tasks: taskSlice,
-    priorities: prioritiesReducer,
-    statuses: statusesReducer,
-    toggle: toggleReducer,
-    openTask: openTaskReducer,
+    priorities: prioritiesSlice,
+    statuses: statusesSlice,
+    toggle: toggleSlice,
+    openTask: openTaskSlice,
+    notifications: notificationSlice,
   },
 });
 
