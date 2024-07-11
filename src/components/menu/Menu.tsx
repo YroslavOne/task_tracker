@@ -9,12 +9,11 @@ import Today from "./component/Today";
 import { taskActions } from "../../store/tasks.slice";
 import DatePeriod from "../datePeriod/DatePeriod";
 import { AppDispatch, RootState } from "../../store/store";
-import MenuPortal from "../menuPortal/MenuPortal";
-import { getNotifications, notificationSlice } from "../../store/notifications.slice";
+import { getNotifications } from "../../store/notifications.slice";
+import { toggleWindowNotification } from "../../store/toggle.slice";
 
 function Menu() {
   const dispatch = useDispatch<AppDispatch>();
-  
 
   const { filterDate, filterTitle } = useSelector(
     (state: RootState) => state.tasks
@@ -22,7 +21,6 @@ function Menu() {
   const notifications = useSelector(
     (state: RootState) => state.notifications.notifications
   );
-  console.log(notifications?.length)
   const [searchValue, setSearchValue] = useState<string | null | undefined>(
     filterTitle
   );
@@ -35,9 +33,9 @@ function Menu() {
     dispatch(taskActions.filterSearch({ search: searchValue }));
   };
 
-useEffect(()=>{
-  dispatch(getNotifications())
-},[dispatch])
+  useEffect(() => {
+    dispatch(getNotifications());
+  }, [dispatch]);
   const fetchDateSearch = () => {
     dispatch(taskActions.filterDate({ date: searchDate }));
     setOpen(false);
@@ -45,6 +43,9 @@ useEffect(()=>{
 
   const handleCalendarOpen = () => {
     setOpen(true);
+  };
+  const handleNotificationrOpen = () => {
+    dispatch(toggleWindowNotification());
   };
 
   const handleCalendarClose = () => {
@@ -64,6 +65,7 @@ useEffect(()=>{
           onChange={(e) => setSearchValue(e.target.value)}
         />
         <ButtonSquare
+          value={null}
           onClick={fetchValueSearch}
           image={Loop}
           className={style["loop"]}
@@ -71,12 +73,14 @@ useEffect(()=>{
       </div>
       <div className={style["two-button"]}>
         <ButtonSquare
+          value={null}
           onClick={handleCalendarOpen}
           image={Calendar}
           className={style["button-square"]}
         />
         <ButtonSquare
-          value={notifications?.length===0 ? null : notifications?.length }
+          onClick={handleNotificationrOpen}
+          value={notifications?.length === 0 ? null : notifications?.length}
           image={Bell}
           className={style["button-square"]}
         />

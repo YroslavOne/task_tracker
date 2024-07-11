@@ -2,11 +2,10 @@ li {
   list-style: none;
 }
 .container {
-  padding: 24px 10px;
+  padding: 17px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: solid 1px black;
 }
 .title {
   font-family: Inter;
@@ -14,6 +13,7 @@ li {
   font-weight: 400;
   line-height: 26px;
   text-align: left;
+  max-width: 251px;
 }
 .priority {
   font-family: Inter;

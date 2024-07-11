@@ -1,30 +1,34 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Back from "../../../public/image/menu/notification/back.svg";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import CardForNotification from "../cardForNotification/CardForNotification";
 import MenuPortal from "../menuPortal/MenuPortal";
 import styles from "./WindowForNotification.module.css";
+import { toggleWindowNotification } from "../../store/toggle.slice";
 
 function WindowForNotification() {
   const notificationList = useSelector(
     (state: RootState) => state.notifications.notifications
   );
-  console.log(notificationList);
+  const dispatch = useDispatch<AppDispatch>();
+  const handleNotificationrClose = () => {
+    dispatch(toggleWindowNotification());
+  };
 
   return (
     <MenuPortal>
       <div className={styles["container"]}>
         <div className={styles["top-bar"]}>
           <h3>Notifications</h3>
-          <button>
+          <button onClick={handleNotificationrClose}>
             <img className={styles["image"]} src={Back} alt="" />
           </button>
         </div>
         <ul className={styles["card-notifications"]}>
-          {(notificationList && notificationList?.length!==0) ? (
-            notificationList?.map((n, index) => (
+          {notificationList && notificationList?.length !== 0 ? (
+            notificationList?.map((n) => (
               <CardForNotification
-                id={index}
+                id={n.id}
                 title={n.task.title}
                 priority={n.task.priority.name}
                 colorPriority={n.task.priority.color}
@@ -32,7 +36,7 @@ function WindowForNotification() {
               />
             ))
           ) : (
-            <li>No notifications</li>
+            <li className={styles["li"]}>No notifications</li>
           )}
         </ul>
       </div>

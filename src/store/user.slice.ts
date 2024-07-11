@@ -31,7 +31,7 @@ export const login = createAsyncThunk(
   "user/login",
   async (params: { email: string; password: string }) => {
     try {
-      const { data } = await axios.post<LoginResponse>(`${PREFIX}login`, {
+      const { data } = await axios.post<LoginResponse>(`${PREFIX}auth/login`, {
         email: params.email,
         password: params.password,
       });
@@ -53,7 +53,7 @@ export const registerUser = createAsyncThunk(
     password: string;
   }) => {
     try {
-      const { data } = await axios.post<LoginResponse>(`${PREFIX}register`, {
+      const { data } = await axios.post<LoginResponse>(`${PREFIX}auth/register`, {
         lastName: params.lastName,
         firstName: params.firstName,
         userName: params.userName,
@@ -73,7 +73,7 @@ export const getProfile = createAsyncThunk<Profile, void, { state: RootState }>(
   "user/getProfile",
   async (_, thunkApi) => {
     const jwt = thunkApi.getState().user.jwt;
-    const { data } = await axios.get<Profile>(`${PREFIX}login/profile`, {
+    const { data } = await axios.get<Profile>(`${PREFIX}users/profile`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -88,7 +88,7 @@ export const getProfileAll = createAsyncThunk<
   { state: RootState }
 >("user/getProfileAll", async (_, thunkApi) => {
   const jwt = thunkApi.getState().user.jwt;
-  const { data } = await axios.get<ProfileAll>(`${PREFIX}login/profile/all`, {
+  const { data } = await axios.get<ProfileAll>(`${PREFIX}users/profile/all`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
@@ -116,7 +116,7 @@ export const updateProfile = createAsyncThunk(
         }
       });
       const { data } = await axios.put(
-        `${PREFIX}login/profile/edit`,
+        `${PREFIX}users/profile/edit`,
         formData,
         {
           headers: {
@@ -145,7 +145,7 @@ export const updatePassword = createAsyncThunk(
     const jwt = state.user.jwt;
     try {
       const { data } = await axios.put(
-        `${PREFIX}login/profile/edit-password`,
+        `${PREFIX}user/profile/edit-password`,
         {
           password: passwords.password,
           newPassword: passwords.newPassword,

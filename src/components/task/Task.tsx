@@ -8,6 +8,7 @@ import { completTask, deleteTask } from "../../store/tasks.slice";
 import { setIdAndTitle } from "../../store/toggle.slice";
 import { getTaskById } from "../../store/openTask.slice";
 import { AppDispatch } from "../../store/store";
+import { fetchCountedStatuses } from "../../store/statuses.slice";
 
 function Task({
   id,
@@ -36,7 +37,7 @@ function Task({
     if (activeLink) {
       dispatch(getTaskById({ id: id }));
       if (status.name === "Not Started") {
-        dispatch(completTask({id, statusForTask: "In Progress" }));
+        dispatch(completTask({ id, statusForTask: "In Progress" }));
       }
     }
   };
@@ -51,7 +52,7 @@ function Task({
   };
 
   const completTaskNow = (id: number) => {
-    dispatch(completTask({id, statusForTask: "Completed"}));
+    dispatch(completTask({ id, statusForTask: "Completed" }));
     dispatch(fetchCountedStatuses());
   };
 

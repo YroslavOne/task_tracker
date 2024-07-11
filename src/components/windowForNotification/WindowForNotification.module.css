@@ -18,18 +18,23 @@
   background-color: #d3d3d3;
   border-radius: 0 0 0 10px;
 }
-ul{
-    padding: 0;
-    margin: 0;
+ul {
+  padding: 0;
+  margin: 0;
 }
 .top-bar > h3 {
-    font-family: Inter;
-font-size: 16px;
-font-weight: 600;
-line-height: 19.36px;
-text-align: left;
-
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19.36px;
+  text-align: left;
 }
 .image {
-    width: 22px;
+  width: 22px;
+}
+.li {
+  padding: 17px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

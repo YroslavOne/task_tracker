@@ -35,6 +35,23 @@ export const getNotifications = createAsyncThunk<
   return data;
 });
 
+export const deleteNotification = createAsyncThunk(
+  "tasks/deleteNotification",
+  async (notificationId: number, { getState, rejectWithValue }) => {
+    const jwt = getState().user.jwt;
+    try {
+      await axios.delete(`${PREFIX}notification/${notificationId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      return notificationId;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const notificationSlice = createSlice({
   name: "notifications",
   initialState,
@@ -53,7 +70,15 @@ export const notificationSlice = createSlice({
       )
       .addCase(getNotifications.rejected, (state, action) => {
         state.notificationErrorMessage = action.error.message;
+      })
+      .addCase(deleteNotification.fulfilled, (state, action) => {
+        state.notifications = state.notifications?.filter(
+          (n) => n.id !== action.payload
+        );
       });
+    // .addCase(deleteNotificwation.rejected, (state, action) => {
+    //   state.notificationErrorMessage = action.error.message;
+    // });
   },
 });
 

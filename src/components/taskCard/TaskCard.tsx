@@ -5,14 +5,14 @@ import {deleteTask, getTask } from "../../store/tasks.slice";
 import { setIdAndTitle } from "../../store/toggle.slice";
 import wastebasket from "../../../public/image/cardItem/waste-basket.svg";
 import edit from "../../../public/image/cardItem/edit.svg";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
 import { closeTask } from "../../store/openTask.slice";
 
 function TaskСard({
   id
 }: TaskСardProps) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(()=>{
     dispatch(getTask(id))
   },[dispatch, id])

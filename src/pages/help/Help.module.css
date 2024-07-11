@@ -1,6 +1,6 @@
-.title{
-    font-size: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.container {
+}
+.container > div {
+  font-size: 50px;
+  line-height: 50px;
 }

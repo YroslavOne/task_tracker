@@ -69,7 +69,7 @@ function Dashboard() {
         </div>
       </div>
       <div className={cn(style["list-task"], style["height-diagram"])}>
-        <Diagram tasks={tasks} />
+        <Diagram />
       </div>
     </div>
   );

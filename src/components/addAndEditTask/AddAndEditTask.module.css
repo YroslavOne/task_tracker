@@ -124,10 +124,10 @@ textarea {
 .submit:hover {
   color: #a1a3ab;
   border: 1px solid #a1a3ab;
-background-color: white;
+  background-color: white;
 }
 
-.div-submit{
+.div-submit {
   display: flex;
 }
 .error {

@@ -69,7 +69,8 @@ const statusesSlice = createSlice({
       )
       .addCase(fetchCountedStatuses.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch counted statuses";
+        state.error =
+          action.error.message || "Failed to fetch counted statuses";
       });
   },
 });

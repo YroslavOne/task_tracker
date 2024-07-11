@@ -64,8 +64,7 @@
   align-items: flex-end;
   justify-content: space-between;
 }
-.description{
-    
+.description {
 }
 .description > p {
   width: 465px;
@@ -80,24 +79,23 @@
   white-space: normal;
   margin-top: 33px;
 }
-.buttons{
-    position: absolute;
-    bottom: 15px;
-    right: 20px;
-    
+.buttons {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
 }
-.buttons-flex{
-    display: flex;
+.buttons-flex {
+  display: flex;
 }
-.buttons-flex>button{
-    background-color: #FF6767;
-    border-radius: 8px;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 6px;
-    margin-right: 6px;
-    padding: 0;
+.buttons-flex > button {
+  background-color: #ff6767;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  margin-right: 6px;
+  padding: 0;
 }

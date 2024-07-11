@@ -8,13 +8,11 @@ import fs from "fs";
 import { colors } from "@mui/material";
 import dayjs from "dayjs";
 import { WebSocketServer } from "ws";
-import  WebSocket from 'ws';
-
+import WebSocket from "ws";
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
-
 
 const SECRET_KEY = "your_secret_key";
 
@@ -133,7 +131,7 @@ app.post("/register", (req, res) => {
 });
 
 // Аутентификация пользователя
-app.post("/login", (req, res) => {
+app.post("/auth/login", (req, res) => {
   const { email, password } = req.body;
   const user = users.find((u) => u.email === email && u.password === password);
 
@@ -163,7 +161,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Маршрут для получения профиля пользователя
-app.get("/login/profile", authenticateToken, (req, res) => {
+app.get("/users/profile", authenticateToken, (req, res) => {
   const userId = req.user.id;
   const user = users.find((u) => u.id === userId);
 
@@ -182,7 +180,7 @@ app.get("/login/profile", authenticateToken, (req, res) => {
   });
 });
 
-app.get("/login/profile/all", authenticateToken, (req, res) => {
+app.get("/users/profile/all", authenticateToken, (req, res) => {
   const user = [];
   users.map((u) => {
     user.push({
@@ -197,7 +195,7 @@ app.get("/login/profile/all", authenticateToken, (req, res) => {
 //Обновление профиля
 
 app.put(
-  "/login/profile/edit",
+  "/user/profile/edit",
   authenticateToken,
   upload.single("image"),
   (req, res) => {
@@ -258,6 +256,7 @@ app.put(
 app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
   const { executor, title, description, priority, status, date } = req.body;
   const image = req.file ? req.file.path : null;
+  
   const id = tasks.length + 1;
   const priorityValue = priorities.find((elem) => elem.name === priority);
   const statusValue = statuses.find((elem) => elem.name === status);
@@ -284,7 +283,10 @@ app.post("/tasks", authenticateToken, upload.single("image"), (req, res) => {
   notifications.push(notification);
 
   wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN && client.userId === task.executor.id) {
+    if (
+      client.readyState === WebSocket.OPEN &&
+      client.userId === task.executor.id
+    ) {
       client.send(JSON.stringify(notification));
     }
   });
@@ -337,6 +339,7 @@ app.put(
   authenticateToken,
   upload.single("image"),
   (req, res) => {
+    
     const status = req.body;
     const { id } = req.params;
     const taskIndex = tasks.findIndex((task) => task.id == id);
@@ -414,14 +417,26 @@ app.get("/tasks", authenticateToken, (req, res) => {
 app.get("/notifications", authenticateToken, (req, res) => {
   const userId = req.user.id;
   const notificationList = notifications.filter(
-      (notification) => notification.userId === userId
-    );
-
+    (notification) => notification.userId === userId
+  );
   res.status(200).json(notificationList);
 });
 
 app.get("/priorities", (req, res) => {
   res.status(200).json(priorities);
+});
+
+// Delete уведомления по id
+
+app.delete("/notification/:id", authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const notificationIndex = notifications.findIndex((n) => n.id == id);
+  if (notificationIndex === -1) {
+    return res.status(404).send("Notification not found");
+  }
+
+  notifications.splice(notificationIndex, 1);
+  res.status(200).send({ message: "Notification deleted successfully" });
 });
 
 // подсчет статусов
@@ -471,7 +486,6 @@ wss.on("connection", (ws, req) => {
     ws.userId = user.id;
 
     ws.on("message", (message) => {
-      console.log(`Received message => ${message}`);
     });
 
     ws.send(JSON.stringify({ message: "Connected to WebSocket server" }));
