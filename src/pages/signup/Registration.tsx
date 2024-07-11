@@ -85,6 +85,7 @@ function Registration() {
           />
           <Input
             id="email"
+						type="email"
             icon={Email}
             placeholder="Enter Email"
             className={style["input"]}
@@ -94,6 +95,7 @@ function Registration() {
           {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
 
           <Input
+					pattern=".{8,}"
             type="password"
             id="password"
             icon={Lock}

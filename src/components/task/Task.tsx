@@ -9,6 +9,7 @@ import { setIdAndTitle } from "../../store/toggle.slice";
 import { getTaskById } from "../../store/openTask.slice";
 import { AppDispatch } from "../../store/store";
 import { fetchCountedStatuses } from "../../store/statuses.slice";
+import useOutsideClick  from '../../hooks/useClickOutside/useClickOutside.tsx'
 
 function Task({
   id,
@@ -56,6 +57,11 @@ function Task({
     dispatch(fetchCountedStatuses());
   };
 
+	const ref = useOutsideClick(() => {
+		if(openedWindowActioans){
+    setOpenedWindowActioans(!openedWindowActioans);}
+  });
+
   return (
     <div className={style["container"]} key={id}>
       <div className={style["top-bar"]}>
@@ -72,7 +78,8 @@ function Task({
           />
           {openedWindowActioans && (
             <MenuPortal>
-              <ul
+              <ul 
+							ref={ref}
                 className={style["menu-portal"]}
                 style={{
                   top: `${menuPosition.top}px`,

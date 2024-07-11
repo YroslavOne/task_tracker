@@ -40,7 +40,7 @@ export const deleteNotification = createAsyncThunk(
   async (notificationId: number, { getState, rejectWithValue }) => {
     const jwt = getState().user.jwt;
     try {
-      await axios.delete(`${PREFIX}notification/${notificationId}`, {
+      await axios.delete(`${PREFIX}notifications/${notificationId}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },

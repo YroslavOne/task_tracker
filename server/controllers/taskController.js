@@ -4,6 +4,7 @@ import { notifications } from "../models/notification.js";
 import { statuses } from "../models/status.js";
 import dayjs from "dayjs";
 import { wss } from "../server.js";
+import WebSocket from 'ws'
 
 export const addTask = (req, res) => {
   const { executor, title, description, status, priority, date, imageUrl } =

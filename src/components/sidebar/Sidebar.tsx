@@ -58,6 +58,7 @@ const profile = useSelector((s:RootState)=>s.user.profile)
         </div>
       </div>
       <div className={styles["logout"]}>
+				<div className={styles["button-logout"]}>
         <MenuLink
           onClick={logout}
           link={"/auth/login"}
@@ -66,6 +67,7 @@ const profile = useSelector((s:RootState)=>s.user.profile)
         >
           logout
         </MenuLink>
+				</div>
       </div>
     </div>
   );

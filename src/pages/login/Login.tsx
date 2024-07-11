@@ -46,6 +46,7 @@ function Login() {
           {loginErrorMessage && <h1 className={style["error"]}>{loginErrorMessage}</h1>}
 
           <Input
+					type="email"
             id="email"
             icon={User}
             placeholder="Enter Email"

@@ -7,15 +7,13 @@ import { TaskScreenProps } from "./TaskScreen.props";
 
 function TaskScreen({ tasks }: TaskScreenProps) {
   const { open, id } = useSelector((s: RootState) => s.openTask);
-
-  const arrayForRending = tasks?.filter((elem) => elem);
   return (
     <div className={style["container"]}>
       <div className={style["list-task"]}>
         <div className={style["tasks-and-task"]}>
           <div className={!open ? style["task"] : style["task-and-openwindow"]}>
-            {arrayForRending ? (
-              arrayForRending.map((t) => (
+            {tasks ? (
+              tasks.map((t) => (
                 <Task
                   key={t.id}
                   id={t.id}

@@ -11,7 +11,7 @@ function PieChart({ id, name, color, count }: PieChartProps) {
         >
           <div className={style["inner-circle"]}></div>
         </div>
-        <div className={style["label"]}>{count.toFixed(1)}%</div>
+        <div className={style["label"]}>{count.toFixed(1) === "NaN"? 0 : count.toFixed(1)}%</div>
       </div>
       <div className={style["title"]}>
         <div className={style["elipse"]} style={{ "--color": color }}></div>

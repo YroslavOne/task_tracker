@@ -53,7 +53,7 @@ export const updateUserProfile = (req, res) => {
     image: image,
   };
 
-  res.status(200).send({ message: "Profile updated successfully" });
+  res.status(200).send(users[userIndex]);
 };
 
 export const updatePassword = (req, res) => {

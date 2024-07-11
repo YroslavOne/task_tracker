@@ -8,7 +8,7 @@ import edit from "../../../public/image/cardItem/edit.svg";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
 import { closeTask } from "../../store/openTask.slice";
-
+import useOutsideClick from '../../hooks/useClickOutside/useClickOutside.tsx'
 function TaskСard({
   id
 }: TaskСardProps) {
@@ -16,7 +16,7 @@ function TaskСard({
   useEffect(()=>{
     dispatch(getTask(id))
   },[dispatch, id])
-  
+   const { open} = useSelector((s: RootState) => s.openTask);
 
   const { task } = useSelector((state: RootState)=> state.tasks)
   const deleteTaskNow = () => {
@@ -30,8 +30,13 @@ function TaskСard({
     dispatch(closeTask());
   };
 
+	const ref = useOutsideClick(() => {
+		if(open){
+   close()}
+  });
+
   return (
-    <div className={style["container"]} key={task?.id}>
+    <div ref={ref} className={style["container"]} key={task?.id}>
        <div className={style["head"]}> <button onClick={close}>Close</button></div>
       <div className={style["img-and-options"]}>
         <img className={style["image"]} src={task?.image} />
