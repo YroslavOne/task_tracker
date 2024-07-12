@@ -43,11 +43,11 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "settings",
+        path: "/settings",
         element: <Settings />,
         children: [
           {
-            path: "settings",
+            path: "/settings",
             element: <SettingsMain />,
           },
           {

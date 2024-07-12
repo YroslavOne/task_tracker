@@ -53,13 +53,16 @@ export const registerUser = createAsyncThunk(
     password: string;
   }) => {
     try {
-      const { data } = await axios.post<LoginResponse>(`${PREFIX}auth/register`, {
-        lastName: params.lastName,
-        firstName: params.firstName,
-        userName: params.userName,
-        email: params.email,
-        password: params.password,
-      });
+      const { data } = await axios.post<LoginResponse>(
+        `${PREFIX}auth/register`,
+        {
+          lastName: params.lastName,
+          firstName: params.firstName,
+          userName: params.userName,
+          email: params.email,
+          password: params.password,
+        }
+      );
       return data;
     } catch (e) {
       if (e instanceof AxiosError) {
@@ -109,9 +112,9 @@ export const updateProfile = createAsyncThunk(
           formData.append(key, userData[key]);
         } else if (userData.image) {
           if (typeof userData.image === "string") {
-            formData.append("imageUrl", userData.image); // Adding image URL
+            formData.append("imageUrl", userData.image);
           } else if (userData.image[0].file) {
-            formData.append("image", userData.image[0].file); // Adding image file
+            formData.append("image", userData.image[0].file);
           }
         }
       });

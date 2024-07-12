@@ -105,18 +105,18 @@ export const updateTask = createAsyncThunk(
 
       Object.keys(taskData).forEach((key) => {
         if (key === "executor") {
-          formData.append(key, JSON.stringify(taskData[key])); // Stringify the executor object
+          formData.append(key, JSON.stringify(taskData[key])); 
         } else if (key === "priority") {
           formData.append(key, taskData[key]);
         } else if (key === "date") {
-          formData.append(key, JSON.stringify(taskData[key])); // Stringify date
+          formData.append(key, JSON.stringify(taskData[key])); 
         } else if (key !== "image") {
           formData.append(key, taskData[key]);
         } else if (taskData.image) {
           if (typeof taskData.image === "string") {
-            formData.append("imageUrl", taskData.image); // Adding image URL
+            formData.append("imageUrl", taskData.image); 
           } else if (taskData.image[0].file) {
-            formData.append("image", taskData.image[0].file); // Adding image file
+            formData.append("image", taskData.image[0].file); 
           }
         }
       });
