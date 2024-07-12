@@ -34,20 +34,20 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "/vital-task",
+        path: "vital-task",
         element: <VitalTask />,
       },
       {
-        path: "/my-task",
+        path: "my-task",
         element: <MyTask />,
       },
 
       {
-        path: "/settings",
+        path: "settings",
         element: <Settings />,
         children: [
           {
-            path: "/settings",
+            path: "settings",
             element: <SettingsMain />,
           },
           {

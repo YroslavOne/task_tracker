@@ -39,5 +39,6 @@ const toggleSlice = createSlice({
 
 export const { toggle, setIdAndTitle, toggleWindowNotification } =
   toggleSlice.actions;
+  console.log("hi")
 
 export default toggleSlice.reducer;

@@ -10,6 +10,7 @@ import { toggle } from "../../store/toggle.slice";
 import Diagram from "../../components/diagram/Diagram";
 import { fetchCountedStatuses } from "../../store/statuses.slice";
 import cn from "classnames";
+import dayjs from "dayjs";
 
 function Dashboard() {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,8 +29,8 @@ function Dashboard() {
   }, [dispatch]);
 
   const d = new Date();
-  const day = d.getDate();
-  const mount = d.toLocaleDateString("en-US", { month: "long" });
+  const day = dayjs(d).format("D");
+  const mount = dayjs(d).format("MMMM");
   return (
     <div className={style["container"]}>
       <div className={style["list-task"]}>

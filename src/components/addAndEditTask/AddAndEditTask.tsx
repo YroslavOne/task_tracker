@@ -69,9 +69,7 @@ const AddAndEditTask: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormTask> = (data) => {
     const dateForArr = dayjs.isDayjs(data.date)
-      ? `${data.date.month() + 1 < 10 ? "0" : ""}${data.date.month() + 1}.${
-          data.date.date() < 10 ? "0" : ""
-        }${data.date.date()}.${data.date.year()}`
+      ? dayjs(data.date).format("DD/MM/YYYY")
       : data.date;
 
     const imgUrlOrNot = images

@@ -1,14 +1,18 @@
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateInputProps } from './DateInput.props';
-import style from './DateInput.module.css';
-import { Dayjs } from 'dayjs';
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateInputProps } from "./DateInput.props";
+import style from "./DateInput.module.css";
+import { Dayjs } from "dayjs";
 
-function DateInput({ setValue, selectedDate, setSelectedDate }: DateInputProps) {
+function DateInput({
+  setValue,
+  selectedDate,
+  setSelectedDate,
+}: DateInputProps) {
   const handleDateChange = (date: Dayjs | null) => {
     if (date) {
       setSelectedDate(date);
-      setValue('date', date.toISOString()); // Assuming you need the date as ISO string
+      setValue("date", date.toISOString()); // Assuming you need the date as ISO string
     }
   };
 
@@ -17,12 +21,13 @@ function DateInput({ setValue, selectedDate, setSelectedDate }: DateInputProps) 
       <p>Сomplete</p>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
+          format="MM/DD/YYYY"
           className={style["date-input"]}
           value={selectedDate}
           onChange={handleDateChange}
           disablePast
           slotProps={{
-            textField: { size: 'small' },
+            textField: { size: "small" },
           }}
         />
       </LocalizationProvider>
