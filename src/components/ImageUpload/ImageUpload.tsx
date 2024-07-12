@@ -40,7 +40,7 @@ function ImageUpload({ images, setImages, round = false, buttonOf=true }: ImageU
                 <img src={UploadImage} />
                 <p>Drag&Drop files here</p>
                 <p>or</p>
-                <button className={style["button"]}>Browse</button>
+                <div className={style["button"]}>Browse</div>
               </button>
             )}
             &nbsp;

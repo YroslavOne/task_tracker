@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -6,7 +7,6 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { getProfileAll } from "../../store/user.slice";
@@ -21,16 +21,17 @@ interface selectedExecutorState {
   id: number;
 }
 
-function ExecutorSelect({
+const ExecutorSelect = React.forwardRef<HTMLDivElement, ExecutorSelectedProps>(({
   executorSelected,
   setExecutorSelected,
   error,
-}: ExecutorSelectedProps) {
+}, ref) => {
   const dispatch = useDispatch<AppDispatch>();
   const executors: ProfileAll | undefined = useSelector(
-    (s: RootState) => s.user.profileAll
+    (state: RootState) => state.user.profileAll
   );
   const [executor, setExecutor] = useState("");
+
   useEffect(() => {
     dispatch(getProfileAll());
   }, [dispatch]);
@@ -55,7 +56,7 @@ function ExecutorSelect({
   };
 
   return (
-    <Box sx={{ width: "70%" }}>
+    <Box sx={{ width: "70%" }} ref={ref}>
       <FormControl fullWidth>
         <InputLabel id="executor-select-label">Executor</InputLabel>
         <Select
@@ -75,6 +76,6 @@ function ExecutorSelect({
       </FormControl>
     </Box>
   );
-}
+});
 
 export default ExecutorSelect;
