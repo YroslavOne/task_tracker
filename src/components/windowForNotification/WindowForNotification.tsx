@@ -37,7 +37,8 @@ function WindowForNotification() {
           {notificationList && notificationList?.length !== 0 ? (
             notificationList?.map((n) => (
               <CardForNotification
-                id={n.id}
+                id={n.task.id}
+                idNotification={n.id}
                 title={n.task.title}
                 priority={n.task.priority.name}
                 colorPriority={n.task.priority.color}

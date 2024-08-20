@@ -102,10 +102,7 @@ export const updateTaskStatus = (req, res) => {
     status: status,
   };
 
-  res.status(200).send({
-    message: "Task status updated successfully",
-    task: tasks[taskIndex],
-  });
+  res.status(200).send(tasks);
 };
 
 export const getTaskById = (req, res) => {
@@ -116,7 +113,6 @@ export const getTaskById = (req, res) => {
   if (!task) {
     return res.status(404).send({ message: "Task not found" });
   }
-
   res.status(200).json(task);
 };
 
@@ -161,6 +157,5 @@ export const getAllTasks = (req, res) => {
       (task) => task.executor.id === userId
     );
   }
-
   res.status(200).json(taskList);
 };

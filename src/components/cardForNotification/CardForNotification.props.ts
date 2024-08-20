@@ -4,4 +4,5 @@ export interface CardForNotificationProps {
   colorPriority: string;
   image: string;
   id: number;
+  idNotification: number;
 }

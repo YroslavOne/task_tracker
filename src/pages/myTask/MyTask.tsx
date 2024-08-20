@@ -12,7 +12,6 @@ function MyTask() {
   useEffect(() => {
     dispatch(getTasks("My"));
   }, [dispatch, filterDate, filterTitle]);
-
   return <TaskScreen tasks={tasks} />;
 }
 export default MyTask;

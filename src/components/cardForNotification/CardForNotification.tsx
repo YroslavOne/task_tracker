@@ -12,11 +12,12 @@ function CardForNotification({
   colorPriority,
   image,
   id,
+  idNotification,
 }: CardForNotificationProps) {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate()
   const clickOnCard = () => {
-    dispatch(deleteNotification(id));
+    dispatch(deleteNotification(idNotification));
     navigate("/my-task");
     dispatch(getTaskById({ id: id }))
 
