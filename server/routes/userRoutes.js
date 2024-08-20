@@ -23,7 +23,6 @@ router.put(
 router.put(
   "/profile/edit-password",
   authenticateToken,
-  upload.single("image"),
   updatePassword
 );
 

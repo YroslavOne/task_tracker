@@ -10,6 +10,7 @@ import { getTaskById } from "../../store/openTask.slice";
 import { AppDispatch } from "../../store/store";
 import { fetchCountedStatuses } from "../../store/statuses.slice";
 import useOutsideClick  from '../../hooks/useClickOutside/useClickOutside.tsx'
+import dayjs from "dayjs";
 
 function Task({
   id,
@@ -110,7 +111,7 @@ function Task({
         </div>
         <div className={style["image-date"]}>
           <img className={style["image"]} src={image} alt="" />
-          <p className={style["created"]}>Сomplete: {date}</p>
+          <p className={style["created"]}>Сomplete: {dayjs(date).format("DD.MM.YYYY")}</p>
         </div>
       </div>
     </div>

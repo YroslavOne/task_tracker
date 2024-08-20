@@ -21,6 +21,7 @@ function TaskСard({
   const { task } = useSelector((state: RootState)=> state.tasks)
   const deleteTaskNow = () => {
     dispatch(deleteTask(id));
+    dispatch(closeTask());
   };
 
   const editTaskNow = () => {

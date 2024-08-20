@@ -148,7 +148,7 @@ export const updatePassword = createAsyncThunk(
     const jwt = state.user.jwt;
     try {
       const { data } = await axios.put(
-        `${PREFIX}user/profile/edit-password`,
+        `${PREFIX}users/profile/edit-password`,
         {
           password: passwords.password,
           newPassword: passwords.newPassword,

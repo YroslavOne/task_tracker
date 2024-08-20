@@ -24,6 +24,7 @@ interface FormTask {
   priority: string;
 }
 
+
 const AddAndEditTask: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { title, id } = useSelector((state: RootState) => state.toggle);
@@ -69,7 +70,7 @@ const AddAndEditTask: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormTask> = (data) => {
     const dateForArr = dayjs.isDayjs(data.date)
-      ? dayjs(data.date).format("DD/MM/YYYY")
+      ? dayjs(data.date).format("MM/DD/YYYY")
       : data.date;
 
     const imgUrlOrNot = images

@@ -18,7 +18,7 @@ export let tasks = [
       name: "Not Started",
       color: "#F21E1E",
     },
-    date: "12.05.2024",
+    date: "12.22.2024",
     image:
       "https://img.goodfon.ru/wallpaper/nbig/a/69/kartinka-3d-dikaya-koshka.webp",
   },

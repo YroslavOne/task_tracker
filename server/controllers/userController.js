@@ -58,15 +58,21 @@ export const updateUserProfile = (req, res) => {
 
 export const updatePassword = (req, res) => {
   const userId = req.user.id;
-  const { newPassword } = req.body;
+  const { password, newPassword } = req.body;
 
   const userIndex = users.findIndex((u) => u.id === userId);
-
+  const userSearch = users.filter((u) => u.id === userId);
   if (userIndex === -1) {
     return res.status(404).send({ message: "User not found" });
   }
+  if (userSearch[0].password !== password) {
+    return res.status(401).send({ message: "Incorrect password" });
+  }
 
-  users[userIndex].password = newPassword;
+  users[userIndex] = {
+    ...users[userIndex],
+    password: newPassword,
+  };
 
   res.status(200).send({ message: "Password updated successfully" });
 };
