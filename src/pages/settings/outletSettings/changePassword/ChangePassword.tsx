@@ -26,6 +26,7 @@ function ChangePassword() {
     handleSubmit,
     formState: { errors },
     getValues,
+    reset,
   } = useForm<ChangePasswordForm>();
   const dispatch = useDispatch<AppDispatch>();
   const { profile } = useSelector((s: RootState) => s.user);
@@ -46,6 +47,7 @@ function ChangePassword() {
       .unwrap()
       .then(() => {
         toast.success("Password updated successfully!");
+        reset()
       })
       .catch((error) => {
         toast.error(`Failed to update password: ${error.message}`);
