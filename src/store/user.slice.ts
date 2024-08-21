@@ -219,7 +219,6 @@ export const userSlice = createSlice({
       state.editProfileErrorMessage = action.error.message;
     });
     builder.addCase(updatePassword.fulfilled, (state, action) => {
-      state.profile = action.payload;
       state.isUpdated = true;
     });
     builder.addCase(updatePassword.rejected, (state, action) => {

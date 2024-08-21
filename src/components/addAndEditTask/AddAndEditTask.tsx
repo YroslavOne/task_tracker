@@ -152,7 +152,7 @@ const AddAndEditTask: React.FC = () => {
         </div>
 
         <div className={style["div-submit"]}>
-          <ButtonStandard type="submit">Add Task</ButtonStandard>
+          <ButtonStandard className={style["button"]} type="submit">Add Task</ButtonStandard>
         </div>
         {taskErrorMessage && <p>{taskErrorMessage.message}</p>}
       </form>

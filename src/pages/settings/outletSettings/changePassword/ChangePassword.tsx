@@ -12,6 +12,7 @@ import InputForSettings from "../../../../components/inputForSettings/InputForSe
 import ButtonStandard from "../../../../components/buttonStandard/ButtonStandard";
 import { NavLink } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import Ghost from "../../../../../public/image/ghost.png"
 
 interface ChangePasswordForm {
   currentPassword: string;
@@ -32,6 +33,7 @@ function ChangePassword() {
   useEffect(() => {
     dispatch(getProfile());
   }, [dispatch]);
+  
 
   const onSubmit = (data: ChangePasswordForm) => {
     dispatch(userActions.clearEditProfileErrorMessage());
@@ -49,7 +51,6 @@ function ChangePassword() {
         toast.error(`Failed to update password: ${error.message}`);
       });
   };
-
   return (
     <div>
       <ToastContainer />
@@ -62,7 +63,7 @@ function ChangePassword() {
             </NavLink>
           </div>
           <div className={style["image-and-user"]}>
-            <img src={profile?.image} className={style["image"]} />
+          {profile?.image ? <img src={`${window.location.origin}/${profile.image}`} className={style["image"]} /> : <img src={Ghost} className={style["image"]} />}
             <div className={style["email-and-user"]}>
               <div className={style["user"]}>
                 <p>

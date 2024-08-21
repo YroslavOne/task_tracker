@@ -5,6 +5,7 @@ import { getProfile, userActions } from "../../store/user.slice";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { AppDispatch, RootState } from "../../store/store";
+import Ghost from "../../../public/image/ghost.png"
 
 function SideBar() {
   const listMenu: {
@@ -31,14 +32,17 @@ const profile = useSelector((s:RootState)=>s.user.profile)
     dispatch(userActions.logout());
     navigate("/auth/login");
   };
-
+  console.log(profile?.image);
   return (
     <div className={styles["container"]}>
       <div className={styles["content"]}>
-        <img
+      {profile?.image ? <img
           src={profile?.image}
           alt=""
-        />
+        /> : <img
+          src={Ghost}
+          alt=""
+        />}
         <div className={styles["user"]}>
           <p>{profile?.firstName} {profile?.lastName}</p>
         </div>

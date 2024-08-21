@@ -74,5 +74,5 @@ export const updatePassword = (req, res) => {
     password: newPassword,
   };
 
-  res.status(200).send({ message: "Password updated successfully" });
+  res.status(200).send({ message: "Password updated successfully", users: users[userIndex] });
 };

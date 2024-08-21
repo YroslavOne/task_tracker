@@ -65,7 +65,7 @@ function Dashboard() {
               />
             ))
           ) : (
-            <div>тютю задач</div>
+            <div>Нет задач</div>
           )}
         </div>
       </div>

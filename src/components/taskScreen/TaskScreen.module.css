@@ -3,7 +3,7 @@
   background-color: rgba(245, 248, 255, 1);
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   padding: 26px;
-  height: 761px;
+  height: 551px;
   overflow: hidden;
   position: relative;
 }
@@ -11,12 +11,14 @@
   padding: 20px;
   box-shadow: 0px 5px 11px 0px rgba(0, 0, 0, 0.04);
   border-radius: 14px;
+  height: 94%;
 }
 .top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
+  
 }
 .title {
   display: flex;
@@ -77,4 +79,5 @@ button {
 }
 .tasks-and-task {
   display: flex;
+  height: 100%;
 }
