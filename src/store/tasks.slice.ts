@@ -176,7 +176,7 @@ export const completTask = createAsyncThunk(
 
 export const deleteTask = createAsyncThunk(
   "tasks/deleteTask",
-  async (taskId: number, { getState, rejectWithValue }) => {
+  async (taskId: number, { getState, rejectWithValue, dispatch }) => {
     const jwt = getState().user.jwt;
     try {
       await axios.delete(`${PREFIX}tasks/${taskId}`, {
@@ -184,6 +184,7 @@ export const deleteTask = createAsyncThunk(
           Authorization: `Bearer ${jwt}`,
         },
       });
+      await dispatch(getTasks());
       return taskId;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -246,7 +247,7 @@ export const taskSlice = createSlice({
         state.taskErrorMessage = action.payload as string;
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
-        state.tasks = state.tasks?.filter((task) => task.id !== action.payload);
+
       })
       .addCase(deleteTask.rejected, (state, action) => {
         state.taskErrorMessage = action.payload as string;

@@ -21,7 +21,9 @@ function Dashboard() {
   const openWindowForm = () => {
     dispatch(toggle());
   };
-  dispatch(taskActions.filterWhatScreen({ whatScreen: "AllTasks" }));
+  useEffect(() => {
+    dispatch(taskActions.filterWhatScreen({ whatScreen: "AllTasks" }));
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getTasks());

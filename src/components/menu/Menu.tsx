@@ -49,7 +49,7 @@ function Menu() {
   const handleCalendarOpen = () => {
     setOpen(true);
   };
-  const handleNotificationrOpen = () => {
+  const handleNotificationOpen = () => {
     dispatch(toggleWindowNotification());
   };
 
@@ -84,7 +84,7 @@ function Menu() {
           className={style["button-square"]}
         />
         <ButtonSquare
-          onClick={handleNotificationrOpen}
+          onClick={handleNotificationOpen}
           value={notifications?.length === 0 ? null : notifications?.length}
           image={Bell}
           className={style["button-square"]}

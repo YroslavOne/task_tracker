@@ -9,7 +9,11 @@ function VitalTask() {
   const { tasks, filterDate, filterTitle, whatScreen } = useSelector(
     (s: RootState) => s.tasks
   );
-  dispatch(taskActions.filterWhatScreen({ whatScreen: "Vital" }));
+
+  useEffect(() => {
+    dispatch(taskActions.filterWhatScreen({ whatScreen: "Vital" }));
+  }, [dispatch]);
+  
   useEffect(() => {
     dispatch(getTasks());
   }, [dispatch, filterDate, filterTitle, whatScreen]);

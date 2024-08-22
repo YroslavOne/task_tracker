@@ -9,8 +9,11 @@ function MyTask() {
   const { tasks, filterDate, filterTitle, whatScreen } = useSelector(
     (s: RootState) => s.tasks
   );
-  dispatch(taskActions.filterWhatScreen({ whatScreen: "My" }));
 
+  useEffect(() => {
+    dispatch(taskActions.filterWhatScreen({ whatScreen: "My" }));
+  }, [dispatch]);
+  
   useEffect(() => {
     dispatch(getTasks());
   }, [dispatch, filterDate, filterTitle, whatScreen]);

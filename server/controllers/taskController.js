@@ -13,9 +13,8 @@ export const addTask = (req, res) => {
   const priorityValue = priorities.find((elem) => elem.name === priority);
   const statusValue = statuses.find((elem) => elem.name === status);
   const image = req.file ? req.file.path : imageUrl;
-
   const task = {
-    id: tasks.length + 1,
+    id: tasks[tasks.length-1].id + 1,
     executor: JSON.parse(executor),
     title,
     description,
