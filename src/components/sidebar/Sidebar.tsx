@@ -32,7 +32,6 @@ const profile = useSelector((s:RootState)=>s.user.profile)
     dispatch(userActions.logout());
     navigate("/auth/login");
   };
-  console.log(profile?.image);
   return (
     <div className={styles["container"]}>
       <div className={styles["content"]}>

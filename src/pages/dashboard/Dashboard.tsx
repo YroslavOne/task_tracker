@@ -4,7 +4,7 @@ import Plus from "./../../../public/image/dashboard/taSK.svg";
 import Task from "../../components/task/Task";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { getTasks } from "../../store/tasks.slice";
+import { getTasks, taskActions } from "../../store/tasks.slice";
 import { useEffect } from "react";
 import { toggle } from "../../store/toggle.slice";
 import Diagram from "../../components/diagram/Diagram";
@@ -14,16 +14,18 @@ import dayjs from "dayjs";
 
 function Dashboard() {
   const dispatch = useDispatch<AppDispatch>();
-  const { tasks, filterDate, filterTitle } = useSelector(
+  const { tasks, filterDate, filterTitle, whatScreen } = useSelector(
     (s: RootState) => s.tasks
   );
 
   const openWindowForm = () => {
     dispatch(toggle());
   };
+  dispatch(taskActions.filterWhatScreen({ whatScreen: "AllTasks" }));
+
   useEffect(() => {
-    dispatch(getTasks("AllTasks"));
-  }, [filterDate, filterTitle, dispatch]);
+    dispatch(getTasks());
+  }, [filterDate, filterTitle, dispatch, whatScreen]);
   useEffect(() => {
     dispatch(fetchCountedStatuses());
   }, [dispatch]);

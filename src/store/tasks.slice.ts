@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AsyncThunkAction, createAsyncThunk, createSlice, PayloadAction, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { PREFIX } from "../helpers/API";
 import { loadState } from "./storage";
@@ -13,12 +13,14 @@ export interface TasksState {
   filterDate?: [string | null, string | null] | null;
   filterTitle?: string | null;
   task?: Task;
+  whatScreen?: string;
 }
 
 const initialState: TasksState = {
   jwt: loadState<UserPersistentState>(JWT_PERSISTENT_STATE)?.jwt ?? null,
   filterDate: null,
   filterTitle: null,
+  whatScreen: "AllTasks",
 };
 
 export const getTask = createAsyncThunk<TasksState, void, { state: RootState }>(
@@ -37,16 +39,17 @@ export const getTask = createAsyncThunk<TasksState, void, { state: RootState }>(
 
 export const getTasks = createAsyncThunk<
   TasksState,
-  string,
+  void,
   { state: RootState }
->("tasks/getTasks", async (howtaskneeded, thunkApi) => {
+>("tasks/getTasks", async (_, thunkApi) => {
   const state = thunkApi.getState();
   const jwt = state.user.jwt;
   const filterTitle = state.tasks.filterTitle;
   const filterDate = state.tasks.filterDate;
+  const whatScreen = state.tasks.whatScreen;
   const { data } = await axios.get<TasksState>(`${PREFIX}tasks`, {
     params: {
-      howtaskneed: howtaskneeded,
+      whatScreen: whatScreen,
       filterTitle: filterTitle,
       filterDate: filterDate,
     },
@@ -96,7 +99,7 @@ export const updateTask = createAsyncThunk(
   "tasks/updateTask",
   async (
     { taskId, taskData }: { taskId: number; taskData: Task },
-    { getState, rejectWithValue }
+    { getState, rejectWithValue, dispatch }
   ) => {
     const state = getState() as RootState;
     const jwt = state.user.jwt;
@@ -105,18 +108,18 @@ export const updateTask = createAsyncThunk(
 
       Object.keys(taskData).forEach((key) => {
         if (key === "executor") {
-          formData.append(key, JSON.stringify(taskData[key])); 
+          formData.append(key, JSON.stringify(taskData[key]));
         } else if (key === "priority") {
           formData.append(key, taskData[key]);
         } else if (key === "date") {
-          formData.append(key, JSON.stringify(taskData[key])); 
+          formData.append(key, JSON.stringify(taskData[key]));
         } else if (key !== "image") {
           formData.append(key, taskData[key]);
         } else if (taskData.image) {
           if (typeof taskData.image === "string") {
-            formData.append("imageUrl", taskData.image); 
+            formData.append("imageUrl", taskData.image);
           } else if (taskData.image[0].file) {
-            formData.append("image", taskData.image[0].file); 
+            formData.append("image", taskData.image[0].file);
           }
         }
       });
@@ -125,7 +128,7 @@ export const updateTask = createAsyncThunk(
           Authorization: `Bearer ${jwt}`,
         },
       });
-
+      await dispatch(getTasks());
       return data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -137,7 +140,7 @@ export const completTask = createAsyncThunk(
   "tasks/complet",
   async (
     { id, statusForTask }: { id: number; statusForTask: string },
-    { getState, rejectWithValue }
+    { getState, rejectWithValue, dispatch }
   ) => {
     const state = getState() as RootState;
     const jwt = state.user.jwt;
@@ -163,6 +166,7 @@ export const completTask = createAsyncThunk(
           },
         }
       );
+      await dispatch(getTasks());
       return data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -223,6 +227,12 @@ export const taskSlice = createSlice({
     ) => {
       state.filterDate = action.payload.date;
     },
+    filterWhatScreen: (
+      state,
+      action: PayloadAction<{ whatScreen: string }>
+    ) => {
+      state.whatScreen = action.payload.whatScreen;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -241,26 +251,26 @@ export const taskSlice = createSlice({
       .addCase(deleteTask.rejected, (state, action) => {
         state.taskErrorMessage = action.payload as string;
       })
+      .addCase(updateTask.pending, (state) => {
+        state.taskErrorMessage = null;
+      })
+      .addCase(updateTask.fulfilled, (state, action) => {
+        
+      })
+      .addCase(updateTask.rejected, (state, action) => {
+        state.taskErrorMessage = action.payload as string;
+      })
       .addCase(getTasks.fulfilled, (state, action) => {
         state.tasks = action.payload;
       })
       .addCase(getTask.fulfilled, (state, action) => {
         state.task = action.payload;
       })
-      .addCase(updateTask.pending, (state) => {
-        state.taskErrorMessage = null;
-      })
-      .addCase(updateTask.fulfilled, (state, action) => {
-        state.tasks = action.payload;
-      })
-      .addCase(updateTask.rejected, (state, action) => {
-        state.taskErrorMessage = action.payload as string;
-      })
       .addCase(completTask.pending, (state) => {
         state.taskErrorMessage = null;
       })
       .addCase(completTask.fulfilled, (state, action) => {
-        state.tasks = action.payload;
+        
       })
       .addCase(completTask.rejected, (state, action) => {
         state.taskErrorMessage = action.payload as string;
@@ -270,3 +280,5 @@ export const taskSlice = createSlice({
 
 export default taskSlice.reducer;
 export const taskActions = taskSlice.actions;
+
+

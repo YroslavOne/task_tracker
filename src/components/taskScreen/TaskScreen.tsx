@@ -27,7 +27,7 @@ function TaskScreen({ tasks }: TaskScreenProps) {
                 />
               ))
             ) : (
-              <div>тютю задач</div>
+              <div>Нет задач</div>
             )}
           </div>
           {open && <TaskСard id={id} />}

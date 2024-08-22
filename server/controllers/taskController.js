@@ -117,7 +117,7 @@ export const getTaskById = (req, res) => {
 };
 
 export const getAllTasks = (req, res) => {
-  const { howtaskneed, filterTitle, filterDate } = req.query;
+  const { whatScreen, filterTitle, filterDate } = req.query;
   const userId = req.user.id;
   function filterByParameters(taskList) {
     let filteredTask;
@@ -146,9 +146,9 @@ export const getAllTasks = (req, res) => {
   }
 
   let taskList;
-  if (howtaskneed === "AllTasks") {
+  if (whatScreen === "AllTasks") {
     taskList = filterByParameters(tasks);
-  } else if (howtaskneed === "Vital") {
+  } else if (whatScreen === "Vital") {
     taskList = filterByParameters(tasks).filter(
       (task) => task.executor.id === userId && task.status.name !== "Completed"
     );
