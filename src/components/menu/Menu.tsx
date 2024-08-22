@@ -41,6 +41,11 @@ function Menu() {
     setOpen(false);
   };
 
+  const resetDataSearch = () => {
+    dispatch(taskActions.filterDate({ date: [null, null] }));
+    setOpen(false);
+  };
+
   const handleCalendarOpen = () => {
     setOpen(true);
   };
@@ -92,6 +97,9 @@ function Menu() {
           <div className={style["button-for-calendar"]}>
             <button onClick={fetchDateSearch} className={style["close-button"]}>
               Ok
+            </button>
+            <button onClick={resetDataSearch} className={style["close-button"]}>
+              Reset
             </button>
             <button
               onClick={handleCalendarClose}

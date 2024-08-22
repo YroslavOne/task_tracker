@@ -12,7 +12,7 @@ function DateInput({
   const handleDateChange = (date: Dayjs | null) => {
     if (date) {
       setSelectedDate(date);
-      setValue("date", date.toISOString()); // Assuming you need the date as ISO string
+      setValue("date", date.toISOString());
     }
   };
 
