@@ -58,7 +58,7 @@ const ExecutorSelect = React.forwardRef<HTMLDivElement, ExecutorSelectedProps>((
   return (
     <Box sx={{ width: "70%" }} ref={ref}>
       <FormControl fullWidth>
-        <InputLabel id="executor-select-label">Executor</InputLabel>
+        <InputLabel id="executor-select-label" sx={{ display: "flex", justifyContent: "center", height: "90%", alignItems: "center", top: '-14px'}}>Executor</InputLabel>
         <Select
           className={cn(style["select"], { [style["error"]]: error })}
           labelId="executor-select-label"
@@ -68,9 +68,9 @@ const ExecutorSelect = React.forwardRef<HTMLDivElement, ExecutorSelectedProps>((
           onChange={handleChange}
         >
           {executors?.map((ex, index) => (
-            <MenuItem className={style["menu-item"]} value={ex.id} key={index}>
+            <MenuItem className={style["menu-item"]} value={ex.id} key={index} >
               {ex.username}
-            </MenuItem>
+            </MenuItem >
           ))}
         </Select>
       </FormControl>
