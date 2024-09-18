@@ -22,8 +22,8 @@ interface FormTask {
   date: Dayjs | string;
   description: string;
   priority: string;
+  executor: ProfileAll | null;
 }
-
 
 const AddAndEditTask: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,6 +33,8 @@ const AddAndEditTask: React.FC = () => {
     state.tasks.tasks?.find((task) => task.id === id)
   );
   const { taskErrorMessage } = useSelector((state: RootState) => state.tasks);
+
+  console.log(taskErrorMessage);
   const {
     handleSubmit,
     reset,
@@ -51,11 +53,15 @@ const AddAndEditTask: React.FC = () => {
     task?.description ? task?.description : ""
   );
   const [priority, setPriority] = useState(
-    task?.priority ? task?.priority.name : "Extreme"
+    task?.priority
+      ? typeof task?.priority === "string"
+        ? task.priority
+        : task?.priority?.name
+      : "Extreme"
   );
-  const [executorSelected, setExecutorSelected] = useState<
-    ProfileAll | undefined
-  >(task?.executor);
+  const [executorSelected, setExecutorSelected] = useState<ProfileAll | null>(
+    task?.executor ? task?.executor : null
+  );
 
   const closeOpen = () => {
     dispatch(toggle());
@@ -116,7 +122,6 @@ const AddAndEditTask: React.FC = () => {
             <input
               value={titleHere}
               onChange={(e) => setTitleHere(e.target.value)}
-              
             />
           </div>
           <DateInput
@@ -152,7 +157,9 @@ const AddAndEditTask: React.FC = () => {
         </div>
 
         <div className={style["div-submit"]}>
-          <ButtonStandard className={style["button"]} type="submit">Add Task</ButtonStandard>
+          <ButtonStandard className={style["button"]} type="submit">
+            Add Task
+          </ButtonStandard>
         </div>
         {taskErrorMessage && <p>{taskErrorMessage.message}</p>}
       </form>

@@ -70,7 +70,7 @@ function Menu() {
           onChange={(e) => setSearchValue(e.target.value)}
         />
         <ButtonSquare
-          value={null}
+          value={""}
           onClick={fetchValueSearch}
           image={Loop}
           className={style["loop"]}
@@ -78,7 +78,7 @@ function Menu() {
       </div>
       <div className={style["two-button"]}>
         <ButtonSquare
-          value={null}
+          value={""}
           onClick={handleCalendarOpen}
           image={Calendar}
           className={style["button-square"]}

@@ -1,8 +1,9 @@
+import { ProfileAll } from "../../interfaces/userForTask.interface";
+
 export interface ExecutorSelectedProps {
-  executorSelected: {
-    username: string;
-    email: string;
-    id: number;
-  } | null;
-  setExecutorSelected: (value: number) => void;
+  executorSelected: ProfileAll | null;
+  setExecutorSelected: (value: ProfileAll) => void;
+  error?: string | undefined;
 }
+
+

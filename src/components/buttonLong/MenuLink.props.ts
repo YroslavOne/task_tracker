@@ -14,5 +14,3 @@ export interface MenuLink {
   isActive: boolean;
   className: string;
 }
-
-// ButtonHTMLAttributes<HTMLButtonElement>

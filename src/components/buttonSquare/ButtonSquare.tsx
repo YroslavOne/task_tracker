@@ -1,8 +1,8 @@
 import styles from "./ButtonSquare.module.css";
-import { ButtonProps } from "./ButtonSquare.props";
+import { ButtonSquareProps } from "./ButtonSquare.props";
 import cn from "classnames";
 
-function ButtonSquare({ image, value, className, ...props }: ButtonProps) {
+function ButtonSquare({ image, value, className, ...props }: ButtonSquareProps) {
   return (
     <button
       className={cn(styles["button"], styles["accent"], className)}

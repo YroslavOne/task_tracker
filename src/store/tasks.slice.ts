@@ -9,7 +9,7 @@ import { Task } from "../interfaces/task.interface";
 export interface TasksState {
   jwt: string | null;
   tasks?: Task[];
-  taskErrorMessage?: string;
+  taskErrorMessage?: {message?: string};
   filterDate?: [string | null, string | null] | null;
   filterTitle?: string | null;
   task?: Task;

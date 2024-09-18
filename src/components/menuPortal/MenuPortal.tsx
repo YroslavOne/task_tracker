@@ -1,11 +1,18 @@
-import React from "react";
 import ReactDOM from "react-dom";
+import { ReactNode } from "react";
 
-const MenuPortal = ({ children }) => {
-  return ReactDOM.createPortal(
-    children,
-    document.getElementById("menu-portal-root")
-  );
+interface MenuPortalProps {
+  children: ReactNode;
+}
+
+const MenuPortal: React.FC<MenuPortalProps> = ({ children }) => {
+  const portalRoot = document.getElementById("menu-portal-root");
+
+  if (!portalRoot) {
+    return null;
+  }
+
+  return ReactDOM.createPortal(children, portalRoot);
 };
 
 export default MenuPortal;

@@ -8,6 +8,7 @@ import { fetchCountedStatuses } from "../../store/statuses.slice";
 
 function Diagram() {
   const tasks = useSelector((s: RootState) => s.tasks.tasks);
+  const taskCount = tasks?.length || 1;
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(fetchCountedStatuses());
@@ -27,7 +28,7 @@ function Diagram() {
             id={index}
             name={status.name}
             color={status.color}
-            count={(status.valueCounted / tasks?.length) * 100}
+            count={(status.valueCounted / taskCount ) * 100}
           />
         ))}
       </div>
