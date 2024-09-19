@@ -2,7 +2,7 @@ import { ImageListType } from "react-images-uploading";
 import { ProfileAll } from "./userForTask.interface";
 
 export interface Task {
-  id?: number;
+  id: number;
   executor: ProfileAll | null;
   title: string;
   description: string;

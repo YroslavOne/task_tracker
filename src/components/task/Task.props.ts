@@ -1,3 +1,5 @@
+import { ImageListType } from "react-images-uploading";
+
 export interface TaskProps {
   key: number;
   id: number;
@@ -6,16 +8,19 @@ export interface TaskProps {
   priority: {
     name: string;
     color: string;
-  };
+  } | string;
   status: {
     name: string;
     color: string;
-  };
-  date: {
-    $D: number;
-    $M: number;
-    $Y: number;
-  } | string;
-  image: string;
+  }
+  | string;
+  date:
+    | {
+        $D: number;
+        $M: number;
+        $Y: number;
+      }
+    | string;
+  image: ImageListType;
   activeLink: boolean;
 }

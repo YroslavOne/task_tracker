@@ -2,15 +2,9 @@ import { ReactNode } from "react";
 
 export interface MenuLink {
   children: ReactNode;
-  image:
-    | "dashboard"
-    | "help"
-    | "my-task"
-    | "settings"
-    | "task-categories"
-    | "vital-task"
-    | "logout";
+  image:string;
   link: string;
-  isActive: boolean;
+  isActive?: boolean;
   className: string;
+  onClick?: () => void;
 }

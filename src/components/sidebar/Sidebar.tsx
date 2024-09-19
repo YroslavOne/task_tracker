@@ -5,7 +5,7 @@ import { getProfile, userActions } from "../../store/user.slice";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { AppDispatch, RootState } from "../../store/store";
-import Ghost from "../../../public/image/ghost.png"
+import Ghost from "../../../public/image/ghost.png";
 
 function SideBar() {
   const listMenu: {
@@ -21,11 +21,10 @@ function SideBar() {
   ];
 
   const dispatch = useDispatch<AppDispatch>();
-const profile = useSelector((s:RootState)=>s.user.profile)
+  const profile = useSelector((s: RootState) => s.user.profile);
   useEffect(() => {
     dispatch(getProfile());
   }, [dispatch]);
-
 
   const navigate = useNavigate();
   const logout = () => {
@@ -35,15 +34,15 @@ const profile = useSelector((s:RootState)=>s.user.profile)
   return (
     <div className={styles["container"]}>
       <div className={styles["content"]}>
-      {profile?.image ? <img
-          src={profile?.image}
-          alt=""
-        /> : <img
-          src={Ghost}
-          alt=""
-        />}
+        {profile?.image ? (
+          <img src={profile?.image} alt="" />
+        ) : (
+          <img src={Ghost} alt="" />
+        )}
         <div className={styles["user"]}>
-          <p>{profile?.firstName} {profile?.lastName}</p>
+          <p>
+            {profile?.firstName} {profile?.lastName}
+          </p>
         </div>
         <p className={styles["email"]}>{profile?.email}</p>
         <div className={styles["button"]}>
@@ -61,16 +60,16 @@ const profile = useSelector((s:RootState)=>s.user.profile)
         </div>
       </div>
       <div className={styles["logout"]}>
-				<div className={styles["button-logout"]}>
-        <MenuLink
-          onClick={logout}
-          link={"/auth/login"}
-          image={"logout"}
-          className={styles["logout-link"]}
-        >
-          logout
-        </MenuLink>
-				</div>
+        <div className={styles["button-logout"]}>
+          <MenuLink
+            onClick={logout}
+            link={"/auth/login"}
+            image={"logout"}
+            className={styles["logout-link"]}
+          >
+            logout
+          </MenuLink>
+        </div>
       </div>
     </div>
   );

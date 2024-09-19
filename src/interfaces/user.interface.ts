@@ -7,5 +7,5 @@ export interface Profile {
   password?: string;
   phone: string | undefined;
   token?: string;
-  image: string | undefined;
+  image: string | { file: File }[] | undefined;
 }

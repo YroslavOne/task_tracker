@@ -3,9 +3,10 @@ import { MenuLink } from "./MenuLink.props";
 import cn from "classnames";
 import { NavLink } from "react-router-dom";
 
-function ButtonLong({ children, image, link, className, ...props }: MenuLink) {
+function ButtonLong({ children, image, link, className, onClick, ...props }: MenuLink) {
   return (
     <NavLink
+    onClick={onClick}
       to={link}
       className={({ isActive }) =>
         isActive

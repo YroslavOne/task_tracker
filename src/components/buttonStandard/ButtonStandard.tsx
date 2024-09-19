@@ -1,6 +1,6 @@
 import styles from "./ButtonStandard.module.css";
-import { ButtonStandardProps } from "./ButtonStandard.props";
 import cn from "classnames";
+import { ButtonStandardProps } from "./ButtonStandard.props";
 
 function ButtonStandard({ children, className, ...props }: ButtonStandardProps) {
 	return (

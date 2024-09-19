@@ -85,7 +85,7 @@ function Menu() {
         />
         <ButtonSquare
           onClick={handleNotificationOpen}
-          value={notifications?.length === 0 ? null : notifications?.length}
+          value={notifications?.length === 0 ? '' : notifications?.length}
           image={Bell}
           className={style["button-square"]}
         />

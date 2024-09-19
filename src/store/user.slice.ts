@@ -1,4 +1,4 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { loadState } from "./storage";
 import { PREFIX } from "../helpers/API";
 import axios, { AxiosError } from "axios";
@@ -21,10 +21,12 @@ export interface UserState {
   profile?: Profile;
   profileAll?: ProfileAll;
   isUpdated?: boolean;
+  isPasswordUpdated?: boolean;
 }
 
 const initialState: UserState = {
   jwt: loadState<UserPersistentState>(JWT_PERSISTENT_STATE)?.jwt ?? null,
+  isPasswordUpdated: false,
 };
 
 export const login = createAsyncThunk(
@@ -107,9 +109,9 @@ export const updateProfile = createAsyncThunk(
     try {
       const formData = new FormData();
 
-      Object.keys(userData).forEach((key) => {
+      (Object.keys(userData) as (keyof Profile)[]).forEach((key) => {
         if (key !== "image") {
-          formData.append(key, userData[key]);
+          formData.append(key, userData[key] as string);
         } else if (userData.image) {
           if (typeof userData.image === "string") {
             formData.append("imageUrl", userData.image);
@@ -130,7 +132,8 @@ export const updateProfile = createAsyncThunk(
 
       return data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      const axiosError = error as AxiosError;
+      return rejectWithValue(axiosError.response?.data);
     }
   }
 );
@@ -142,7 +145,7 @@ export const updatePassword = createAsyncThunk(
       password: string;
       newPassword: string;
     },
-    { getState, rejectWithValue }
+    { getState }
   ) => {
     const state = getState() as RootState;
     const jwt = state.user.jwt;
@@ -191,7 +194,9 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
-      state.jwt = action.payload.token;
+      if (action.payload) {
+        state.jwt = action.payload.token;
+      }
     });
     builder.addCase(login.rejected, (state, action) => {
       state.loginErrorMessage = action.error.message;
@@ -218,7 +223,7 @@ export const userSlice = createSlice({
     builder.addCase(updateProfile.rejected, (state, action) => {
       state.editProfileErrorMessage = action.error.message;
     });
-    builder.addCase(updatePassword.fulfilled, (state, action) => {
+    builder.addCase(updatePassword.fulfilled, (state) => {
       state.isUpdated = true;
     });
     builder.addCase(updatePassword.rejected, (state, action) => {

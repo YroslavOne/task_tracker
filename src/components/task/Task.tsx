@@ -9,7 +9,7 @@ import { setIdAndTitle } from "../../store/toggle.slice";
 import { getTaskById } from "../../store/openTask.slice";
 import { AppDispatch } from "../../store/store";
 import { fetchCountedStatuses } from "../../store/statuses.slice";
-import useOutsideClick  from '../../hooks/useClickOutside/useClickOutside.tsx'
+import useOutsideClick from "../../hooks/useClickOutside/useClickOutside.tsx";
 import dayjs from "dayjs";
 
 function Task({
@@ -26,8 +26,8 @@ function Task({
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const dispatch = useDispatch<AppDispatch>();
 
-  const openWindowActioans = (e) => {
-    const rect = e.target.getBoundingClientRect();
+  const openWindowActioans = (e: React.MouseEvent<HTMLImageElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
     setMenuPosition({
       top: rect.top + window.scrollY + rect.height,
       left: rect.left + window.scrollX,
@@ -58,9 +58,10 @@ function Task({
     dispatch(fetchCountedStatuses());
   };
 
-	const ref = useOutsideClick(() => {
-		if(openedWindowActioans){
-    setOpenedWindowActioans(!openedWindowActioans);}
+  const ref = useOutsideClick(() => {
+    if (openedWindowActioans) {
+      setOpenedWindowActioans(!openedWindowActioans);
+    }
   });
 
   return (
@@ -79,8 +80,8 @@ function Task({
           />
           {openedWindowActioans && (
             <MenuPortal>
-              <ul 
-							ref={ref}
+              <ul
+                ref={ref}
                 className={style["menu-portal"]}
                 style={{
                   top: `${menuPosition.top}px`,
@@ -102,16 +103,18 @@ function Task({
           <div className={style["information"]}>
             <p className={style["priority"]}>
               Priority:{" "}
-              <span style={{ color: priority.color }}>{priority.name}</span>
+              <span style={{ color: typeof priority === 'object' ? priority.color : "" }}>{typeof priority === 'object' ? priority.name : priority}</span>
             </p>
             <p className={style["priority"]}>
-              Status: <span style={{ color: status.color }}>{status.name}</span>
+              Status: <span style={{ color: typeof status === 'object' ? status.color : "" }}>{ typeof status === 'object' ? status.name : status}</span>
             </p>
           </div>
         </div>
         <div className={style["image-date"]}>
           <img className={style["image"]} src={image} alt="" />
-          <p className={style["created"]}>Сomplete: {dayjs(date).format("DD.MM.YYYY")}</p>
+          <p className={style["created"]}>
+            Сomplete: {dayjs(date).format("DD.MM.YYYY")}
+          </p>
         </div>
       </div>
     </div>

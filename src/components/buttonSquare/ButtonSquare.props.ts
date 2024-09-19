@@ -1,6 +1,7 @@
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes } from "react";
 
-export interface ButtonSquareProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-	image: string;
-	value: string | number | readonly string[] | undefined;
+export interface ButtonSquareProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
+  image: string;
+  value: string | number | undefined;
 }
