@@ -85,6 +85,7 @@ const AddAndEditTask: React.FC = () => {
         : images[0].data_url
       : null;
     const taskData: Task = {
+      id: 1,
       executor: executorSelected,
       title: data.title,
       description: data.description,

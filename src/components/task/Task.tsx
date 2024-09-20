@@ -38,7 +38,7 @@ function Task({
   const openTask = (id: number) => {
     if (activeLink) {
       dispatch(getTaskById({ id: id }));
-      if (status.name === "Not Started") {
+      if (typeof status === 'object' && status.name === "Not Started") {
         dispatch(completTask({ id, statusForTask: "In Progress" }));
       }
     }
@@ -58,11 +58,15 @@ function Task({
     dispatch(fetchCountedStatuses());
   };
 
-  const ref = useOutsideClick(() => {
+  const ref = useOutsideClick<HTMLUListElement>(() => {
     if (openedWindowActioans) {
       setOpenedWindowActioans(!openedWindowActioans);
     }
   });
+
+  const formattedDate = typeof date === 'string' || typeof date === 'number' || date instanceof Date
+    ? dayjs(date).format("DD.MM.YYYY")
+    : dayjs(`${date.$Y}-${date.$M + 1}-${date.$D}`).format("DD.MM.YYYY");
 
   return (
     <div className={style["container"]} key={id}>
@@ -111,9 +115,9 @@ function Task({
           </div>
         </div>
         <div className={style["image-date"]}>
-          <img className={style["image"]} src={image} alt="" />
+          <img className={style["image"]} src={String(image)} alt="" />
           <p className={style["created"]}>
-            Сomplete: {dayjs(date).format("DD.MM.YYYY")}
+            Сomplete: {formattedDate}
           </p>
         </div>
       </div>
