@@ -30,7 +30,7 @@ function TaskScreen({ tasks }: TaskScreenProps) {
               <div>Нет задач</div>
             )}
           </div>
-          {open && <TaskСard id={id} />}
+          {open && <TaskСard id={id? id: 0} />}
         </div>
       </div>
     </div>

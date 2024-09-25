@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -41,7 +41,11 @@ function SettingsMain() {
   const [user, setUser] = useState<string | undefined>(profile?.userName);
 
   const onSubmit = () => {
-    const imgUrlOrNot = images[0].file ? images : images[0].data_url;
+		let imgUrlOrNot = null;
+
+  if (images && images[0]) {
+    imgUrlOrNot = images[0].file ? images : images[0].data_url;
+  }
     const profileData: Profile = {
       firstName: firstName,
       lastName: lastName,
@@ -68,7 +72,6 @@ function SettingsMain() {
         <form className={style["container"]} onSubmit={handleSubmit(onSubmit)}>
           <div className={style["head"]}>
             <h3 className={style["h3"]}>Account Information</h3>
-            {/* <button className={style["button"]}>Go Back</button> */}
           </div>
           <div className={style["image-and-user"]}>
             <ImageUpload

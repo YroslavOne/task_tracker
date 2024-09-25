@@ -1,5 +1,4 @@
 import style from "./TaskCard.module.css";
-import { TaskСardProps } from "./TaskСard.props";
 import { useDispatch, useSelector } from "react-redux";
 import {deleteTask, getTask } from "../../store/tasks.slice";
 import { setIdAndTitle } from "../../store/toggle.slice";
@@ -9,12 +8,13 @@ import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
 import { closeTask } from "../../store/openTask.slice";
 import useOutsideClick from '../../hooks/useClickOutside/useClickOutside.tsx'
+import { TaskСardProps } from "./TaskCard.props.ts";
 function TaskСard({
   id
 }: TaskСardProps) {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(()=>{
-    dispatch(getTask(id))
+    dispatch(getTask())
   },[dispatch, id])
    const { open} = useSelector((s: RootState) => s.openTask);
 

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { PREFIX } from "../helpers/API";
 import { loadState } from "./storage";
 import { JWT_PERSISTENT_STATE, UserPersistentState } from "./user.slice";
@@ -47,7 +47,7 @@ export const deleteNotification = createAsyncThunk(
       });
       return notificationId;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue((error as AxiosError).response?.data);
     }
   }
 );

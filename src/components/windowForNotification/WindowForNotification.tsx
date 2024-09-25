@@ -20,15 +20,18 @@ function WindowForNotification() {
     dispatch(toggleWindowNotification());
   };
 
-  const ref = useOutsideClick(() => {
-    if (conditionWindowNotification) {
+
+	const refForDiv = useOutsideClick<HTMLDivElement>(() => {
+  if (conditionWindowNotification) {
       handleNotificationClose();
     }
-  });
+});
+
+	
 
   return (
     <MenuPortal>
-      <div ref={ref} className={styles["container"]}>
+      <div ref={refForDiv} className={styles["container"]}>
         <div className={styles["top-bar"]}>
           <h3>Notifications</h3>
           <button onClick={handleNotificationClose}>

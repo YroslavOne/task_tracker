@@ -20,8 +20,7 @@ import cn from "classnames";
 const ExecutorSelect = React.forwardRef<HTMLDivElement, ExecutorSelectedProps>(
   ({ executorSelected, setExecutorSelected, error }, ref) => {
     const dispatch = useDispatch<AppDispatch>();
-    const executors: ProfileAll | [] =
-      useSelector((state: RootState) => state.user.profileAll) || [];
+    const executors: ProfileAll [] | [] = useSelector((state: RootState) => state.user.profileAll) || [];
     const [executor, setExecutor] = useState("");
 
     useEffect(() => {

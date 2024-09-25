@@ -162,7 +162,13 @@ const AddAndEditTask: React.FC = () => {
             Add Task
           </ButtonStandard>
         </div>
-        {taskErrorMessage && <p>{taskErrorMessage.message}</p>}
+        {taskErrorMessage && (
+  typeof taskErrorMessage === 'string' ? (
+    <p>{taskErrorMessage}</p>
+  ) : (
+    <p>{taskErrorMessage.message}</p>
+  )
+)}
       </form>
     </div>
   );

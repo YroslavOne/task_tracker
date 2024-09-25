@@ -1,23 +1,24 @@
-import { AsyncThunkAction, createAsyncThunk, createSlice, PayloadAction, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import {  createAsyncThunk, createSlice, PayloadAction, } from "@reduxjs/toolkit";
+import axios, { AxiosError } from "axios";
 import { PREFIX } from "../helpers/API";
 import { loadState } from "./storage";
 import { JWT_PERSISTENT_STATE, UserPersistentState } from "./user.slice";
-import { RootState } from "./store";
+import { AppDispatch, RootState } from "./store";
 import { Task } from "../interfaces/task.interface";
 
 export interface TasksState {
   jwt: string | null;
   tasks?: Task[];
-  taskErrorMessage?: {message?: string};
+  taskErrorMessage?: {message?: string} | null | string;
   filterDate?: [string | null, string | null] | null;
   filterTitle?: string | null;
-  task?: Task;
+  task?: Task | null;
   whatScreen?: string;
 }
 
 const initialState: TasksState = {
   jwt: loadState<UserPersistentState>(JWT_PERSISTENT_STATE)?.jwt ?? null,
+	tasks: [],
   filterDate: null,
   filterTitle: null,
   whatScreen: "AllTasks",
@@ -63,7 +64,8 @@ export const getTasks = createAsyncThunk<
 export const addTask = createAsyncThunk(
   "tasks/addTask",
   async (taskData: Task, { getState, rejectWithValue }) => {
-    const jwt = getState().user.jwt;
+    const state = getState() as RootState;
+const jwt = state.user.jwt;
 
     try {
       const formData = new FormData();
@@ -71,16 +73,20 @@ export const addTask = createAsyncThunk(
         if (key === "executor") {
           formData.append(key, JSON.stringify(taskData[key]));
         } else if (key === "priority") {
-          formData.append(key, taskData[key]);
+          formData.append(key, taskData[key] as string);
         } else if (key === "date") {
           formData.append(key, taskData[key]);
         } else if (key !== "image") {
-          formData.append(key, taskData[key]);
+          formData.append(key, taskData[key as keyof Task] as string);
         } else {
-          formData.append(
-            "image",
-            taskData.image ? taskData.image[0].file : null
-          );
+					if (taskData.image) {
+  const imageFile = taskData.image[0]?.file;
+  if (imageFile) {
+    formData.append("image", imageFile); 
+  }
+} else {
+  formData.append("image", ""); 
+}
         }
       });
       const { data } = await axios.post(`${PREFIX}tasks`, formData, {
@@ -90,7 +96,7 @@ export const addTask = createAsyncThunk(
       });
       return data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue((error as AxiosError).response?.data);
     }
   }
 );
@@ -110,11 +116,11 @@ export const updateTask = createAsyncThunk(
         if (key === "executor") {
           formData.append(key, JSON.stringify(taskData[key]));
         } else if (key === "priority") {
-          formData.append(key, taskData[key]);
+          formData.append(key, taskData[key] as string);
         } else if (key === "date") {
           formData.append(key, JSON.stringify(taskData[key]));
         } else if (key !== "image") {
-          formData.append(key, taskData[key]);
+          formData.append(key, taskData[key as keyof Task] as string);
         } else if (taskData.image) {
           if (typeof taskData.image === "string") {
             formData.append("imageUrl", taskData.image);
@@ -128,10 +134,10 @@ export const updateTask = createAsyncThunk(
           Authorization: `Bearer ${jwt}`,
         },
       });
-      await dispatch(getTasks());
+      await (dispatch as AppDispatch)(getTasks());
       return data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue((error as AxiosError).response?.data);
     }
   }
 );
@@ -166,10 +172,10 @@ export const completTask = createAsyncThunk(
           },
         }
       );
-      await dispatch(getTasks());
+      await (dispatch as AppDispatch)(getTasks());
       return data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue((error as AxiosError).response?.data);
     }
   }
 );
@@ -177,17 +183,18 @@ export const completTask = createAsyncThunk(
 export const deleteTask = createAsyncThunk(
   "tasks/deleteTask",
   async (taskId: number, { getState, rejectWithValue, dispatch }) => {
-    const jwt = getState().user.jwt;
+    const state = getState() as RootState;
+const jwt = state.user.jwt;
     try {
       await axios.delete(`${PREFIX}tasks/${taskId}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       });
-      await dispatch(getTasks());
+     await (dispatch as AppDispatch)(getTasks());
       return taskId;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+     return rejectWithValue((error as AxiosError).response?.data);
     }
   }
 );
@@ -195,7 +202,8 @@ export const deleteTask = createAsyncThunk(
 export const search = createAsyncThunk(
   "tasks/deleteTask",
   async (taskId: string, { getState, rejectWithValue }) => {
-    const jwt = getState().user.jwt;
+    const state = getState() as RootState;
+const jwt = state.user.jwt;
     try {
       await axios.delete(`${PREFIX}tasks/${taskId}`, {
         headers: {
@@ -204,7 +212,7 @@ export const search = createAsyncThunk(
       });
       return taskId;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue((error as AxiosError).response?.data);
     }
   }
 );
@@ -238,7 +246,7 @@ export const taskSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addTask.pending, (state) => {
-        state.taskErrorMessage = null;
+        state.taskErrorMessage = undefined;
       })
       .addCase(addTask.fulfilled, (state, action) => {
         state.tasks = [...(state.tasks || []), action.payload];
@@ -246,7 +254,7 @@ export const taskSlice = createSlice({
       .addCase(addTask.rejected, (state, action) => {
         state.taskErrorMessage = action.payload as string;
       })
-      .addCase(deleteTask.fulfilled, (state, action) => {
+      .addCase(deleteTask.fulfilled, () => {
 
       })
       .addCase(deleteTask.rejected, (state, action) => {
@@ -255,7 +263,7 @@ export const taskSlice = createSlice({
       .addCase(updateTask.pending, (state) => {
         state.taskErrorMessage = null;
       })
-      .addCase(updateTask.fulfilled, (state, action) => {
+      .addCase(updateTask.fulfilled, () => {
         
       })
       .addCase(updateTask.rejected, (state, action) => {
@@ -270,7 +278,7 @@ export const taskSlice = createSlice({
       .addCase(completTask.pending, (state) => {
         state.taskErrorMessage = null;
       })
-      .addCase(completTask.fulfilled, (state, action) => {
+      .addCase(completTask.fulfilled, () => {
         
       })
       .addCase(completTask.rejected, (state, action) => {

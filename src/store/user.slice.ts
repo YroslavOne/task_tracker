@@ -19,7 +19,7 @@ export interface UserState {
   registerErrorMessage?: string;
   editProfileErrorMessage?: string;
   profile?: Profile;
-  profileAll?: ProfileAll;
+  profileAll?: ProfileAll[];
   isUpdated?: boolean;
   isPasswordUpdated?: boolean;
 }

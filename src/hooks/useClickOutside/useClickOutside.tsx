@@ -4,18 +4,15 @@ function useOutsideClick<T extends HTMLElement>(callback: () => void): MutableRe
   const ref = useRef<T | null>(null);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent | TouchEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         callback();
       }
-    }
+    };
 
     document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [callback]);
 
